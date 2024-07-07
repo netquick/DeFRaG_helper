@@ -91,6 +91,9 @@ namespace DeFRaG_Helper.ViewModels
                                 Hits = reader.IsDBNull(reader.GetOrdinal("Hits")) ? 0 : reader.GetInt32(reader.GetOrdinal("Hits")),
                                 Downloadlink = reader.IsDBNull(reader.GetOrdinal("LinkDetailpage")) ? null : reader.GetString(reader.GetOrdinal("LinkDetailpage")),
                                 Style = reader.IsDBNull(reader.GetOrdinal("Style")) ? null : reader.GetString(reader.GetOrdinal("Style")),
+                                IsDownloaded = reader.IsDBNull(reader.GetOrdinal("isDownloaded")) ? 0 : reader.GetInt32(reader.GetOrdinal("isDownloaded")),
+                                IsInstalled = reader.IsDBNull(reader.GetOrdinal("isInstalled")) ? 0 : reader.GetInt32(reader.GetOrdinal("isInstalled")),
+                                IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite"))
                                 // Add other properties as needed
                             };
                             // Since we're on a background thread, ensure UI updates are dispatched on the UI thread
@@ -114,7 +117,61 @@ namespace DeFRaG_Helper.ViewModels
             });
         }
 
+        public async Task UpdateMapFlagsAsync(Map map)
+        {
+            // Find the map in the collection
+            var existingMap = Maps.FirstOrDefault(m => m.Id == map.Id);
+            if (existingMap != null)
+            {
+                // Update properties in memory
+                existingMap.IsDownloaded = map.IsDownloaded;
+                existingMap.IsInstalled = map.IsInstalled;
+                // Other properties as needed
 
-        
+                // Enqueue database update operation
+                dbQueue.Enqueue(async connection =>
+                {
+                    using (var command = new SqliteCommand("UPDATE Maps SET isDownloaded = @isDownloaded, isInstalled = @isInstalled WHERE ID = @ID", connection))
+                    {
+                        command.Parameters.AddWithValue("@isDownloaded", map.IsDownloaded ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@isInstalled", map.IsInstalled ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@ID", map.Id);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                });
+            }
+        }
+
+        //method to update favorite state in map
+        public async Task UpdateFavoriteStateAsync(Map map)
+        {
+            // Find the map in the collection
+            var existingMap = Maps.FirstOrDefault(m => m.Id == map.Id);
+            if (existingMap != null)
+            {
+                // Update properties in memory
+                existingMap.IsFavorite = map.IsFavorite;
+                // Other properties as needed
+
+                // Enqueue database update operation
+                dbQueue.Enqueue(async connection =>
+                {
+                    using (var command = new SqliteCommand("UPDATE Maps SET isFavorite = @isFavorite WHERE ID = @ID", connection))
+                    {
+                        command.Parameters.AddWithValue("@isFavorite", map.IsFavorite ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@ID", map.Id);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                });
+            }
+        }
+
+
+
+
+
+
     }
 }

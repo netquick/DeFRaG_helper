@@ -31,12 +31,14 @@ namespace DeFRaG_Helper
 
         private void ActionButton_Click(object sender, RoutedEventArgs e)
         {
-           //switch on the content of lblPlay
-           switch (ActionButton.Content)
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+
+            //switch on the content of lblPlay
+            switch (ActionButton.Content)
             {
                 case "Play Game":
                     //start the oDFe.x64.exe in GameDirectoryPath from App.config
-                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag");
+                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag +df_promode " + mainWindow.GetPhysicsSetting());
                     break;
                 case "Play Random Map":
                     //check maps viewmodel for random map, containing physics according to chkPhysics in Start.xaml where 1 = vq3, 2 = cpma, 3 = vq3 and cpma
@@ -117,8 +119,13 @@ namespace DeFRaG_Helper
 
                     App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage($"Random map: {randomMap.MapName} out of {matchingMaps.Count}"));
 
-                    // Now you have your randomMap, you can start the game with it
-                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag +map " + System.IO.Path.GetFileNameWithoutExtension(randomMap.MapName)); Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");
+                    //we need check if the map is downloaded and installed, if not, we will install it
+                    await MapInstaller.InstallMap(randomMap);
+
+                
+
+                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.MapName)}"); 
+                    Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");
                 }
             }
         }

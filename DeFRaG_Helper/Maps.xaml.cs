@@ -1,6 +1,7 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace DeFRaG_Helper
     public partial class Maps : Page
     {
         private static Maps instance;
+        private ICollectionView mapsView;
 
         public static Maps Instance
         {
@@ -41,8 +43,65 @@ namespace DeFRaG_Helper
         private async Task InitializeDataContextAsync()
         {
             this.DataContext = await MapViewModel.GetInstanceAsync();
+            SetupFiltering();
+
         }
 
-        //method to set favorite map
+        private void SetupFiltering()
+        {
+            mapsView = CollectionViewSource.GetDefaultView(((MapViewModel)this.DataContext).Maps);
+            mapsView.Filter = FilterMaps;
+
+            // Assuming chkFavorite, chkInstalled, and chkDownloaded are CheckBoxes in your XAML
+            chkFavorite.Checked += (s, e) => mapsView.Refresh();
+            chkFavorite.Unchecked += (s, e) => mapsView.Refresh();
+            chkInstalled.Checked += (s, e) => mapsView.Refresh();
+            chkInstalled.Unchecked += (s, e) => mapsView.Refresh();
+            chkDownloaded.Checked += (s, e) => mapsView.Refresh();
+            chkDownloaded.Unchecked += (s, e) => mapsView.Refresh();
+        }
+
+        private bool FilterMaps(object item)
+        {
+            if (item is not Map map) return false;
+
+            bool isFavoriteChecked = chkFavorite.IsChecked ?? false;
+            bool isInstalledChecked = chkInstalled.IsChecked ?? false;
+            bool isDownloadedChecked = chkDownloaded.IsChecked ?? false;
+
+            bool matchesFavorite = !isFavoriteChecked || (map.IsFavorite == 1);
+            bool matchesInstalled = !isInstalledChecked || (map.IsInstalled == 1);
+            bool matchesDownloaded = !isDownloadedChecked || (map.IsDownloaded == 1);
+
+            return matchesFavorite && matchesInstalled && matchesDownloaded;
+        }
+
+        private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var map = checkBox.DataContext as Map;
+            if (map != null)
+            {
+                map.IsFavorite = 1;
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+
+                await mapViewModel.UpdateFavoriteStateAsync(map);
+
+            }
+        }
+
+        private async void FavoriteCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var map = checkBox.DataContext as Map;
+            if (map != null)
+            {
+                map.IsFavorite = 0;
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+
+                await mapViewModel.UpdateFavoriteStateAsync(map);
+            }
+        }
+
     }
 }

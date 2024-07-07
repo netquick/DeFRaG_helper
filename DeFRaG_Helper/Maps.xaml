@@ -7,6 +7,10 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Maps">
+    <Page.Resources>
+        <local:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
+        <local:SizeFormatConverter x:Key="SizeFormatConverter"/>
+    </Page.Resources>
     <Border CornerRadius="10" Background="#2d2d2d">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,9 +24,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Content="Favorites"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="0"  />    
-                    <CheckBox Content="Installed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1" />
-                    <CheckBox Content="Archived" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="2"/>
+                    <CheckBox Name="chkFavorite" Content="Favorites"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="0"  />    
+                    <CheckBox Name="chkInstalled" Content="Installed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1" />
+                    <CheckBox Name="chkDownloaded" Content="Downloaded" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="2"/>
                 </Grid>
             
         </Border>
@@ -49,7 +53,7 @@
                             <!-- Left half content -->
                             <!-- First Row Content, full width of the left half -->
                             <TextBlock Text="{Binding Name}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                       FontFamily="Segoe UI" FontSize="20" Foreground="White"/>
+                                       FontFamily="Segoe UI" FontSize="20" Foreground="{StaticResource ThemeColor}"/>
                             <!-- Second Row, divided into two columns within the left half -->
                             <Grid Grid.Row="1" Grid.Column="0">
                                 <Grid.ColumnDefinitions>
@@ -62,11 +66,16 @@
                                            FontFamily="Segoe UI" FontSize="12" Foreground="LightGray"/>
                                 <TextBlock Text="{Binding GameType}" Grid.Column="1"
                                            FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Size}" Grid.Column="2"
+                                    <TextBlock Text="{Binding Size, Converter={StaticResource SizeFormatConverter}}" Grid.Column="2"
                                              FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Hits}" Grid.Column="3"
-                                             FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                            </Grid>
+                                    <TextBlock Grid.Column="3" FontFamily="Segoe UI" FontSize="10" Foreground="LightGray">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="Hits: {0}">
+                                                <Binding Path="Hits"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
                             <!-- Third Row, also divided into two columns within the left half -->
                             <Grid Grid.Row="2" Grid.Column="0">
                                 <Grid.ColumnDefinitions>
@@ -77,11 +86,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding FileName}" Grid.Column="0"
                                            FontFamily="Segoe UI" FontSize="12" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Physics}" Grid.Column="1"
+                                    <TextBlock Text="{Binding Physics, Converter={StaticResource PhysicsModeConverter}}" Grid.Column="1"
                                            FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
                                 <TextBlock Text="{Binding Author}" Grid.Column="2"
                                            FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Date}" Grid.Column="3"
+                                <TextBlock Text="{Binding ReleaseDate}" Grid.Column="3"
                                            FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
                             </Grid>
                             <!-- Right half content -->
@@ -94,7 +103,7 @@
                                 </Grid.ColumnDefinitions>
                                 <!-- Content for the four rows in the right half -->
                                 <Image Source="{Binding Image}" Grid.Column="0" Width="100" />
-                                <CheckBox IsChecked="{Binding Favorite}" Grid.Column="1" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="30, 0, 30, 0"/>
+                                    <CheckBox IsChecked="{Binding IsFavorite}" Grid.Column="1" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="30, 0, 30, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
                                 <Button Name="btnPlay" Grid.Column="2" Width="40" Content="Play"/>
                                 <Button Name="btnDownload" Grid.Column="3" Width="40" Content="Download"/>
 
