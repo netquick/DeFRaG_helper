@@ -1,0 +1,21 @@
+﻿<Application x:Class="DeFRaG_Helper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DeFRaG_Helper"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="CustomStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Correctly reference the BoolToVisibilityConverter within the local XML namespace -->
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <local:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+            <local:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+            <local:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
+            <SolidColorBrush x:Key="ThemeColor" Color="Yellow"/>
+
+        </ResourceDictionary>
+        
+    </Application.Resources>
+</Application>

@@ -1,0 +1,120 @@
+﻿<Window x:Class="DeFRaG_Helper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
+        xmlns:local="clr-namespace:DeFRaG_Helper"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="650" Width="1200"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+
+    <Window.Resources>
+        <!-- Resize Grip Style -->
+        <Style x:Key="ResizeGripStyle" TargetType="Thumb">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Border Background="#1C1C1C" CornerRadius="10">
+        <Grid>
+            <Grid>
+                <!-- Custom Title Bar -->
+                <Border Background="Transparent" Height="60" VerticalAlignment="Top" MouseLeftButtonDown="Grid_MouseLeftButtonDown" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Application Title Label -->
+                        <Label Grid.Column="0" Content="DeFRaG_Helper" VerticalAlignment="Center" Foreground="#D3D3D3" FontSize="20" Margin="10,0,0,0"/>
+                        <TextBox x:Name="searchBar" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="306,0,306,0" Height="34" Text="Search..." GotFocus="SearchBox_GotFocus"/>
+                        <!-- Spacer to push buttons to the right -->
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!-- Minimize Button -->
+                            <Button Content="&#xE921;" Width="40" Click="Minimize_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets" />
+
+                            <!-- Maximize Button -->
+                            <Button Content="&#xE922;" Width="40" Click="Maximize_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets"/>
+                            <!-- Close Button -->
+                            <Button Content="&#xE8BB;" Width="40" Click="Close_Click" BorderBrush="Transparent" Background="{x:Null}" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets"/>
+
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+
+
+                <!-- Main Content Area Below the Title Bar -->
+                <Grid Margin="0,60,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="SidebarColumn" Width="240"/>
+                        <!-- Adjusted for collapsible sidebar -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Main Content -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Collapsible Menu -->
+                    <Border Grid.Column="0" Background="#1C1C1C" CornerRadius="10">
+                        <Grid x:Name="SidebarGrid">
+                            <!-- Define rows for each control for layout flexibility -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" MinHeight="43"/>
+                                <!-- Toggle Button row -->
+                                <RowDefinition Height="Auto" MinHeight="97"/>
+                                <!-- ComboBox row -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- CheckBox row -->
+                                <RowDefinition/>
+                                <!-- ListView row, takes remaining space -->
+
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Toggle Button for the sidebar -->
+                            <Button Content="&lt;" Height="40" VerticalAlignment="Center" Margin="0,0,10,0" Click="ToggleSidebar" Background="Transparent" BorderBrush="Transparent" Foreground="#D3D3D3" FontSize="20" Grid.Column="0" HorizontalAlignment="Right" Width="40"/>
+
+
+                            <!-- Custom DropDownButton Control -->
+                            <local:DropDownButton x:Name="customDropDownButton" Grid.Column="0" Margin="10,2,10,5" Grid.Row="1"/>
+
+
+                            <CheckBox Name="chkPhysics" Style="{StaticResource DarkModeToggleSwitchStyle}" Background="Gray" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="170,0,16,0" Height="26" Checked="PhysicsMode_Changed" Unchecked="PhysicsMode_Changed"/>
+                            <Label Name="lblPhysics" Content="CPM" Foreground="White" Grid.Row="2" Grid.Column="0" Margin="85,0,16,0" Width="35"/>
+                            <!-- ListView for navigation items -->
+                            <ListView x:Name="NavigationListView" Style="{StaticResource NavigationListViewStyle}" Grid.Row="4" Margin="0,45,0,0"  Grid.RowSpan="3"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="#1C1C1C" CornerRadius="10">
+                        <!-- Main Content Area -->
+                        <Grid Grid.Column="1" >
+                            <!-- Your main content goes here -->
+                            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+                            <ProgressBar Name="progressBar" Height="11" Margin="10,0,10,10" VerticalAlignment="Bottom" Visibility="Hidden"/>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+
+            </Grid>
+            <Thumb Width="5" Cursor="SizeWE" DragDelta="OnLeftDragDelta" Opacity="0" HorizontalAlignment="Left" Style="{StaticResource ResizeGripStyle}"/>
+            <Thumb Width="5" Cursor="SizeWE" DragDelta="OnRightDragDelta" Opacity="0" HorizontalAlignment="Right" Style="{StaticResource ResizeGripStyle}"/>
+            <Thumb Height="5" Cursor="SizeNS" DragDelta="OnTopDragDelta" Opacity="0" VerticalAlignment="Top" Style="{StaticResource ResizeGripStyle}"/>
+            <Thumb Height="5" Cursor="SizeNS" DragDelta="OnBottomDragDelta" Opacity="0" VerticalAlignment="Bottom" Style="{StaticResource ResizeGripStyle}"/>
+            <Thumb Width="10" Height="10" Cursor="SizeNWSE" DragDelta="OnBottomRightDragDelta" Opacity="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource ResizeGripStyle}"/>
+            <StackPanel x:Name="MessageHost" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" MaxHeight="200"/>
+
+        </Grid>
+        
+    </Border>
+
+</Window>
