@@ -9,24 +9,8 @@
   Title="Start">
     <Border CornerRadius="10" Background="#FF2D2D2D">
         <Grid Background="Transparent">
-            <Button Content="Button" HorizontalAlignment="Left" Height="59" Margin="10,10,0,0" VerticalAlignment="Top" Width="167"/>
-            <TextBox HorizontalAlignment="Left" Height="49" Margin="10,74,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="236"/>
-            <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top"/>
-            <ComboBox HorizontalAlignment="Left" Height="59" Margin="10,225,0,0" VerticalAlignment="Top" Width="190"/>
-            <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="304,29,0,0" VerticalAlignment="Top" Style="{StaticResource ModernRadioButton}"/>
-            <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="128,134,0,0" VerticalAlignment="Top" Style="{StaticResource FavoriteCheckBoxStyle}"/>
-            <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="10,169,0,0" VerticalAlignment="Top" Style="{StaticResource DarkModeToggleSwitchStyle}"/>
-            <ProgressBar Height="10" Margin="9,0,9,10" VerticalAlignment="Bottom"/>
-            <GroupBox HorizontalAlignment="Left" Height="126" Header="GroupBox" Margin="287,10,0,0" VerticalAlignment="Top" Width="135"/>
-            <ScrollBar HorizontalAlignment="Right" Width="17"/>
-            <Slider HorizontalAlignment="Left" Margin="265,253,0,0" VerticalAlignment="Top" Width="161"/>
-            <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="304,58,0,0" VerticalAlignment="Top" Style="{StaticResource ModernRadioButton}"/>
-            <DataGrid HorizontalAlignment="Left" Height="135" Margin="464,39,0,0" VerticalAlignment="Top" Width="299" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-            <Calendar x:Name="CustomCalendar" HorizontalAlignment="Left" Margin="584,182,0,0" VerticalAlignment="Top" />
-            <ListBox HorizontalAlignment="Left" Height="88" Margin="265,158,0,0" VerticalAlignment="Top" Width="161" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-            <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="304,86,0,0" VerticalAlignment="Top" Style="{StaticResource ModernRadioButton}"/>
-            <DatePicker HorizontalAlignment="Left" Margin="10,311,0,0" VerticalAlignment="Top" Height="37" Width="190"/>
-            <ComboBox x:Name="ColorComboBox" HorizontalAlignment="Left" Height="16" Margin="10,360,0,0" VerticalAlignment="Top" Width="154" SelectionChanged="ColorComboBox_SelectionChanged" SelectedIndex="0">
+
+            <ComboBox x:Name="ColorComboBox" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="181" SelectionChanged="ColorComboBox_SelectionChanged" SelectedIndex="0">
                 <ComboBoxItem Content="Yellow" Background="Yellow"/>
                 <ComboBoxItem Content="Red" Background="Red"/>
                 <ComboBoxItem Content="Green" Background="Green"/>

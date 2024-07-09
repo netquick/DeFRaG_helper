@@ -3,13 +3,31 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace DeFRaG_Helper
 {
     public class ServerViewModel : INotifyPropertyChanged
     {
+
+
+        // Helper method to raise the PropertyChanged event
+
+        private ICollectionView _sortedServersView;
+        public ICollectionView SortedServersView
+        {
+            get { return _sortedServersView; }
+            set
+            {
+                _sortedServersView = value;
+                OnPropertyChanged(nameof(SortedServersView)); // Notify UI of change
+            }
+        }
+
+
         public bool IsDataLoaded { get; private set; }
         private static bool isInitialized = false;
 
@@ -19,7 +37,11 @@ namespace DeFRaG_Helper
 
         private DispatcherTimer updateTimer;
         private static ServerViewModel instance;
-
+        // Helper method to raise the PropertyChanged event
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public ServerViewModel()
         {
             Servers = new ObservableCollection<ServerNode>();
@@ -31,7 +53,7 @@ namespace DeFRaG_Helper
             updateTimer.Start();
 
             // Initialize with some data (for testing)
-            var _ = InitializeServers();
+            //var _ = InitializeServers();
 
         }
         public static async Task<ServerViewModel> GetInstanceAsync()
@@ -83,10 +105,19 @@ namespace DeFRaG_Helper
 
             UpdateServerData(this, EventArgs.Empty);
         }
+        private void InitializeSortedServersView()
+        {
+            _sortedServersView = CollectionViewSource.GetDefaultView(Servers);
+            _sortedServersView.SortDescriptions.Add(new SortDescription("CurrentPlayers", ListSortDirection.Descending));
 
+            // Notify UI that SortedServersView has changed
+            OnPropertyChanged(nameof(SortedServersView));
+        }
         // In ServerViewModel.cs
         private async void UpdateServerData(object sender, EventArgs e)
         {
+            InitializeSortedServersView();
+
             var tasks = Servers.Select(async serverNode =>
             {
                 var serverQuery = new Quake3ServerQuery(serverNode.IP, serverNode.Port);
@@ -115,17 +146,22 @@ namespace DeFRaG_Helper
 
             await Task.WhenAll(tasks);
 
-            // Notify the UI that the server properties have been updated
+            // Refresh the SortedServersView on the UI thread after all updates
             App.Current.Dispatcher.Invoke(() =>
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Servers)));
+                _sortedServersView.Refresh(); // Refresh the view to reflect updates
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SortedServersView)));
             });
         }
 
 
 
+
         public static void ParseServerResponseAndUpdate(ServerNode serverNode, string response)
         {
+            // Clear the Players list at the beginning of the update
+            serverNode.Players.Clear();
+
             string startMarker = "????statusResponse\n";
             int startIndex = response.IndexOf(startMarker);
             if (startIndex == -1)
@@ -155,22 +191,61 @@ namespace DeFRaG_Helper
                             serverNode.Map = value;
                             break;
                         case "sv_hostname":
-                            serverNode.Name = value.Replace("^7", "").Replace("^4", "").Replace("^1", "");
+                            serverNode.Name = value;
                             break;
                         case "sv_maxclients":
                             serverNode.MaxPlayers = int.TryParse(value, out int maxPlayers) ? maxPlayers : 0;
                             break;
-                        //case "df_promode":
-                        //    serverNode.Physics = int.TryParse(value, out int mode) ? mode : 0; // Assuming Mode is an integer
-                        //    break;
+                        case "df_promode":
+                            serverNode.Physics = value == "1" ? "VQ3" : value == "2" ? "CPM" : "Unknown";
+                            break;
                             // Add more cases as needed for other properties
                     }
                 }
             }
+            // Process player lines
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrEmpty(line))
+                    continue; // Skip empty lines
 
-            // Assuming player info starts after the server settings
-            //serverNode.Players = lines.Length - 1; // Subtract 1 for the server settings line
+                // Extract and clean player name, then add to Players list
+                int firstQuoteIndex = line.IndexOf('\"');
+                int lastQuoteIndex = line.LastIndexOf('\"');
+                if (firstQuoteIndex >= 0 && lastQuoteIndex > firstQuoteIndex)
+                {
+                    string playerName = line.Substring(firstQuoteIndex + 1, lastQuoteIndex - firstQuoteIndex - 1);
+                    //string cleanPlayerName = Regex.Replace(playerName, @"\^\d", "");
+                    serverNode.Players.Add(playerName);
+                }
+            }
+            serverNode.CurrentPlayers = serverNode.Players.Count;
+
+            // Subscribe to PropertyChanged event if needed
+            serverNode.PropertyChanged -= ServerNode_PropertyChanged;
+            serverNode.PropertyChanged += ServerNode_PropertyChanged;
         }
 
+        private static void ServerNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ServerNode.Map))
+            {
+                var serverNode = sender as ServerNode;
+                if (serverNode != null)
+                {
+                    // Here you can log or perform actions knowing the Map (and thus potentially the ImagePath) has changed
+                    // For example, you could explicitly call a method to handle the image update
+                    UpdateServerNodeImage(serverNode);
+                }
+            }
+        }
+
+        private static void UpdateServerNodeImage(ServerNode serverNode)
+        {
+            // This method can be used to perform actions based on the updated Map property
+            // For instance, you could log the new ImagePath or trigger UI updates
+            Debug.WriteLine($"New Image Path for server {serverNode.Name}: {serverNode.ImagePath}");
+        }
     }
 }

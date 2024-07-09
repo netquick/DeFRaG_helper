@@ -59,6 +59,10 @@ namespace DeFRaG_Helper
             chkInstalled.Unchecked += (s, e) => mapsView.Refresh();
             chkDownloaded.Checked += (s, e) => mapsView.Refresh();
             chkDownloaded.Unchecked += (s, e) => mapsView.Refresh();
+
+
+            searchBar.TextChanged += (s, e) => mapsView.Refresh();
+
         }
 
         private bool FilterMaps(object item)
@@ -68,13 +72,24 @@ namespace DeFRaG_Helper
             bool isFavoriteChecked = chkFavorite.IsChecked ?? false;
             bool isInstalledChecked = chkInstalled.IsChecked ?? false;
             bool isDownloadedChecked = chkDownloaded.IsChecked ?? false;
+            // Ensure searchBar is not null and handle case where searchBar.Text is null
+            string searchText = searchBar?.Text?.ToLower() ?? string.Empty;
 
             bool matchesFavorite = !isFavoriteChecked || (map.IsFavorite == 1);
             bool matchesInstalled = !isInstalledChecked || (map.IsInstalled == 1);
             bool matchesDownloaded = !isDownloadedChecked || (map.IsDownloaded == 1);
 
-            return matchesFavorite && matchesInstalled && matchesDownloaded;
+            // Safely check if the map's properties contain the search text, accounting for potential null values
+            bool matchesSearchText = string.IsNullOrEmpty(searchText) || searchText == "filter..." || // Ignore if searchText is default or empty
+                                     (map.Name?.ToLower().Contains(searchText) ?? false) ||
+                                     (map.MapName?.ToLower().Contains(searchText) ?? false) ||
+                                     (map.FileName?.ToLower().Contains(searchText) ?? false) ||
+                                     (map.Author?.ToLower().Contains(searchText) ?? false);
+
+            return matchesFavorite && matchesInstalled && matchesDownloaded && matchesSearchText;
         }
+
+
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -101,6 +116,16 @@ namespace DeFRaG_Helper
 
                 await mapViewModel.UpdateFavoriteStateAsync(map);
             }
+        }
+
+        private void SearchBox_GotFocus (object sender, RoutedEventArgs e)
+        {
+            if (searchBar.Text == "Filter...")
+            {
+                searchBar.Text = "";
+            }
+
+
         }
 
     }

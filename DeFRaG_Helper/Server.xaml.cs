@@ -47,55 +47,7 @@ namespace DeFRaG_Helper
 
         }
 
-        public static List<(string Text, SolidColorBrush Color)> ParseQuakeColorCodes(string serverName)
-        {
-            var segments = new List<(string Text, SolidColorBrush Color)>();
-            var colors = new Dictionary<char, SolidColorBrush>
-                {
-                    { '0', Brushes.Black },
-                    { '1', Brushes.Red },
-                    { '2', Brushes.Green },
-                    { '3', Brushes.Yellow },
-                    { '4', Brushes.Blue },
-                    { '5', Brushes.Cyan },
-                    { '6', Brushes.Magenta },
-                    { '7', Brushes.White },
-                    { '8', Brushes.Orange },
-                    { '9', Brushes.Gray },
-                    // Add more colors if needed
-                };
-
-            int lastIndex = 0;
-            for (int i = 0; i < serverName.Length; i++)
-            {
-                if (serverName[i] == '^' && i + 1 < serverName.Length && colors.ContainsKey(serverName[i + 1]))
-                {
-                    if (i > lastIndex)
-                    {
-                        segments.Add((serverName.Substring(lastIndex, i - lastIndex), Brushes.White)); // Default color
-                    }
-                    lastIndex = i + 2; // Skip color code
-                    i++; // Move past the color digit
-
-                    if (i + 1 < serverName.Length)
-                    {
-                        int nextColorIndex = serverName.IndexOf('^', i + 1);
-                        if (nextColorIndex == -1) nextColorIndex = serverName.Length;
-                        segments.Add((serverName.Substring(i + 1, nextColorIndex - i - 1), colors[serverName[i]]));
-                        i = nextColorIndex - 1;
-                        lastIndex = nextColorIndex;
-                    }
-                }
-            }
-
-            // Add the last segment if there's any
-            if (lastIndex < serverName.Length)
-            {
-                segments.Add((serverName.Substring(lastIndex), Brushes.White)); // Default color
-            }
-
-            return segments;
-        }
+       
 
     }
 

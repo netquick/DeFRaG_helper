@@ -73,10 +73,15 @@ namespace DeFRaG_Helper
             get => map;
             set
             {
-                map = value;
-                OnPropertyChanged(nameof(Map));
+                if (map != value)
+                {
+                    map = value;
+                    OnPropertyChanged(nameof(Map));
+                    OnPropertyChanged(nameof(ImagePath)); // Notify that ImagePath has changed as well
+                }
             }
         }
+
 
         private string style;
         public string Style
@@ -132,7 +137,38 @@ namespace DeFRaG_Helper
                 OnPropertyChanged(nameof(Players));
             }
         }
+        public string ImagePath
+        {
+            get
+            {
+                var basePath = AppDomain.CurrentDomain.BaseDirectory; // Gets the base directory of the app
 
+                if (map == null)
+                {
+                    string placeholderPath = System.IO.Path.Combine(basePath, "PreviewImages/placeholder.png");
+                    return $"file:///{placeholderPath}";
+                }
+                // Replace .bsp extension with .jpg
+                string imageName = map.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                    ? map.Substring(0, map.Length - 4) + ".jpg"
+                    : map + ".jpg";
+
+                //var imagePath = System.IO.Path.Combine(basePath, "PreviewImages", $"{Map}.jpg"); // Assumes .jpg format
+                string imagePath = System.IO.Path.Combine(basePath, $"PreviewImages/{imageName}");
+
+                // Check if the image file exists
+                if (System.IO.File.Exists(imagePath))
+                {
+                    return $"file:///{imagePath}";
+                }
+                else
+                {
+                    // Return the placeholder image path if the specific map image does not exist
+                    string placeholderPath = System.IO.Path.Combine(basePath, "PreviewImages/placeholder.png");
+                    return $"file:///{placeholderPath}";
+                }
+            }
+        }
         // Add other server properties as needed
     }
 }

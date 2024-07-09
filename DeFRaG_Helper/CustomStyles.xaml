@@ -32,11 +32,11 @@
                         </Trigger>
                         <!-- Trigger for Disabled State -->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="#FF555555"/>
+                            <Setter Property="Background" Value="Transparent"/>
                             <!-- Adjust the background color for disabled state -->
                             <Setter Property="Foreground" Value="#FFAAAAAA"/>
                             <!-- Adjust the foreground color for disabled state -->
-                            <Setter Property="BorderBrush" Value="#FF555555"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
                             <!-- Adjust the border color for disabled state if needed -->
                         </Trigger>
                     </ControlTemplate.Triggers>

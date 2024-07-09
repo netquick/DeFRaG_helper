@@ -22,11 +22,14 @@ namespace DeFRaG_Helper
     /// </summary>
     public partial class DropDownButton : UserControl
     {
+        private MapHistoryManager mapHistoryManager;
 
         public DropDownButton()
         {
             InitializeComponent();
             lblAction.Content = "Play Game";
+            mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
+
         }
 
         private void ActionButton_Click(object sender, RoutedEventArgs e)
@@ -40,7 +43,7 @@ namespace DeFRaG_Helper
                     //start the oDFe.x64.exe in GameDirectoryPath from App.config
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag +df_promode " + mainWindow.GetPhysicsSetting());
                     break;
-                case "Play Random Map":
+                case "Random Map":
                     //check maps viewmodel for random map, containing physics according to chkPhysics in Start.xaml where 1 = vq3, 2 = cpma, 3 = vq3 and cpma
                     //start the oDFe.x64.exe in GameDirectoryPath from App.config with the random map
 
@@ -66,7 +69,7 @@ namespace DeFRaG_Helper
 
             // Create and add menu items
             MenuItem option1 = new MenuItem() { Header = "Play Game" };
-            MenuItem option2 = new MenuItem() { Header = "Play Random Map" };
+            MenuItem option2 = new MenuItem() { Header = "Random Map" };
             menu.Items.Add(option1);
             menu.Items.Add(option2);
 
@@ -122,7 +125,8 @@ namespace DeFRaG_Helper
                     //we need check if the map is downloaded and installed, if not, we will install it
                     await MapInstaller.InstallMap(randomMap);
 
-                
+                    await mapHistoryManager.UpdateLastPlayedMapsAsync(randomMap.Id);
+
 
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.MapName)}"); 
                     Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");

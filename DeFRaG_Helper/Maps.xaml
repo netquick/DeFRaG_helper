@@ -29,14 +29,18 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        
                     </Grid.ColumnDefinitions>
                     <CheckBox Name="chkFavorite" Content="Favorites"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="0"  />    
                     <CheckBox Name="chkInstalled" Content="Installed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1" />
                     <CheckBox Name="chkDownloaded" Content="Downloaded" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="2"/>
+                    <TextBox Name="searchBar" Grid.Column="3" VerticalAlignment="Center" FontSize="20" Margin="10,0,10,0" Width="340" Height="34" Text="" GotFocus="SearchBox_GotFocus"/>
+                    
                 </Grid>
             
         </Border>
-        <ListView Grid.Row="1" ItemsSource="{Binding Maps}" BorderBrush="Transparent" d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalAlignment="Stretch" Background="Transparent">
+        <ListView Grid.Row="1" ItemsSource="{Binding Maps}" BorderBrush="Transparent" HorizontalAlignment="Stretch" Background="Transparent">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

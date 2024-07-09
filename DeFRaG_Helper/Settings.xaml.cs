@@ -35,12 +35,7 @@ namespace DeFRaG_Helper
         public Settings()
         {
             InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                Border b1 = TreeHelper.FindChild<Border>(CustomCalendar);
-                Border b2 = TreeHelper.FindChild<Border>(b1);
-                b2.BorderBrush = Brushes.Transparent;
-            };
+            
         }
 
         private void ColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -61,31 +56,5 @@ namespace DeFRaG_Helper
         }
 
     }
-    public static class TreeHelper
-    {
-        public static T FindChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            if (parent == null) return null;
-
-            T foundChild = null;
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T)
-                {
-                    foundChild = (T)child;
-                    break;
-                }
-                else
-                {
-                    foundChild = FindChild<T>(child);
-                    if (foundChild != null)
-                        break;
-                }
-            }
-            return foundChild;
-        }
-    }
+    
 }

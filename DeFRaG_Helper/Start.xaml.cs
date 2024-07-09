@@ -22,8 +22,9 @@ namespace DeFRaG_Helper
     public partial class Start : Page
     {
 
+        private MapHistoryManager mapHistoryManager;
 
-        private static Start instance;
+        private static Start? instance;
 
         public static Start Instance
         {
@@ -37,32 +38,51 @@ namespace DeFRaG_Helper
         public Start()
         {
             InitializeComponent();
-            //this.DataContext = MapViewModel.Instance; // Assuming Singleton pattern
-            //if (MapViewModel.Instance.IsDataLoaded)
-            //{
-            //    // If data is already loaded, set DataContext immediately
-            //    this.DataContext = MapViewModel.Instance;
-            //}
-            //else
-            //{
-            //    // Subscribe to the DataLoaded event
-            //    MapViewModel.Instance.SubscribeToDataLoaded(MapViewModel_DataLoaded);
-            //}
+            mapHistoryManager = new MapHistoryManager("DeFRaG_Helper"); // Initialize mapHistoryManager here
+            MapHistoryManager.MapHistoryUpdated += () => Task.Run(() => RefreshMapListAsync());
+
+            LoadLastPlayedMaps();
 
         }
 
-        //private void MapViewModel_DataLoaded(object sender, EventArgs e)
-        //{
-        //    // Use the public method to unsubscribe from the DataLoaded event
-        //    MapViewModel.Instance.UnsubscribeFromDataLoaded(MapViewModel_DataLoaded);
+        public static async Task RefreshMapListAsync() // Change method signature to be async Task
+        {
+            await Application.Current.Dispatcher.InvokeAsync(async () => // Use InvokeAsync with async lambda
+            {
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+                // Use the instance to access ItemsControlMaps
+                Instance.ItemsControlMaps.ItemsSource = null;
+                Instance.ItemsControlMaps.ItemsSource = mapViewModel.Maps;
+            });
+        }
 
-        //    // Set DataContext on the UI thread
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        this.DataContext = MapViewModel.Instance;
-        //    });
-        //}
 
+        private async void LoadLastPlayedMaps()
+        {
+            var lastPlayedMapIds = await mapHistoryManager.LoadLastPlayedMapsAsync();
+            // Correctly await the asynchronous call to GetMapsFromIds
+            var lastPlayedMaps = await GetMapsFromIds(lastPlayedMapIds);
+            ItemsControlMaps.ItemsSource = lastPlayedMaps;
+        }
+
+
+        // Dummy method to represent fetching map objects from IDs
+        private async Task<List<Map>> GetMapsFromIds(List<int> mapIds)
+        {
+            var mapViewModel = await MapViewModel.GetInstanceAsync(); // Ensure you have access to the MapViewModel instance
+            var maps = new List<Map>();
+
+            foreach (var id in mapIds)
+            {
+                var map = mapViewModel.Maps.FirstOrDefault(m => m.Id == id);
+                if (map != null)
+                {
+                    maps.Add(map);
+                }
+            }
+
+            return maps;
+        }
 
     }
 
