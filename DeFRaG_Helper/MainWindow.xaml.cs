@@ -156,7 +156,11 @@ namespace DeFRaG_Helper
                         MainFrame.Navigate(new Uri("Start.xaml", UriKind.Relative));
                         break;
                     case "Maps":
-                    MainFrame.Navigate(new Uri("Maps.xaml", UriKind.Relative));
+                        MainFrame.Navigate(new Uri("Maps.xaml", UriKind.Relative));
+                        break;
+                    case "Server":
+                            // Navigate to the Server page
+                    MainFrame.Navigate(new Uri("Server.xaml", UriKind.Relative));
                         break;
                     case "Settings":
                         // Navigate to the Server page
@@ -305,5 +309,20 @@ namespace DeFRaG_Helper
                 isSidebarCollapsed = true;
             }
         }
+
+        private async void Srv_Click(object sender, RoutedEventArgs e)
+        {
+            Quake3ServerQuery query = new Quake3ServerQuery("83.243.73.220", 27961);
+            var (Success, Response) = await query.QueryServerAsync();
+            if (Success)
+            {
+                MessageBox.Show($"Query Successful: {Response}");
+            }
+            else
+            {
+                MessageBox.Show($"Query Failed: {Response}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
     }
 }

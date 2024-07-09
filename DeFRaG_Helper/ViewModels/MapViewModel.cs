@@ -2,12 +2,15 @@
 using DeFRaG_Helper;
 using Microsoft.Data.Sqlite;
 using System.Windows;
+using System.Windows.Input;
+using System.Diagnostics;
 namespace DeFRaG_Helper.ViewModels
 {
     public class MapViewModel
     {
         public bool IsDataLoaded { get; private set; }
-
+        public ICommand PlayMapCommand { get; private set; }
+        public ICommand DownloadMapCommand { get; private set; }
 
         public ObservableCollection<Map> Maps { get; set; }
         private DbQueue dbQueue;
@@ -21,6 +24,9 @@ namespace DeFRaG_Helper.ViewModels
         {
             Maps = new ObservableCollection<Map>();
             dbQueue = new DbQueue("Data Source=MapData.db;");
+
+            PlayMapCommand = new RelayCommand(PlayMap);
+            DownloadMapCommand = new RelayCommand(DownloadMap);
         }
         public static async Task<MapViewModel> GetInstanceAsync()
         {
@@ -37,6 +43,23 @@ namespace DeFRaG_Helper.ViewModels
             if (!isInitialized)
             {
                 await LoadMapsFromDatabase();
+                // Sync map files with the filesystem
+                //MapFileSyncService syncService = new MapFileSyncService();
+
+
+                //syncService.OnMapFlagsChanged += async map =>
+                //{
+                //    try
+                //    {
+                //        await UpdateMapFlagsAsync(map);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show($"Error {ex}");// Log the exception or handle it accordingly
+                //    }
+                //};
+
+
                 isInitialized = true;
             }
         }
@@ -54,14 +77,46 @@ namespace DeFRaG_Helper.ViewModels
             DataLoaded -= handler;
         }
 
+        private async void PlayMap(object mapParameter)
+        {
+           //MessageBox.Show("Play Map");
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+
+            var map = mapParameter as Map;
+            if (map != null)
+            {
+                await MapInstaller.InstallMap(map);
+
+
+
+                int physicsSetting = mainWindow.GetPhysicsSetting();
+                System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(map.MapName)}");
+
+
+            }
+        }
+
+        private async void DownloadMap(object mapParameter)
+        {
+            var map = mapParameter as Map;
+            if (map != null)
+            {
+                await MapInstaller.InstallMap(map);
+
+            }
+        }
+
+
+
+
         private async Task LoadMapsFromDatabase()
         {
+            var totalMaps = 0;
             if (dataLoaded) return;
 
             dbQueue.Enqueue(async connection =>
             {
                 // First, determine the total number of maps
-                int totalMaps = 0;
                 using (var countCommand = new SqliteCommand("SELECT COUNT(*) FROM Maps", connection))
                 {
                     totalMaps = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
@@ -98,25 +153,51 @@ namespace DeFRaG_Helper.ViewModels
                             };
                             // Since we're on a background thread, ensure UI updates are dispatched on the UI thread
                             App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+
                             loadedMaps++;
                             double progress = (double)loadedMaps / totalMaps * 100;
                             App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
                         }
                     }
                 }
-                // After loading data, raise the DataLoaded event on the UI thread
+
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     dataLoaded = true; // Set the flag to true after loading data
                     DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
                     App.Current.Dispatcher.Invoke(() => MainWindow.Instance.HideProgressBar());
-                    MainWindow.Instance.ShowMessage(totalMaps + " Maps loaded"); // Display the completion message
+                    // Display the completion message
 
 
                 });
+
             });
+
+            //we will call it somewhere else
+            //await StartSync(totalMaps);
+
+
+
         }
 
+        private async Task StartSync(int totalMaps) 
+        {
+            await dbQueue.WhenAllCompleted(); // Wait for all operations to complete
+
+            // After loading data, raise the DataLoaded event on the UI thread
+            IProgress<double> syncProgressReporter = new Progress<double>(progress =>
+            {
+                App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
+            });
+            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage(totalMaps + " Maps loaded"));
+
+
+            // 2. Create an instance of MapFileSyncService
+            MapFileSyncService syncService = new MapFileSyncService();
+            syncService.OnMapFlagsChanged += async map => await UpdateMapFlagsAsync(map);
+            syncService.SyncMapFilesWithFileSystem(Maps, syncProgressReporter);
+
+        }
         public async Task UpdateMapFlagsAsync(Map map)
         {
             // Find the map in the collection
@@ -136,7 +217,7 @@ namespace DeFRaG_Helper.ViewModels
                         command.Parameters.AddWithValue("@isDownloaded", map.IsDownloaded ?? (object)DBNull.Value);
                         command.Parameters.AddWithValue("@isInstalled", map.IsInstalled ?? (object)DBNull.Value);
                         command.Parameters.AddWithValue("@ID", map.Id);
-
+                        Debug.WriteLine(command);
                         await command.ExecuteNonQueryAsync();
                     }
                 });

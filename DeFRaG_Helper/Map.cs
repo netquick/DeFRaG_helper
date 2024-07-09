@@ -12,6 +12,41 @@ namespace DeFRaG_Helper
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+
+
+        public string ImagePath
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(MapName))
+                {
+                    // Replace .bsp extension with .jpg
+                    string imageName = MapName.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                        ? MapName.Substring(0, MapName.Length - 4) + ".jpg"
+                        : MapName + ".jpg";
+
+                    // Adjusted to the correct folder name "PreviewImages"
+                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                    string imagePath = System.IO.Path.Combine(basePath, $"PreviewImages/{imageName}");
+
+                    // Check if the image file exists
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        return $"file:///{imagePath}";
+                    }
+                    else
+                    {
+                        // Return the placeholder image path if the specific map image does not exist
+                        string placeholderPath = System.IO.Path.Combine(basePath, "PreviewImages/placeholder.png");
+                        return $"file:///{placeholderPath}";
+                    }
+                }
+                return null;
+            }
+        }
+
+
+
         private int id;
         public int Id
         {

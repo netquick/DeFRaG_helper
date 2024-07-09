@@ -9,6 +9,7 @@
     <local:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
 
     <!-- Global Style for Buttons -->
+    <!-- Global Style for Buttons -->
     <Style TargetType="Button">
         <Setter Property="Foreground" Value="#D3D3D3"/>
         <Setter Property="Background" Value="#FF222222"/>
@@ -18,22 +19,32 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="5">
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="5">
                         <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Margin="{TemplateBinding Padding}"/>
+                                  VerticalAlignment="Center"
+                                  Margin="{TemplateBinding Padding}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#FF444444"/>
+                        </Trigger>
+                        <!-- Trigger for Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="#FF555555"/>
+                            <!-- Adjust the background color for disabled state -->
+                            <Setter Property="Foreground" Value="#FFAAAAAA"/>
+                            <!-- Adjust the foreground color for disabled state -->
+                            <Setter Property="BorderBrush" Value="#FF555555"/>
+                            <!-- Adjust the border color for disabled state if needed -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
 
     <!-- Context Menu-->
     <Style TargetType="ContextMenu">

@@ -4,14 +4,20 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DeFRaG_Helper"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Maps">
+      x:Name="MapsList"
+      Title="Mapspage">
     <Page.Resources>
         <local:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
         <local:SizeFormatConverter x:Key="SizeFormatConverter"/>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <local:IntToInverseBooleanConverter x:Key="IntToInverseBooleanConverter"/>
+
     </Page.Resources>
-    <Border CornerRadius="10" Background="#2d2d2d">
+    <Border CornerRadius="10" Background="#222222">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -39,7 +45,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <!-- Content of items-->
-                    <Border CornerRadius="10" Background="#444" HorizontalAlignment="Stretch" Padding="10">
+                    <Border CornerRadius="10" Background="#282828" HorizontalAlignment="Stretch" Padding="10" Margin="3">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -102,13 +108,50 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Content for the four rows in the right half -->
-                                <Image Source="{Binding Image}" Grid.Column="0" Width="100" />
+                                <Image Source="{Binding ImagePath}" Grid.Column="0" Width="100" />
                                     <CheckBox IsChecked="{Binding IsFavorite}" Grid.Column="1" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="30, 0, 30, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
-                                <Button Name="btnPlay" Grid.Column="2" Width="40" Content="Play"/>
-                                <Button Name="btnDownload" Grid.Column="3" Width="40" Content="Download"/>
+
+                                    <Button Name="btnPlay" Grid.Column="2" Width="40" Command="{Binding ElementName=MapsList, Path=DataContext.PlayMapCommand}" CommandParameter="{Binding}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="20" Height="20" Margin="0,0,5,0" VerticalAlignment="Center">
+                                                <Image.Source>
+                                                    <Binding>
+                                                        <Binding.Converter>
+                                                            <local:DynamicSvgConverter/>
+                                                        </Binding.Converter>
+                                                        <Binding.Source>
+                                                            <sys:String>Icons/esports.svg</sys:String>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </Image.Source>
+                                            </Image>
+                                            <TextBlock Text="" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Name="btnDownload" Grid.Column="3" Width="40" 
+                                        Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
+                                        CommandParameter="{Binding}"
+                                        IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="20" Height="20" Margin="0,0,5,0" VerticalAlignment="Center">
+                                                <Image.Source>
+                                                    <Binding>
+                                                        <Binding.Converter>
+                                                            <local:DynamicSvgConverter/>
+                                                        </Binding.Converter>
+                                                        <Binding.Source>
+                                                            <sys:String>Icons/download.svg</sys:String>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </Image.Source>
+                                            </Image>
+                                            <TextBlock Text="" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
 
 
-                            </Grid>
+
+                                </Grid>
                         </Grid>
                     </Border>
                 </DataTemplate>

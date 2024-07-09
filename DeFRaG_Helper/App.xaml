@@ -14,6 +14,7 @@
             <local:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
             <local:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
             <SolidColorBrush x:Key="ThemeColor" Color="Yellow"/>
+            <local:ServerViewModel x:Key="ServerViewModel" />
 
         </ResourceDictionary>
         

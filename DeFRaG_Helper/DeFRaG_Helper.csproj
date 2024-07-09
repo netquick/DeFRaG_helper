@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\config.svg" />
+    <None Remove="Icons\download.svg" />
+    <None Remove="Icons\edit.svg" />
     <None Remove="Icons\esports.svg" />
     <None Remove="Icons\globe.svg" />
     <None Remove="Icons\home.svg" />
@@ -18,6 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Icons\config.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\download.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\edit.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icons\esports.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

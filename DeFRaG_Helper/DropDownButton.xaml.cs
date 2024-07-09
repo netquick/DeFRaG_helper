@@ -26,7 +26,7 @@ namespace DeFRaG_Helper
         public DropDownButton()
         {
             InitializeComponent();
-            ActionButton.Content = "Play Game";
+            lblAction.Content = "Play Game";
         }
 
         private void ActionButton_Click(object sender, RoutedEventArgs e)
@@ -34,7 +34,7 @@ namespace DeFRaG_Helper
             var mainWindow = Application.Current.MainWindow as MainWindow;
 
             //switch on the content of lblPlay
-            switch (ActionButton.Content)
+            switch (lblAction.Content)
             {
                 case "Play Game":
                     //start the oDFe.x64.exe in GameDirectoryPath from App.config
@@ -94,7 +94,7 @@ namespace DeFRaG_Helper
             {
                 // Set the content of the button to the header of the clicked menu item
                 // Assuming the button's name is ActionButton
-                ActionButton.Content = clickedItem.Header.ToString();
+                lblAction.Content = clickedItem.Header.ToString();
             }
         }
 
@@ -127,6 +127,20 @@ namespace DeFRaG_Helper
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.MapName)}"); 
                     Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");
                 }
+            }
+        }
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Check if the new width is greater than 100px
+            if (e.NewSize.Width > 100)
+            {
+                // Show the button
+                DropdownButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Hide the button
+                DropdownButton.Visibility = Visibility.Collapsed;
             }
         }
 

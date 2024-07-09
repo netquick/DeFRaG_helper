@@ -12,6 +12,8 @@ namespace DeFRaG_Helper
     {
         private readonly string _connectionString;
         private readonly ConcurrentQueue<Func<SqliteConnection, Task>> _operations = new ConcurrentQueue<Func<SqliteConnection, Task>>();
+        private TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
         private bool _isProcessing = false;
 
         public DbQueue(string connectionString)
@@ -27,6 +29,7 @@ namespace DeFRaG_Helper
                 _isProcessing = true;
                 Task.Run(() => ProcessQueue());
             }
+            _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously); // Reset for new operations
         }
 
         private async Task ProcessQueue()
@@ -40,6 +43,9 @@ namespace DeFRaG_Helper
                 }
             }
             _isProcessing = false;
+            _tcs.SetResult(true); // Signal completion
         }
+
+        public Task WhenAllCompleted() => _tcs.Task;
     }
 }

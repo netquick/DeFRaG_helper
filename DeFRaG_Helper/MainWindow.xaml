@@ -35,7 +35,7 @@
                         <Label Grid.Column="0" Content="DeFRaG_Helper" VerticalAlignment="Center" Foreground="#D3D3D3" FontSize="20" Margin="10,0,0,0"/>
                         <TextBox x:Name="searchBar" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="306,0,306,0" Height="34" Text="Search..." GotFocus="SearchBox_GotFocus"/>
                         <!-- Spacer to push buttons to the right -->
-
+                        <Button Margin="140, 0, 0, 0" Name="Srv" Content="Srv" Padding="10, 0, 0, 0" Click="Srv_Click"></Button>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                             <!-- Minimize Button -->
                             <Button Content="&#xE921;" Width="40" Click="Minimize_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets" />
