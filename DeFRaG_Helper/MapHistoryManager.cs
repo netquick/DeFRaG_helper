@@ -13,6 +13,7 @@ namespace DeFRaG_Helper
         private readonly string filePath;
         public static event Action MapHistoryUpdated;
 
+
         public MapHistoryManager(string appName)
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -39,6 +40,8 @@ namespace DeFRaG_Helper
                 string json = await File.ReadAllTextAsync(filePath);
                 return JsonSerializer.Deserialize<List<int>>(json) ?? new List<int>();
             }
+            MapHistoryUpdated?.Invoke();
+
             return new List<int>();
         }
 

@@ -53,4 +53,9 @@
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+
 </Project>

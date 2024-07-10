@@ -4,11 +4,13 @@ using Microsoft.Data.Sqlite;
 using System.Windows;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Windows.Data;
+
 namespace DeFRaG_Helper.ViewModels
 {
-    public class MapViewModel
+    public class MapViewModel : INotifyPropertyChanged
     {
-        public bool IsDataLoaded { get; private set; }
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
 
@@ -18,6 +20,39 @@ namespace DeFRaG_Helper.ViewModels
 
         private static MapViewModel instance;
         private static bool isInitialized = false;
+        // Step 2: Declare the PropertyChanged event
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Step 3: Create the OnPropertyChanged method
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        // Example property implementation
+        private ICollectionView lastPlayedMapsView;
+        public ICollectionView LastPlayedMapsView
+        {
+            get { return lastPlayedMapsView; }
+            set
+            {
+                if (lastPlayedMapsView != value)
+                {
+                    lastPlayedMapsView = value;
+                    OnPropertyChanged(nameof(LastPlayedMapsView)); // Step 4
+                }
+            }
+        }
+
+        public async Task UpdateLastPlayedMapsViewAsync()
+        {
+            var lastPlayedMapIds = await new MapHistoryManager("DeFRaG_Helper").LoadLastPlayedMapsAsync();
+            var filteredMaps = Maps.Where(map => lastPlayedMapIds.Contains(map.Id)).ToList();
+            LastPlayedMapsView = CollectionViewSource.GetDefaultView(filteredMaps);
+            OnPropertyChanged(nameof(LastPlayedMapsView)); // Assuming INotifyPropertyChanged implementation
+            //LastPlayedMapsView.Refresh();
+        }
+      
 
 
         private MapViewModel()
@@ -42,26 +77,18 @@ namespace DeFRaG_Helper.ViewModels
         {
             if (!isInitialized)
             {
+
+                MapHistoryManager.MapHistoryUpdated += MapHistoryManager_MapHistoryUpdated;
                 await LoadMapsFromDatabase();
-                // Sync map files with the filesystem
-                //MapFileSyncService syncService = new MapFileSyncService();
-
-
-                //syncService.OnMapFlagsChanged += async map =>
-                //{
-                //    try
-                //    {
-                //        await UpdateMapFlagsAsync(map);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        MessageBox.Show($"Error {ex}");// Log the exception or handle it accordingly
-                //    }
-                //};
+                await UpdateLastPlayedMapsViewAsync();
 
 
                 isInitialized = true;
             }
+        }
+        private async void MapHistoryManager_MapHistoryUpdated()
+        {
+            await UpdateLastPlayedMapsViewAsync();
         }
         public event EventHandler DataLoaded;
 
@@ -157,6 +184,9 @@ namespace DeFRaG_Helper.ViewModels
                             loadedMaps++;
                             double progress = (double)loadedMaps / totalMaps * 100;
                             App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
+
+                            //Test refresh
+                            LastPlayedMapsView.Refresh();
                         }
                     }
                 }
@@ -248,6 +278,7 @@ namespace DeFRaG_Helper.ViewModels
                 });
             }
         }
+  
 
 
 

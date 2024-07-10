@@ -38,54 +38,32 @@ namespace DeFRaG_Helper
         public Start()
         {
             InitializeComponent();
-            mapHistoryManager = new MapHistoryManager("DeFRaG_Helper"); // Initialize mapHistoryManager here
-            MapHistoryManager.MapHistoryUpdated += () => Task.Run(() => RefreshMapListAsync());
-
-            LoadLastPlayedMaps();
-
+            mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
+            MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
+            // Set DataContext to MapViewModel instance
+            Task.Run(InitializeAsync);
         }
 
-        public static async Task RefreshMapListAsync() // Change method signature to be async Task
+
+        private async Task InitializeAsync()
         {
-            await Application.Current.Dispatcher.InvokeAsync(async () => // Use InvokeAsync with async lambda
+            var mapViewModel = await MapViewModel.GetInstanceAsync(); // Get the instance once
+            this.DataContext = mapViewModel; // Use the same instance for DataContext
+            await mapViewModel.UpdateLastPlayedMapsViewAsync(); // Use the same instance to refresh
+            ItemsControlMaps.ItemsSource = mapViewModel.LastPlayedMapsView; // Use the same instance for ItemsSource
+        }
+
+
+        public async Task RefreshMapListAsync()
+        {
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
-                // Use the instance to access ItemsControlMaps
-                Instance.ItemsControlMaps.ItemsSource = null;
-                Instance.ItemsControlMaps.ItemsSource = mapViewModel.Maps;
+                await mapViewModel.UpdateLastPlayedMapsViewAsync(); // Ensure this method updates the filtered view
+                ItemsControlMaps.ItemsSource = mapViewModel.LastPlayedMapsView; // Bind to the filtered view
             });
         }
 
-
-        private async void LoadLastPlayedMaps()
-        {
-            var lastPlayedMapIds = await mapHistoryManager.LoadLastPlayedMapsAsync();
-            // Correctly await the asynchronous call to GetMapsFromIds
-            var lastPlayedMaps = await GetMapsFromIds(lastPlayedMapIds);
-            ItemsControlMaps.ItemsSource = lastPlayedMaps;
-        }
-
-
-        // Dummy method to represent fetching map objects from IDs
-        private async Task<List<Map>> GetMapsFromIds(List<int> mapIds)
-        {
-            var mapViewModel = await MapViewModel.GetInstanceAsync(); // Ensure you have access to the MapViewModel instance
-            var maps = new List<Map>();
-
-            foreach (var id in mapIds)
-            {
-                var map = mapViewModel.Maps.FirstOrDefault(m => m.Id == id);
-                if (map != null)
-                {
-                    maps.Add(map);
-                }
-            }
-
-            return maps;
-        }
-
     }
-
-    //Treehelper class f
 
 }

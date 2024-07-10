@@ -13,9 +13,16 @@
             <ComboBox x:Name="ColorComboBox" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="181" SelectionChanged="ColorComboBox_SelectionChanged" SelectedIndex="0">
                 <ComboBoxItem Content="Yellow" Background="Yellow"/>
                 <ComboBoxItem Content="Red" Background="Red"/>
+                <ComboBoxItem Content="Aqua" Background="Aqua"/>
                 <ComboBoxItem Content="Green" Background="Green"/>
                 <ComboBoxItem Content="Blue" Background="Blue"/>
+                <ComboBoxItem Content="Purple" Background="Purple"/>
+                <ComboBoxItem Content="Orange" Background="Orange"/>
+                <ComboBoxItem Content="Pink" Background="Pink"/>
+                <ComboBoxItem Content="Brown" Background="Brown"/>
+                
             </ComboBox>
+            <Button Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35"/>
 
         </Grid>
     </Border>

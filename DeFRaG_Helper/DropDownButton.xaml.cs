@@ -58,7 +58,7 @@ namespace DeFRaG_Helper
 
 
 
-           App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Play"));
+           //App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Play"));
 
 
         }

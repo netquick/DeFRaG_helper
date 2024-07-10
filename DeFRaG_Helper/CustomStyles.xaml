@@ -835,7 +835,6 @@
     
     <!-- ScrollBar Style -->
     <Style TargetType="{x:Type ScrollBar}">
-        <Setter Property="Width" Value="8"/>
         <Setter Property="Background" Value="#FF2D2D30"/>
         <Setter Property="Foreground" Value="{DynamicResource ThemeColor}"/>
         <Setter Property="Template">
@@ -843,7 +842,7 @@
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid>
                         <Border CornerRadius="4" Background="{TemplateBinding Background}" Opacity="0.5"/>
-                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                        <Track x:Name="PART_Track" IsDirectionReversed="False">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0"/>
                             </Track.DecreaseRepeatButton>
@@ -861,10 +860,30 @@
                             </Track.IncreaseRepeatButton>
                         </Track>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Orientation" Value="Horizontal">
+                            <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                        </Trigger>
+                        <Trigger Property="Orientation" Value="Vertical">
+                            <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="Height" Value="8"/>
+                <Setter Property="Width" Value="Auto"/>
+            </Trigger>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="Width" Value="8"/>
+                <Setter Property="Height" Value="Auto"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
+
+
     <!-- Modern Slider Style -->
     <Style TargetType="Slider">
         <Setter Property="Template">

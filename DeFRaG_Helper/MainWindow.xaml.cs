@@ -135,7 +135,12 @@ namespace DeFRaG_Helper
             });
         }
 
+        private Start startPage = new Start();
+        private Maps mapsPage = new Maps();
+        private Settings settingsPage = new Settings();
+        private Server serverPage = new Server();
 
+        // Define other pages similarly
         private void NavigationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (NavigationListView.SelectedItem is NavigationItem selectedItem)
@@ -153,18 +158,16 @@ namespace DeFRaG_Helper
                 switch (selectedItem.Text)
                 {
                     case "Home":
-                        MainFrame.Navigate(new Uri("Start.xaml", UriKind.Relative));
+                        MainFrame.Navigate(startPage);
                         break;
                     case "Maps":
-                        MainFrame.Navigate(new Uri("Maps.xaml", UriKind.Relative));
+                        MainFrame.Navigate(mapsPage);
                         break;
-                    case "Server":
-                            // Navigate to the Server page
-                    MainFrame.Navigate(new Uri("Server.xaml", UriKind.Relative));
-                        break;
-                    case "Settings":
-                        // Navigate to the Server page
-                    MainFrame.Navigate(new Uri("Settings.xaml", UriKind.Relative));
+                  case "Server":
+                        MainFrame.Navigate(serverPage);
+                        break;  
+                  case "Settings":
+                        MainFrame.Navigate(settingsPage);
                         break;
                     // Add cases for other navigation items as needed
                     default:
