@@ -1,40 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DeFRaG_Helper
 {
     public static class AppConfig
     {
+        private static readonly string configFilePath;
         public static string GameDirectoryPath { get; set; }
+        public static string SelectedColor { get; set; } 
 
-        public static void LoadConfiguration()
+        static AppConfig()
         {
-            // Load the game directory path from the app.config file if it exists
-            GameDirectoryPath = ConfigurationManager.AppSettings["GameDirectoryPath"];
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appFolder = Path.Combine(appDataPath, "DeFRaG_Helper");
+            configFilePath = Path.Combine(appFolder, "config.json");
+
+            if (!Directory.Exists(appFolder))
+            {
+                Directory.CreateDirectory(appFolder);
+            }
         }
 
-        public static void SaveConfiguration()
+        public static async Task LoadConfigurationAsync()
         {
-            // Get the current configuration file
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (File.Exists(configFilePath))
+            {
+                string json = await File.ReadAllTextAsync(configFilePath);
+                var config = JsonSerializer.Deserialize<Configuration>(json);
+                GameDirectoryPath = config?.GameDirectoryPath ?? string.Empty;
+                SelectedColor = config?.SelectedColor ?? "Yellow";
+            }
+        }
 
-            // Remove the existing setting, if any
-            config.AppSettings.Settings.Remove("GameDirectoryPath");
+        public static async Task SaveConfigurationAsync()
+        {
+            var config = new Configuration { GameDirectoryPath = GameDirectoryPath, SelectedColor = SelectedColor }; // Include SelectedColor
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(config, options);
+            await File.WriteAllTextAsync(configFilePath, json);
+        }
 
-            // Add the new setting
-            config.AppSettings.Settings.Add("GameDirectoryPath", GameDirectoryPath);
-
-            // Save the configuration file
-            config.Save(ConfigurationSaveMode.Modified);
-
-            // Refresh the appSettings section to reflect the update
-            ConfigurationManager.RefreshSection("appSettings");
+        private class Configuration
+        {
+            public string GameDirectoryPath { get; set; }
+            public string SelectedColor { get; set; } // Correctly added
         }
     }
-
-
 }

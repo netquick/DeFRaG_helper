@@ -197,7 +197,7 @@ namespace DeFRaG_Helper
                             serverNode.MaxPlayers = int.TryParse(value, out int maxPlayers) ? maxPlayers : 0;
                             break;
                         case "df_promode":
-                            serverNode.Physics = value == "1" ? "VQ3" : value == "2" ? "CPM" : "Unknown";
+                            serverNode.Physics = value == "0" ? "VQ3" : value == "1" ? "CPM" : "Unknown";
                             break;
                             // Add more cases as needed for other properties
                     }

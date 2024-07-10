@@ -13,9 +13,9 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Height="140">
-                <Image Margin="10,10,10,0" Source="{Binding ImagePath}"/>
-                <TextBlock Text="{Binding Name}" FontSize="20" Foreground="White" Margin="20,10,20,0" Height="51" VerticalAlignment="Top"/>
+            <Grid Grid.Row="0" Height="140" MaxWidth="200">
+                <Image Margin="10,10,10,0" Source="{Binding ImagePath}" MaxWidth="160"/>
+                <TextBlock Text="{Binding Name}" FontSize="20" Foreground="White" Margin="20,10,20,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="160"/>
             </Grid>
             <!-- Adjusted inner Border with straight upper corners and rounded bottom corners -->
             <Border Grid.Row="1" Height="60" Background="#2a2a2a" CornerRadius="0,0,10,10">
@@ -27,13 +27,13 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!-- Binding the MapName and FileName properties -->
-                    <TextBlock Grid.Row="0" Text="{Binding MapName}" FontSize="10" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Row="0" Text="{Binding MapName}" FontSize="10" Foreground="White" HorizontalAlignment="Center" />
                     <!-- Assuming Author and ReleaseDate are concatenated in the ViewModel -->
                     <TextBlock Grid.Row="1" Text="{Binding Author}" FontSize="10" Foreground="White" HorizontalAlignment="Center"/>
                     <!-- Binding the Hits property -->
                     <TextBlock Grid.Row="2" Text="{Binding Hits}" FontSize="9" Foreground="White" HorizontalAlignment="Center"/>
                     <!-- Assuming there's a Favorite property -->
-                    <CheckBox Grid.Row="3" Height="26" Content="Favorite" Margin="0, 4, 0, 0" HorizontalAlignment="Center" IsChecked="{Binding IsFavorite}" Style="{StaticResource FavoriteCheckBoxStyle}">
+                    <CheckBox Grid.Row="3" Height="26" Content="Favorite" Margin="0, 4, 0, 0" HorizontalAlignment="Center" IsChecked="{Binding IsFavorite}" Style="{StaticResource FavoriteCheckBoxStyle}" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked">
                         <CheckBox.LayoutTransform>
                             <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
                         </CheckBox.LayoutTransform>

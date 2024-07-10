@@ -13,6 +13,7 @@ namespace DeFRaG_Helper
 {
     public partial class MainWindow : Window
     {
+        private System.Timers.Timer hideProgressBarTimer;
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
@@ -45,11 +46,31 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             this.SourceInitialized += MainWindow_SourceInitialized;
-  
+            Loaded += MainWindow_Loaded;
+            Closed += MainWindow_Closed;
 
             NavigationListView.SelectionChanged += NavigationListView_SelectionChanged;
             CheckGameInstall.StartChecks();
+            // Initialize the timer with a 2-second interval
+            hideProgressBarTimer = new System.Timers.Timer(2000);
+            hideProgressBarTimer.Elapsed += HideProgressBarTimer_Elapsed;
+            hideProgressBarTimer.AutoReset = false; // Ensure the timer runs only once per start
+        }
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            MessagingService.Subscribe(ShowMessage);
+        }
 
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            MessagingService.Unsubscribe(ShowMessage);
+        }
+        private void HideProgressBarTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                progressBar.Visibility = Visibility.Hidden;
+            });
         }
         public void LoadNavigationBar()
         {
@@ -75,13 +96,18 @@ namespace DeFRaG_Helper
         }
         public void UpdateProgressBar(double value)
         {
-            Debug.WriteLine("Updating progress bar: " + value); 
+            Debug.WriteLine("Updating progress bar: " + value);
             if (progressBar.Visibility != Visibility.Visible)
             {
                 progressBar.Visibility = Visibility.Visible;
             }
             progressBar.Value = value;
+
+            // Reset and start the timer every time progress is updated
+            hideProgressBarTimer.Stop(); // Stop the timer if it's already running
+            hideProgressBarTimer.Start(); // Restart the timer
         }
+
 
         public int GetPhysicsSetting ()
         {

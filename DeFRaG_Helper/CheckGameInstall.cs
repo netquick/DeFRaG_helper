@@ -57,8 +57,10 @@ namespace DeFRaG_Helper
         }
 
         //first we check if the game directory is set in AppConfig. Else, if the folder and the file are found, we set the game directory path in the AppConfig class to the actual application path. If not, we ask the user to set the game directory path manually
-        public static void SetGameDirectoryPath()
+        public async static void SetGameDirectoryPath()
         {
+
+         
             string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             if (AppConfig.GameDirectoryPath == null)
             {
@@ -66,7 +68,7 @@ namespace DeFRaG_Helper
                 {
                     AppConfig.GameDirectoryPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     //save the game directory path in the app.config file
-                    AppConfig.SaveConfiguration();
+                    await AppConfig.SaveConfigurationAsync();
                     App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game found"));
 
 
@@ -82,7 +84,7 @@ namespace DeFRaG_Helper
                         AppConfig.GameDirectoryPath = tempDir;
 
                         //save the game directory path in the app.config file
-                        AppConfig.SaveConfiguration();
+                        await AppConfig.SaveConfigurationAsync();
                         //we need check again, if the folder and the file are found now, if yes we set the game directory path in the AppConfig class to the actual application path, if no, we install the game in method InstallGame()
                         path = tempDir;
                         
@@ -90,7 +92,7 @@ namespace DeFRaG_Helper
                         {
                             AppConfig.GameDirectoryPath = path;
                             App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game found"));
-                            AppConfig.SaveConfiguration();
+                            await AppConfig.SaveConfigurationAsync();
                         }
                         else
                         {
@@ -99,7 +101,7 @@ namespace DeFRaG_Helper
 
 
                         //App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game found"));
-                        AppConfig.SaveConfiguration();
+                        await AppConfig.SaveConfigurationAsync();
                     }
                     else
                     {

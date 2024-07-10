@@ -6,11 +6,12 @@
   xmlns:local="clr-namespace:DeFRaG_Helper"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800"
-  Title="Start">
+  Title="Start"
+      Loaded="Page_Loaded">
     <Border CornerRadius="10" Background="#FF2D2D2D">
         <Grid Background="Transparent">
 
-            <ComboBox x:Name="ColorComboBox" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="181" SelectionChanged="ColorComboBox_SelectionChanged" SelectedIndex="0">
+            <ComboBox x:Name="ColorComboBox" HorizontalAlignment="Left" Height="35" Margin="10,44,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="14" Width="181" SelectionChanged="ColorComboBox_SelectionChanged">
                 <ComboBoxItem Content="Yellow" Background="Yellow"/>
                 <ComboBoxItem Content="Red" Background="Red"/>
                 <ComboBoxItem Content="Aqua" Background="Aqua"/>
@@ -20,9 +21,12 @@
                 <ComboBoxItem Content="Orange" Background="Orange"/>
                 <ComboBoxItem Content="Pink" Background="Pink"/>
                 <ComboBoxItem Content="Brown" Background="Brown"/>
-                
+
             </ComboBox>
-            <Button Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35"/>
+            <Button Name="btnSync" Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35" Click="btnSync_Click"/>
+            <TextBox Name="txtGamePath" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="14" Height="31" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="433"/>
+            <Label Content="Theme Color" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" VerticalAlignment="Top" Width="180"/>
+            <Label Content="Game Path" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,125,0,0" VerticalAlignment="Top" Width="180"/>
 
         </Grid>
     </Border>

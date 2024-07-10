@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DeFRaG_Helper.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +40,7 @@ namespace DeFRaG_Helper
             
         }
 
-        private void ColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var comboBox = sender as ComboBox;
             var selectedItem = comboBox.SelectedItem as ComboBoxItem;
@@ -52,9 +54,45 @@ namespace DeFRaG_Helper
 
                 // Replace the ThemeColor resource with the new SolidColorBrush instance
                 Application.Current.Resources["ThemeColor"] = newBrush;
+                AppConfig.SelectedColor = selectedItem.Content.ToString();
+                await AppConfig.SaveConfigurationAsync();
+
             }
         }
 
+        private async void btnSync_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the singleton instance of MapViewModel
+            var mapViewModel = await MapViewModel.GetInstanceAsync();
+            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Syncing maps..."));
+            //MessagingService.SendMessage("Syncing maps...");
+
+            // Access the Maps collection
+            var maps = mapViewModel.Maps;
+
+            // Create a progress reporter
+            var progressReporter = new Progress<double>(progress =>
+            {
+                App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
+                Console.WriteLine($"Progress: {progress}%");
+            });
+
+            // Create an instance of MapFileSyncService
+            var syncService = new MapFileSyncService();
+
+            // Start the synchronization process
+            await syncService.SyncMapFilesWithFileSystem(maps, progressReporter);
+        }
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Load the selected color from AppConfig and update the ComboBox selection
+            var selectedItem = ColorComboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(item => item.Content.ToString() == AppConfig.SelectedColor);
+            if (selectedItem != null)
+            {
+                ColorComboBox.SelectedItem = selectedItem;
+                txtGamePath.Text = AppConfig.GameDirectoryPath;
+            }
+        }
     }
     
 }

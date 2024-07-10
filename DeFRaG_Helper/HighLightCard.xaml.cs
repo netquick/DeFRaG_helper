@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeFRaG_Helper.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +41,34 @@ namespace DeFRaG_Helper
             if (control != null)
             {
                 control.DataContext = e.NewValue;
+            }
+        }
+
+
+        private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var map = checkBox.DataContext as Map;
+            if (map != null)
+            {
+                map.IsFavorite = 1;
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+
+                await mapViewModel.UpdateFavoriteStateAsync(map);
+
+            }
+        }
+
+        private async void FavoriteCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var map = checkBox.DataContext as Map;
+            if (map != null)
+            {
+                map.IsFavorite = 0;
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+
+                await mapViewModel.UpdateFavoriteStateAsync(map);
             }
         }
     }

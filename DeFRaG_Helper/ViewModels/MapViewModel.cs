@@ -11,6 +11,7 @@ namespace DeFRaG_Helper.ViewModels
 {
     public class MapViewModel : INotifyPropertyChanged
     {
+        public bool IsDataLoaded { get; private set; }
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
 
@@ -47,12 +48,30 @@ namespace DeFRaG_Helper.ViewModels
         public async Task UpdateLastPlayedMapsViewAsync()
         {
             var lastPlayedMapIds = await new MapHistoryManager("DeFRaG_Helper").LoadLastPlayedMapsAsync();
-            var filteredMaps = Maps.Where(map => lastPlayedMapIds.Contains(map.Id)).ToList();
-            LastPlayedMapsView = CollectionViewSource.GetDefaultView(filteredMaps);
-            OnPropertyChanged(nameof(LastPlayedMapsView)); // Assuming INotifyPropertyChanged implementation
-            //LastPlayedMapsView.Refresh();
+            // Separate the reversal from the conversion to list for clarity
+            lastPlayedMapIds.Reverse();
+
+            var orderedMaps = new List<Map>();
+
+            foreach (var id in lastPlayedMapIds)
+            {
+                // Ensure Maps is initialized and not null
+                if (Maps != null)
+                {
+                    var map = Maps.FirstOrDefault(m => m.Id == id);
+                    if (map != null)
+                    {
+                        orderedMaps.Add(map);
+                    }
+                }
+            }
+
+            LastPlayedMapsView = CollectionViewSource.GetDefaultView(orderedMaps);
+            OnPropertyChanged(nameof(LastPlayedMapsView));
         }
-      
+
+
+
 
 
         private MapViewModel()
@@ -185,8 +204,7 @@ namespace DeFRaG_Helper.ViewModels
                             double progress = (double)loadedMaps / totalMaps * 100;
                             App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
 
-                            //Test refresh
-                            LastPlayedMapsView.Refresh();
+                            
                         }
                     }
                 }
@@ -197,6 +215,8 @@ namespace DeFRaG_Helper.ViewModels
                     DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
                     App.Current.Dispatcher.Invoke(() => MainWindow.Instance.HideProgressBar());
                     // Display the completion message
+                    //Test refresh
+                    LastPlayedMapsView.Refresh();
 
 
                 });

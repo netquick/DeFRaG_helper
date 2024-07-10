@@ -14,11 +14,11 @@ namespace DeFRaG_Helper
     {
         public Action<Map> OnMapFlagsChanged;
 
-        public async void SyncMapFilesWithFileSystem(IEnumerable<Map> maps, IProgress<double> progress)
+        public async Task SyncMapFilesWithFileSystem(IEnumerable<Map> maps, IProgress<double> progress)
         {
             int totalMaps = maps.Count();
             int processedMaps = 0;
-            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(0));
+            await App.Current.Dispatcher.InvokeAsync(() => MainWindow.Instance.UpdateProgressBar(0));
 
             foreach (var map in maps)
             {
@@ -28,50 +28,60 @@ namespace DeFRaG_Helper
                 // Check in the "defrag" folder
                 if (map.FileName != null)
                 {
-                    if (AppConfig.GameDirectoryPath == null || (map.FileName == null))
+                    await Task.Run(() =>
                     {
-                        MessageBox.Show($"Game directory path {AppConfig.GameDirectoryPath} or map filename {map.FileName} is not set in the configuration file.");
-                    }
+                        if (AppConfig.GameDirectoryPath == null || (map.FileName == null))
+                        {
+                            MessageBox.Show($"Game directory path {AppConfig.GameDirectoryPath} or map filename {map.FileName} is not set in the configuration file.");
+                        }
 
-                    string defragFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "defrag", map.FileName);
-                    if (System.IO.File.Exists(defragFilePath))
-                    {
-                        map.IsDownloaded = 1;
-                        map.IsInstalled = 1; // Assuming you want to set IsInstalled when found in "defrag"
-                    }
-                    else
-                    {
-                        // If not found in "defrag", check in the "archive" folder
-                        string archiveFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "archive", map.FileName);
-                        if (System.IO.File.Exists(archiveFilePath))
+                        string defragFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "defrag", map.FileName);
+                        if (System.IO.File.Exists(defragFilePath))
                         {
                             map.IsDownloaded = 1;
-                            map.IsInstalled = 0;
-                            // Do not modify IsInstalled here, as it's only checked in the "defrag" folder
+                            map.IsInstalled = 1; // Assuming you want to set IsInstalled when found in "defrag"
                         }
                         else
                         {
-                            // If not found in either, set IsDownloaded to 0
-                            map.IsDownloaded = 0;
-                            // Optionally, reset IsInstalled if you want to ensure it reflects current state
-                            map.IsInstalled = 0;
+                            // If not found in "defrag", check in the "archive" folder
+                            string archiveFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "archive", map.FileName);
+                            if (System.IO.File.Exists(archiveFilePath))
+                            {
+                                map.IsDownloaded = 1;
+                                map.IsInstalled = 0;
+                                // Do not modify IsInstalled here, as it's only checked in the "defrag" folder
+                            }
+                            else
+                            {
+                                // If not found in either, set IsDownloaded to 0
+                                map.IsDownloaded = 0;
+                                // Optionally, reset IsInstalled if you want to ensure it reflects current state
+                                map.IsInstalled = 0;
+                            }
                         }
-                    }
-                    // After modification, check if there's a change
-                    if (map.IsDownloaded != initialIsDownloaded || map.IsInstalled != initialIsInstalled)
-                    {
-                        // If there's a change, invoke the delegate to update the database. Call UpdateMapFlagsAsync method in MapViewModel
+                        // After modification, check if there's a change
+                        if (map.IsDownloaded != initialIsDownloaded || map.IsInstalled != initialIsInstalled)
+                        {
+                            // If there's a change, invoke the delegate to update the database. Call UpdateMapFlagsAsync method in MapViewModel
 
-                        OnMapFlagsChanged?.Invoke(map);
+                            OnMapFlagsChanged?.Invoke(map);
 
-                    }
+                        }
+
+                    });
+                    processedMaps++;
                     
                 }
-                processedMaps++;
-                double progressPercentage = (double)processedMaps / totalMaps * 100;
-                App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progressPercentage));
 
-                progress?.Report(progressPercentage);
+                // Update progress every N maps to reduce UI thread marshalling
+                int updateFrequency = 100; // Adjust based on performance
+                if (processedMaps % updateFrequency == 0 || processedMaps == totalMaps)
+                {
+                    double progressPercentage = (double)processedMaps / totalMaps * 100;
+                    App.Current.Dispatcher.BeginInvoke(new Action(() => MainWindow.Instance.UpdateProgressBar(progressPercentage)));
+                    progress?.Report(progressPercentage);
+
+                }
                 Debug.WriteLine($"Map: {map.MapName} Filename: {map.FileName}");
             }
         }
