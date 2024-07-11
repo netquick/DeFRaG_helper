@@ -28,6 +28,7 @@ namespace DeFRaG_Helper
             // Load the last played maps
             await mapHistoryManager.LoadLastPlayedMapsAsync();
             // Now that the configuration is loaded, proceed with the rest of the startup sequence
+            await AppConfig.EnsureDatabaseExistsAsync();
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
 

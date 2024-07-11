@@ -1,19 +1,8 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DeFRaG_Helper
 {
@@ -22,7 +11,6 @@ namespace DeFRaG_Helper
     /// </summary>
     public partial class Server : Page
     {
-
         private static Server instance;
 
         public static Server Instance
@@ -39,21 +27,29 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             var _ = InitializeDataContextAsync(); // Discard the task
-
         }
+
         private async Task InitializeDataContextAsync()
         {
-            this.DataContext = await ServerViewModel.GetInstanceAsync();
+            var viewModel = await ServerViewModel.GetInstanceAsync();
+            this.DataContext = viewModel;
 
+            // Create a view for the Servers collection and apply a filter
+            ICollectionView serversView = CollectionViewSource.GetDefaultView(viewModel.Servers);
+           // serversView.Filter = ServerHasPlayers;
+
+            // Set the ItemsSource of your ItemsControl to the filtered view
+            ServersItemsControl.ItemsSource = serversView;
         }
 
-       
+        private bool ServerHasPlayers(object item)
+        {
+            if (item is ServerNode serverNode) // Replace ServerNode with your actual server class
+            {
+                return serverNode.CurrentPlayers > 0; // Adjust CurrentPlayers to your actual property name
+            }
+            return false;
+        }
 
     }
-
 }
-    
-
-
-    
-

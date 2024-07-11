@@ -14,20 +14,6 @@ namespace DeFRaG_Helper
     {
 
 
-        // Helper method to raise the PropertyChanged event
-
-        private ICollectionView _sortedServersView;
-        public ICollectionView SortedServersView
-        {
-            get { return _sortedServersView; }
-            set
-            {
-                _sortedServersView = value;
-                OnPropertyChanged(nameof(SortedServersView)); // Notify UI of change
-            }
-        }
-
-
         public bool IsDataLoaded { get; private set; }
         private static bool isInitialized = false;
 
@@ -105,19 +91,10 @@ namespace DeFRaG_Helper
 
             UpdateServerData(this, EventArgs.Empty);
         }
-        private void InitializeSortedServersView()
-        {
-            _sortedServersView = CollectionViewSource.GetDefaultView(Servers);
-            _sortedServersView.SortDescriptions.Add(new SortDescription("CurrentPlayers", ListSortDirection.Descending));
 
-            // Notify UI that SortedServersView has changed
-            OnPropertyChanged(nameof(SortedServersView));
-        }
         // In ServerViewModel.cs
         private async void UpdateServerData(object sender, EventArgs e)
         {
-            InitializeSortedServersView();
-
             var tasks = Servers.Select(async serverNode =>
             {
                 var serverQuery = new Quake3ServerQuery(serverNode.IP, serverNode.Port);
@@ -149,8 +126,7 @@ namespace DeFRaG_Helper
             // Refresh the SortedServersView on the UI thread after all updates
             App.Current.Dispatcher.Invoke(() =>
             {
-                _sortedServersView.Refresh(); // Refresh the view to reflect updates
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SortedServersView)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Servers)));
             });
         }
 

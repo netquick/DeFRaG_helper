@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -18,7 +19,11 @@ namespace DeFRaG_Helper
             if (value is string serverName)
             {
                 var segments = ServerNameToTextBlockConverter.ParseQuakeColorCodes(serverName); // Call the static method
-                var textBlock = new TextBlock();
+                var textBlock = new TextBlock
+                {
+                    TextAlignment = TextAlignment.Center, // Center the text
+                    TextWrapping = TextWrapping.Wrap // Ensure text wrapping is enabled
+                };
                 foreach (var segment in segments)
                 {
                     textBlock.Inlines.Add(new Run(segment.Text) { Foreground = segment.Color });

@@ -13,7 +13,8 @@ namespace DeFRaG_Helper
         public static string ButtonState { get; set; } 
 
         public static string PhysicsSetting { get; set; }
-
+        public static string DatabasePath { get; set; } // Added for database path
+        public static string DatabaseUrl { get; set; } // Added for database URL
         static AppConfig()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -24,6 +25,9 @@ namespace DeFRaG_Helper
             {
                 Directory.CreateDirectory(appFolder);
             }
+            // Default values for new properties
+            DatabasePath = Path.Combine(appFolder, "MapData.db");
+            DatabaseUrl = "https://dl.netquick.ch/MapData.db"; // Placeholder URL
         }
 
         public static async Task LoadConfigurationAsync()
@@ -36,7 +40,8 @@ namespace DeFRaG_Helper
                 SelectedColor = config?.SelectedColor ?? "Yellow";
                 ButtonState = config?.ButtonState ?? "Play Game"; // Load button state
                 PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
-
+                DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
+                DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl; // Use default if not set
             }
         }
 
@@ -47,20 +52,31 @@ namespace DeFRaG_Helper
                 GameDirectoryPath = GameDirectoryPath,
                 SelectedColor = SelectedColor,
                 ButtonState = ButtonState,
-                PhysicsSetting = PhysicsSetting
+                PhysicsSetting = PhysicsSetting,
+                DatabasePath = DatabasePath, // Save database path
+                DatabaseUrl = DatabaseUrl // Save database URL
             };
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
             await File.WriteAllTextAsync(configFilePath, json);
         }
-
+        public static async Task EnsureDatabaseExistsAsync()
+        {
+            if (!File.Exists(DatabasePath))
+            {
+                // Use Downloader to download the database
+                // Assuming Downloader has a static method DownloadFileAsync for this purpose
+                await Downloader.DownloadFileAsync(DatabaseUrl, DatabasePath, null);
+            }
+        }
         private class Configuration
         {
             public string GameDirectoryPath { get; set; }
             public string SelectedColor { get; set; } 
             public string ButtonState { get; set; } 
             public string PhysicsSetting { get; set; }
-
+            public string DatabasePath { get; set; } // Added for database path
+            public string DatabaseUrl { get; set; } // Added for database URL
         }
     }
 }

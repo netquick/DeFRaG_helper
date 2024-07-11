@@ -1,6 +1,7 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,8 +44,25 @@ namespace DeFRaG_Helper
                 control.DataContext = e.NewValue;
             }
         }
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                // Prevent event from bubbling up to parent elements
+                e.Handled = true;
 
+                // Call your connection logic here
+                PlayMap();
+            }
 
+        }
+        private void PlayMap()
+        {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            int physicsSetting = mainWindow.GetPhysicsSetting(); // method in MainWindow
+            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(Map.MapName)}");
+
+        }
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;

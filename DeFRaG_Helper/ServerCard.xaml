@@ -33,7 +33,14 @@
                     </Grid.RowDefinitions>
                     <!-- Use ContentControl instead of TextBlock for the name -->
                     <ContentControl Grid.Row="0" FontSize="20" FontFamily="Segoe UI" Content="{Binding Name, Converter={StaticResource ServerNameToTextBlockConverter}}" HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Row="1" Text="{Binding IP}" FontSize="12" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" FontSize="12" Foreground="White" HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}:{1}">
+                                <Binding Path="IP"/>
+                                <Binding Path="Port"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                     <TextBlock Grid.Row="2" HorizontalAlignment="Center" FontSize="9" Foreground="White">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource PlayerCountConverter}">

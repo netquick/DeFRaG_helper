@@ -24,6 +24,7 @@ namespace DeFRaG_Helper
     public partial class Start : Page
     {
         private ICollectionView? lastPlayedMapsView;
+        public ICollectionView? ActiveServersView { get; private set; }
 
         private MapHistoryManager mapHistoryManager;
 
@@ -61,24 +62,32 @@ namespace DeFRaG_Helper
         {
             try
             {
+                // Initialize ServerViewModel and its view
+                var serverViewModel = await ServerViewModel.GetInstanceAsync();
+                ActiveServersView = CollectionViewSource.GetDefaultView(serverViewModel.Servers);
+                //ActiveServersView.Filter = ServerHasPlayers;
+
+                // Initialize MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
-                this.DataContext = mapViewModel;
+                lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
 
                 // Load last played map IDs and reverse for sorting
-                lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync());
+                lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync()).ToList();
                 lastPlayedMapIds.Reverse();
-
-                lastPlayedMapsView = CollectionViewSource.GetDefaultView(((MapViewModel)this.DataContext).Maps);
 
                 if (lastPlayedMapsView != null) // Check for null
                 {
-                    lastPlayedMapsView.Filter = FilterMaps;
-
-                    // Apply custom sort logic
+                    //lastPlayedMapsView.Filter = FilterMaps;
                     ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds);
-
-                    ItemsControlMaps.ItemsSource = lastPlayedMapsView;
                 }
+
+                // Set DataContext for binding
+                this.DataContext = this; // Now 'this' includes both map and server data contexts
+
+                // Assuming ItemsControlMaps and another ItemsControl for servers are defined in XAML
+                ItemsControlMaps.ItemsSource = lastPlayedMapsView;
+                // For servers, ensure you have an ItemsControl defined in your XAML with x:Name="ItemsControlServers"
+                ItemsControlServer.ItemsSource = ActiveServersView;
             }
             catch (Exception ex)
             {
@@ -95,6 +104,15 @@ namespace DeFRaG_Helper
             {
                 listCollectionView.CustomSort = customSort;
             }
+        }
+        // Filter predicate method
+        private bool ServerHasPlayers(object item)
+        {
+            if (item is ServerNode server) // Change from ServerViewModel to ServerNode
+            {
+                return server.CurrentPlayers > 0;
+            }
+            return false;
         }
 
         private bool FilterMaps(object item)

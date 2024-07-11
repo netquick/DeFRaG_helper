@@ -38,12 +38,12 @@ namespace DeFRaG_Helper
 
                                 totalRead += read;
                                 var totalReadInPercent = (double)totalRead / (double)response.Content.Headers.ContentLength.Value * 100;
-                                //if (progress != null)
-                                //{
-                                //    progress.Report(totalReadInPercent);
-                                //}
-                                // Use MainWindow's instance to update the progress bar
-                                MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
+                                if (progress != null)
+                                {
+                                    MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
+
+                                }
+                                //MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
                             }
                         } while (isMoreToRead);
                     }

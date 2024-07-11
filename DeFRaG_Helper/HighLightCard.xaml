@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
 
-    <Border Margin="10" CornerRadius="10" Background="#2d2d2d" >
+    <Border Margin="10" CornerRadius="10" Background="#2d2d2d" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

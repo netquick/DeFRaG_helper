@@ -41,7 +41,9 @@ namespace DeFRaG_Helper.ViewModels
         private MapViewModel()
         {
             Maps = new ObservableCollection<Map>();
-            dbQueue = new DbQueue("Data Source=MapData.db;");
+
+
+            dbQueue = new DbQueue($"Data Source={AppConfig.DatabasePath};");
 
             PlayMapCommand = new RelayCommand(PlayMap);
             DownloadMapCommand = new RelayCommand(DownloadMap);
