@@ -22,7 +22,11 @@ namespace DeFRaG_Helper
             // Ensure the configuration is loaded before proceeding
             await AppConfig.LoadConfigurationAsync();
             ApplyThemeColor();
+            // Create an instance of MapHistoryManager
+            MapHistoryManager mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
 
+            // Load the last played maps
+            await mapHistoryManager.LoadLastPlayedMapsAsync();
             // Now that the configuration is loaded, proceed with the rest of the startup sequence
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();

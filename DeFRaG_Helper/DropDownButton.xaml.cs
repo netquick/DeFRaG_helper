@@ -27,7 +27,7 @@ namespace DeFRaG_Helper
         public DropDownButton()
         {
             InitializeComponent();
-            lblAction.Content = "Play Game";
+            lblAction.Content = AppConfig.ButtonState;
             mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
 
         }
@@ -95,9 +95,9 @@ namespace DeFRaG_Helper
 
             if (clickedItem != null)
             {
-                // Set the content of the button to the header of the clicked menu item
-                // Assuming the button's name is ActionButton
                 lblAction.Content = clickedItem.Header.ToString();
+                AppConfig.ButtonState = clickedItem.Header.ToString(); // Update AppConfig with the new state
+                AppConfig.SaveConfigurationAsync(); // Save the updated configuration
             }
         }
 

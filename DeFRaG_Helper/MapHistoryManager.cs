@@ -56,5 +56,6 @@ namespace DeFRaG_Helper
             await SaveLastPlayedMapsAsync(lastPlayedMaps);
             MapHistoryUpdated?.Invoke();
         }
+
     }
 }

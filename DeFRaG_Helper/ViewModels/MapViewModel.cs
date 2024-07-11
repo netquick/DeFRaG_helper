@@ -30,45 +30,9 @@ namespace DeFRaG_Helper.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // Example property implementation
-        private ICollectionView lastPlayedMapsView;
-        public ICollectionView LastPlayedMapsView
-        {
-            get { return lastPlayedMapsView; }
-            set
-            {
-                if (lastPlayedMapsView != value)
-                {
-                    lastPlayedMapsView = value;
-                    OnPropertyChanged(nameof(LastPlayedMapsView)); // Step 4
-                }
-            }
-        }
 
-        public async Task UpdateLastPlayedMapsViewAsync()
-        {
-            var lastPlayedMapIds = await new MapHistoryManager("DeFRaG_Helper").LoadLastPlayedMapsAsync();
-            // Separate the reversal from the conversion to list for clarity
-            lastPlayedMapIds.Reverse();
 
-            var orderedMaps = new List<Map>();
 
-            foreach (var id in lastPlayedMapIds)
-            {
-                // Ensure Maps is initialized and not null
-                if (Maps != null)
-                {
-                    var map = Maps.FirstOrDefault(m => m.Id == id);
-                    if (map != null)
-                    {
-                        orderedMaps.Add(map);
-                    }
-                }
-            }
-
-            LastPlayedMapsView = CollectionViewSource.GetDefaultView(orderedMaps);
-            OnPropertyChanged(nameof(LastPlayedMapsView));
-        }
 
 
 
@@ -97,18 +61,13 @@ namespace DeFRaG_Helper.ViewModels
             if (!isInitialized)
             {
 
-                MapHistoryManager.MapHistoryUpdated += MapHistoryManager_MapHistoryUpdated;
                 await LoadMapsFromDatabase();
-                await UpdateLastPlayedMapsViewAsync();
 
 
                 isInitialized = true;
             }
         }
-        private async void MapHistoryManager_MapHistoryUpdated()
-        {
-            await UpdateLastPlayedMapsViewAsync();
-        }
+      
         public event EventHandler DataLoaded;
 
         // Public method to allow external subscription to the DataLoaded event
@@ -216,9 +175,8 @@ namespace DeFRaG_Helper.ViewModels
                     App.Current.Dispatcher.Invoke(() => MainWindow.Instance.HideProgressBar());
                     // Display the completion message
                     //Test refresh
-                    LastPlayedMapsView.Refresh();
-
-
+                    
+                    
                 });
 
             });

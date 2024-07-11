@@ -32,7 +32,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- Application Title Label -->
-                        <Label Grid.Column="0" Content="DeFRaG_Helper" VerticalAlignment="Center" Foreground="#D3D3D3" FontSize="20" Margin="10,0,0,0"/>
+                        <Label Grid.Column="0" Content="DeFRaG_Helper" VerticalAlignment="Center" Foreground="{StaticResource ThemeColor}" FontSize="20" Margin="10,0,0,0"/>
                         <TextBox x:Name="searchBar" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="306,0,306,0" Height="34" Text="Search..." GotFocus="SearchBox_GotFocus"/>
                         <!-- Spacer to push buttons to the right -->
                         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">

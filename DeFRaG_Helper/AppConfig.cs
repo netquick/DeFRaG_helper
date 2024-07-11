@@ -9,7 +9,10 @@ namespace DeFRaG_Helper
     {
         private static readonly string configFilePath;
         public static string GameDirectoryPath { get; set; }
-        public static string SelectedColor { get; set; } 
+        public static string SelectedColor { get; set; }
+        public static string ButtonState { get; set; } 
+
+        public static string PhysicsSetting { get; set; }
 
         static AppConfig()
         {
@@ -31,12 +34,21 @@ namespace DeFRaG_Helper
                 var config = JsonSerializer.Deserialize<Configuration>(json);
                 GameDirectoryPath = config?.GameDirectoryPath ?? string.Empty;
                 SelectedColor = config?.SelectedColor ?? "Yellow";
+                ButtonState = config?.ButtonState ?? "Play Game"; // Load button state
+                PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
+
             }
         }
 
         public static async Task SaveConfigurationAsync()
         {
-            var config = new Configuration { GameDirectoryPath = GameDirectoryPath, SelectedColor = SelectedColor }; // Include SelectedColor
+            var config = new Configuration
+            {
+                GameDirectoryPath = GameDirectoryPath,
+                SelectedColor = SelectedColor,
+                ButtonState = ButtonState,
+                PhysicsSetting = PhysicsSetting
+            };
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
             await File.WriteAllTextAsync(configFilePath, json);
@@ -45,7 +57,10 @@ namespace DeFRaG_Helper
         private class Configuration
         {
             public string GameDirectoryPath { get; set; }
-            public string SelectedColor { get; set; } // Correctly added
+            public string SelectedColor { get; set; } 
+            public string ButtonState { get; set; } 
+            public string PhysicsSetting { get; set; }
+
         }
     }
 }

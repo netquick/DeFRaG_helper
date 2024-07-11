@@ -59,6 +59,8 @@ namespace DeFRaG_Helper
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MessagingService.Subscribe(ShowMessage);
+            chkPhysics.IsChecked = AppConfig.PhysicsSetting == "VQ3";
+            lblPhysics.Content = AppConfig.PhysicsSetting;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -123,7 +125,9 @@ namespace DeFRaG_Helper
             var checkBox = sender as CheckBox;
             if (checkBox != null)
             {
-                lblPhysics.Content = checkBox.IsChecked == true ? "VQ3" : "CPM";
+                AppConfig.PhysicsSetting = checkBox.IsChecked == true ? "VQ3" : "CPM";
+                AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+                lblPhysics.Content = AppConfig.PhysicsSetting;
             }
         }
         public void ShowMessage(string message)
