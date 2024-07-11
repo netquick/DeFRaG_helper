@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ namespace DeFRaG_Helper
     {
         private ICollectionView? lastPlayedMapsView;
         public ICollectionView? ActiveServersView { get; private set; }
+        private ObservableCollection<Map> localMaps = new ObservableCollection<Map>();
 
         private MapHistoryManager mapHistoryManager;
 
@@ -64,7 +66,44 @@ namespace DeFRaG_Helper
             // Set DataContext to MapViewModel instance
             //this.DataContext = MapViewModel.GetInstanceAsync().Result;
         }
-  
+
+        // Place this method in Start.xaml.cs
+        private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                await SynchronizeLocalMapsAsync();
+                RefreshLocalView();
+            });
+        }
+
+
+        private async Task SynchronizeLocalMapsAsync()
+        {
+            var mapViewModel = await MapViewModel.GetInstanceAsync();
+            localMaps.Clear();
+            foreach (var map in mapViewModel.Maps)
+            {
+                localMaps.Add(map);
+            }
+            // Reinitialize lastPlayedMapsView with the updated localMaps
+            lastPlayedMapsView = new ListCollectionView(localMaps.ToList());
+            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sorting
+            lastPlayedMapsView.Filter = FilterMaps; // Reapply filtering
+            lastPlayedMapsView.Refresh(); // Refresh the view
+
+            // Ensure the UI is bound to the updated lastPlayedMapsView
+            ItemsControlMaps.ItemsSource = lastPlayedMapsView;
+        }
+
+        // Place this method in Start.xaml.cs
+        private void RefreshLocalView()
+        {
+            var localView = CollectionViewSource.GetDefaultView(localMaps);
+            localView.Filter = FilterMaps; // Apply your local filtering logic here
+                                           // Apply any sorting or additional transformations here
+            localView.Refresh();
+        }
 
         private async Task InitializeAsync()
         {
@@ -99,14 +138,6 @@ namespace DeFRaG_Helper
             {
                 Console.WriteLine(ex.Message);
             }
-        }
-        private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Assuming mapViewModel.Maps has been updated, just refresh the view
-                lastPlayedMapsView?.Refresh();
-            });
         }
 
 
