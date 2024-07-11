@@ -32,14 +32,16 @@ namespace DeFRaG_Helper
         private async Task InitializeDataContextAsync()
         {
             var viewModel = await ServerViewModel.GetInstanceAsync();
-            this.DataContext = viewModel;
 
             // Create a view for the Servers collection and apply a filter
             ICollectionView serversView = CollectionViewSource.GetDefaultView(viewModel.Servers);
-           // serversView.Filter = ServerHasPlayers;
+            // serversView.Filter = ServerHasPlayers;
+            this.DataContext = this;
 
             // Set the ItemsSource of your ItemsControl to the filtered view
+            serversView.Filter = null;
             ServersItemsControl.ItemsSource = serversView;
+
         }
 
         private bool ServerHasPlayers(object item)

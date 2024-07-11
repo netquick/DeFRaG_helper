@@ -24,6 +24,10 @@ namespace DeFRaG_Helper
     {
         private static Maps instance;
         private ICollectionView mapsView;
+        public ICollectionView MapsView
+        {
+            get { return mapsView; }
+        }
 
         public static Maps Instance
         {
@@ -128,5 +132,33 @@ namespace DeFRaG_Helper
 
         }
 
+        public void ApplyFilters()
+        {
+            if (mapsView != null)
+            {
+                mapsView.Filter = FilterMaps;
+                mapsView.Refresh(); // Refresh the view to apply the filter immediately
+            }
+        }
+        public void ClearFilters()
+        {
+            if (mapsView != null)
+            {
+                mapsView.Filter = null; // Remove the filter
+                mapsView.Refresh(); // Refresh the view to apply the change immediately
+            }
+        }
+        public void ApplyFilterBasedOnMapIds(List<int> mapIds)
+        {
+            mapsView.Filter = item =>
+            {
+                if (item is Map map)
+                {
+                    return mapIds.Contains(map.Id);
+                }
+                return false;
+            };
+            mapsView.Refresh(); // Ensure the view is updated
+        }
     }
 }

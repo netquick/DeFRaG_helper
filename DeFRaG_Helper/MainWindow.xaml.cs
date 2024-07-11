@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using DeFRaG_Helper.ViewModels;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Navigation;
 
 
 
@@ -14,6 +16,9 @@ namespace DeFRaG_Helper
     public partial class MainWindow : Window
     {
         private System.Timers.Timer hideProgressBarTimer;
+        private bool isFirstNavigationToMaps = true;
+        private Page lastNavigatedPage = null;
+
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
@@ -45,6 +50,8 @@ namespace DeFRaG_Helper
         public MainWindow()
         {
             InitializeComponent();
+            MainFrame.Navigated += MainFrame_Navigated;
+
             this.SourceInitialized += MainWindow_SourceInitialized;
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
@@ -56,6 +63,59 @@ namespace DeFRaG_Helper
             hideProgressBarTimer.Elapsed += HideProgressBarTimer_Elapsed;
             hideProgressBarTimer.AutoReset = false; // Ensure the timer runs only once per start
         }
+        private void MainFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            ApplyFilterBasedOnPageAsync(e.Content);
+        }
+
+        private async void ApplyFilterBasedOnPageAsync(object navigatedContent)
+        {
+            try
+            {
+                var serverViewModel = await ServerViewModel.GetInstanceAsync();
+                var mapViewModel = await MapViewModel.GetInstanceAsync(); // Assuming this is accessible
+
+                if (navigatedContent is Start)
+                {
+                    // Apply the filter to show only servers with CurrentPlayers > 0
+                    serverViewModel.ServersView.Filter = item =>
+                    {
+                        if (item is ServerNode server)
+                        {
+                            return server.CurrentPlayers > 0;
+                        }
+                        return false;
+                    };
+
+                    // Load last played map IDs from MapHistoryManager and apply filter for maps
+                    MapHistoryManager historyManager = new MapHistoryManager("DeFRaG_Helper");
+                    List<int> lastPlayedMapIds = await historyManager.LoadLastPlayedMapsAsync(); // Ensure this method exists and is async
+
+                    // Show only maps with IDs in the lastPlayedMapIds list, show in reversed order
+
+                }
+                else if (navigatedContent is Server)
+                {
+                    // Remove the filter to show all servers
+                    serverViewModel.ServersView.Filter = null;
+                }
+                else if (navigatedContent is Maps)
+                {
+                    // Clear filters when navigating to Maps page
+                    //Maps.Instance.ClearFilters();
+    
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error applying filter: {ex.Message}");
+                // Handle exceptions or log the error
+            }
+        }
+
+
+
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MessagingService.Subscribe(ShowMessage);
@@ -183,25 +243,30 @@ namespace DeFRaG_Helper
 
                 // Set the selected item as active
                 selectedItem.IsActive = true;
+                Page navigateToPage = null;
 
                 // Navigate based on the selected item's Text property
                 switch (selectedItem.Text)
                 {
                     case "Home":
-                        MainFrame.Navigate(startPage);
+                        navigateToPage = startPage;
                         break;
                     case "Maps":
-                        MainFrame.Navigate(mapsPage);
+                        navigateToPage = mapsPage;
                         break;
-                  case "Server":
-                        MainFrame.Navigate(serverPage);
-                        break;  
-                  case "Settings":
-                        MainFrame.Navigate(settingsPage);
+                    case "Server":
+                        navigateToPage = serverPage;
                         break;
-                    // Add cases for other navigation items as needed
-                    default:
+                    case "Settings":
+                        navigateToPage = settingsPage;
                         break;
+                }
+
+                // Check if we're navigating to a different page
+                if (navigateToPage != null && navigateToPage != lastNavigatedPage)
+                {
+                    MainFrame.Navigate(navigateToPage);
+                    lastNavigatedPage = navigateToPage; // Update the last navigated page
                 }
             }
         }

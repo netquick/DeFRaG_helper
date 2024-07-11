@@ -18,20 +18,30 @@ namespace DeFRaG_Helper
         private static bool isInitialized = false;
 
         public ObservableCollection<ServerNode> Servers { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private ICollectionView _serversView;
+        public ICollectionView ServersView
+        {
+            get { return _serversView; }
+            set
+            {
+                _serversView = value;
+                OnPropertyChanged(nameof(ServersView));
+            }
+        }
 
         private DispatcherTimer updateTimer;
         private static ServerViewModel instance;
         // Helper method to raise the PropertyChanged event
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string name)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
         public ServerViewModel()
         {
             Servers = new ObservableCollection<ServerNode>();
-
+            ServersView = CollectionViewSource.GetDefaultView(Servers);
             // Initialize the timer
             updateTimer = new DispatcherTimer();
             updateTimer.Interval = TimeSpan.FromSeconds(30);
@@ -223,5 +233,7 @@ namespace DeFRaG_Helper
             // For instance, you could log the new ImagePath or trigger UI updates
             Debug.WriteLine($"New Image Path for server {serverNode.Name}: {serverNode.ImagePath}");
         }
+
+
     }
 }

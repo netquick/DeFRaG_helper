@@ -49,27 +49,35 @@ namespace DeFRaG_Helper
         public Start()
         {
             InitializeComponent();
-            this.Loaded += async (sender, e) => await InitializeAsync();
 
+            this.Loaded += async (sender, e) =>
+            {
+                await InitializeAsync();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.customDropDownButton.MapPlayed += (s, e) => RefreshMapListAsync();
+                }
+            };
             mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
             // Set DataContext to MapViewModel instance
             //this.DataContext = MapViewModel.GetInstanceAsync().Result;
         }
-
+  
 
         private async Task InitializeAsync()
         {
             try
             {
-                // Initialize ServerViewModel and its view
                 var serverViewModel = await ServerViewModel.GetInstanceAsync();
                 ActiveServersView = CollectionViewSource.GetDefaultView(serverViewModel.Servers);
-                //ActiveServersView.Filter = ServerHasPlayers;
 
-                // Initialize MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
-                lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
+                mapViewModel.MapsBatchLoaded += MapViewModel_MapsBatchLoaded;
+                // Create a new CollectionView for this page
+                lastPlayedMapsView = new ListCollectionView(mapViewModel.Maps.ToList());
+                //lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
 
                 // Load last played map IDs and reverse for sorting
                 lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync()).ToList();
@@ -77,24 +85,33 @@ namespace DeFRaG_Helper
 
                 if (lastPlayedMapsView != null) // Check for null
                 {
-                    //lastPlayedMapsView.Filter = FilterMaps;
+                    lastPlayedMapsView.Filter = FilterMaps; // Ensure this is uncommented
                     ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds);
+                    lastPlayedMapsView.Refresh(); // Refresh the view to apply filter and sort
                 }
 
-                // Set DataContext for binding
                 this.DataContext = this; // Now 'this' includes both map and server data contexts
 
-                // Assuming ItemsControlMaps and another ItemsControl for servers are defined in XAML
                 ItemsControlMaps.ItemsSource = lastPlayedMapsView;
-                // For servers, ensure you have an ItemsControl defined in your XAML with x:Name="ItemsControlServers"
                 ItemsControlServer.ItemsSource = ActiveServersView;
             }
             catch (Exception ex)
             {
-                // Log or handle the exception
                 Console.WriteLine(ex.Message);
             }
         }
+        private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Assuming mapViewModel.Maps has been updated, just refresh the view
+                lastPlayedMapsView?.Refresh();
+            });
+        }
+
+
+
+
 
         private void ApplyCustomSort(ICollectionView collectionView, List<int> sortOrder)
         {
@@ -135,14 +152,12 @@ namespace DeFRaG_Helper
         }
         public async Task RefreshMapListAsync()
         {
-            await Application.Current.Dispatcher.InvokeAsync(async () =>
-            {
-                lastPlayedMapIds = await mapHistoryManager.LoadLastPlayedMapsAsync();
-
-                //var mapViewModel = await MapViewModel.GetInstanceAsync();
-                RefreshFilter(); // Instead of re-binding, refresh the existing view
-            });
+            lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync()).ToList();
+            lastPlayedMapIds.Reverse(); // Ensure the list is reversed
+            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sort
+            RefreshFilter(); // Refresh the view
         }
+
 
 
     }

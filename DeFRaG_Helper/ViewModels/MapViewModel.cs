@@ -14,7 +14,7 @@ namespace DeFRaG_Helper.ViewModels
         public bool IsDataLoaded { get; private set; }
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
-
+        public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
         private DbQueue dbQueue;
         private bool dataLoaded = false; // Flag to indicate if data has been loaded
@@ -130,6 +130,7 @@ namespace DeFRaG_Helper.ViewModels
                 }
 
                 int loadedMaps = 0;
+                int refreshThreshold = 10; // Number of maps after which the UI is refreshed
 
                 // Existing database loading logic...
                 using (var command = new SqliteCommand("SELECT * FROM Maps", connection))
@@ -138,7 +139,6 @@ namespace DeFRaG_Helper.ViewModels
                     {
                         while (await reader.ReadAsync())
                         {
-                            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowProgressBar());
                             var map = new Map
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("ID")),
@@ -162,10 +162,18 @@ namespace DeFRaG_Helper.ViewModels
                             App.Current.Dispatcher.Invoke(() => Maps.Add(map));
 
                             loadedMaps++;
-                            double progress = (double)loadedMaps / totalMaps * 100;
-                            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
+                            if (loadedMaps % refreshThreshold == 0 || loadedMaps == totalMaps)
+                            {
+                                double progress = (double)loadedMaps / totalMaps * 100;
+                                // Update progress bar and potentially refresh the UI here
+                                App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    MainWindow.Instance.UpdateProgressBar(progress);
+                                    MapsBatchLoaded?.Invoke(this, EventArgs.Empty);
 
-                            
+                                    // Optionally, refresh the UI to show the newly loaded maps
+                                });
+                            }
                         }
                     }
                 }
@@ -174,20 +182,10 @@ namespace DeFRaG_Helper.ViewModels
                 {
                     dataLoaded = true; // Set the flag to true after loading data
                     DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
-                    App.Current.Dispatcher.Invoke(() => MainWindow.Instance.HideProgressBar());
-                    // Display the completion message
-                    //Test refresh
-                    
-                    
+                    MainWindow.Instance.HideProgressBar();
+                    // Optionally, do a final UI refresh here if needed
                 });
-
             });
-
-            //we will call it somewhere else
-            //await StartSync(totalMaps);
-
-
-
         }
 
         private async Task StartSync(int totalMaps) 

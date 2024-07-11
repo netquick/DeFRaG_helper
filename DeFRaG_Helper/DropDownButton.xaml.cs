@@ -23,7 +23,13 @@ namespace DeFRaG_Helper
     public partial class DropDownButton : UserControl
     {
         private MapHistoryManager mapHistoryManager;
+        public delegate void MapPlayedEventHandler(object sender, EventArgs e);
+        public event MapPlayedEventHandler MapPlayed;
 
+        protected virtual void OnMapPlayed()
+        {
+            MapPlayed?.Invoke(this, EventArgs.Empty);
+        }
         public DropDownButton()
         {
             InitializeComponent();
@@ -132,6 +138,7 @@ namespace DeFRaG_Helper
                     Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");
                 }
             }
+            OnMapPlayed();
         }
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
