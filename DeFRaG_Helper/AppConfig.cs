@@ -34,6 +34,8 @@ namespace DeFRaG_Helper
         {
             if (File.Exists(configFilePath))
             {
+                await SimpleLogger.LogAsync($"Found config {configFilePath}");
+
                 string json = await File.ReadAllTextAsync(configFilePath);
                 var config = JsonSerializer.Deserialize<Configuration>(json);
                 GameDirectoryPath = config?.GameDirectoryPath ?? string.Empty;
@@ -42,6 +44,17 @@ namespace DeFRaG_Helper
                 PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
                 DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
                 DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl; // Use default if not set
+                await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
+                await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
+                await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
+                await SimpleLogger.LogAsync($"PhysicsSetting: {PhysicsSetting}");
+                await SimpleLogger.LogAsync($"DatabasePath: {DatabasePath}");
+                await SimpleLogger.LogAsync($"DatabaseUrl: {DatabaseUrl}");
+            }
+            else
+            {
+                await SimpleLogger.LogAsync($"{configFilePath} not found");
+
             }
         }
 
@@ -55,18 +68,33 @@ namespace DeFRaG_Helper
                 PhysicsSetting = PhysicsSetting,
                 DatabasePath = DatabasePath, // Save database path
                 DatabaseUrl = DatabaseUrl // Save database URL
+
             };
+            SimpleLogger.Log($"GameDirectoryPath: {GameDirectoryPath}");
+            SimpleLogger.Log($"SelectedColor: {SelectedColor}");
+            SimpleLogger.Log($"ButtonState: {ButtonState}");
+            SimpleLogger.Log($"PhysicsSetting: {PhysicsSetting}");
+            SimpleLogger.Log($"DatabasePath: {DatabasePath}");
+            SimpleLogger.Log($"DatabaseUrl: {DatabaseUrl}");
+
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
             await File.WriteAllTextAsync(configFilePath, json);
+            SimpleLogger.Log("Configuration saved");
         }
         public static async Task EnsureDatabaseExistsAsync()
         {
             if (!File.Exists(DatabasePath))
             {
+                await SimpleLogger.LogAsync("Database not found, downloading...");
                 // Use Downloader to download the database
                 // Assuming Downloader has a static method DownloadFileAsync for this purpose
                 await Downloader.DownloadFileAsync(DatabaseUrl, DatabasePath, null);
+                await SimpleLogger.LogAsync("Database downloaded");
+            }
+            else
+            {
+                await SimpleLogger.LogAsync($"Database found at {DatabasePath}");
             }
         }
         private class Configuration

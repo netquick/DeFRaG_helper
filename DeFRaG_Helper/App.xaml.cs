@@ -14,22 +14,31 @@ namespace DeFRaG_Helper
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            // Initialize logging
+            SimpleLogger.Log("Application starting");
             LoadConfigurationAndStartAsync();
         }
 
         private async void LoadConfigurationAndStartAsync()
         {
             // Ensure the configuration is loaded before proceeding
+            await SimpleLogger.LogAsync("Loading configuration");
+
             await AppConfig.LoadConfigurationAsync();
+            await SimpleLogger.LogAsync($"Configuration loaded: {AppConfig.GameDirectoryPath}");
+
             ApplyThemeColor();
             // Create an instance of MapHistoryManager
+            SimpleLogger.Log("Creating MapHistoryManager");
             MapHistoryManager mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
+            SimpleLogger.Log("MapHistoryManager created");
 
-            // Load the last played maps
-            await mapHistoryManager.LoadLastPlayedMapsAsync();
-            // Now that the configuration is loaded, proceed with the rest of the startup sequence
             await AppConfig.EnsureDatabaseExistsAsync();
+            SimpleLogger.Log("Database exists");
             MainWindow mainWindow = new MainWindow();
+            //maybe this would be good?
+            //mainWindow.DataContext = mainWindow;
+            SimpleLogger.Log("Main window created");
             mainWindow.Show();
 
             // Assuming StartChecks is static and can be called like this
@@ -39,10 +48,13 @@ namespace DeFRaG_Helper
         {
             if (!string.IsNullOrEmpty(AppConfig.SelectedColor))
             {
+                SimpleLogger.Log($"Applying theme color: {AppConfig.SelectedColor}");
                 // Assuming AppConfig.SelectedColor is a string like "Red", "Yellow", etc.
                 var color = (Color)ColorConverter.ConvertFromString(AppConfig.SelectedColor);
                 var brush = new SolidColorBrush(color);
                 Current.Resources["ThemeColor"] = brush;
+            }
+            else {                 SimpleLogger.Log("No theme color selected");
             }
         }
     }

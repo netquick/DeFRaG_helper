@@ -45,17 +45,19 @@ namespace DeFRaG_Helper
                 if (_instance == null)
                     _instance = Application.Current.MainWindow as MainWindow;
                 return _instance;
+                SimpleLogger.Log("MainWindow Instance");
             }
         }
         public MainWindow()
         {
             InitializeComponent();
+            SimpleLogger.Log("MainWindow Constructor");
             MainFrame.Navigated += MainFrame_Navigated;
 
             this.SourceInitialized += MainWindow_SourceInitialized;
+            SimpleLogger.Log("MainWindow SourceInitialized");
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
-
             NavigationListView.SelectionChanged += NavigationListView_SelectionChanged;
             CheckGameInstall.StartChecks();
             // Initialize the timer with a 2-second interval
@@ -89,8 +91,7 @@ namespace DeFRaG_Helper
 
                     // Load last played map IDs from MapHistoryManager and apply filter for maps
                     MapHistoryManager historyManager = new MapHistoryManager("DeFRaG_Helper");
-                    List<int> lastPlayedMapIds = await historyManager.LoadLastPlayedMapsAsync(); // Ensure this method exists and is async
-
+                    List<int> lastPlayedMapIds = historyManager.GetLastPlayedMaps(); // This method is now synchronous
                     // Show only maps with IDs in the lastPlayedMapIds list, show in reversed order
 
                 }
@@ -166,8 +167,11 @@ namespace DeFRaG_Helper
             progressBar.Value = value;
 
             // Reset and start the timer every time progress is updated
-            hideProgressBarTimer.Stop(); // Stop the timer if it's already running
-            hideProgressBarTimer.Start(); // Restart the timer
+            if (hideProgressBarTimer != null)
+            {
+                hideProgressBarTimer.Stop(); // Stop the timer if it's already running
+                hideProgressBarTimer.Start(); // Restart the timer
+            }
         }
 
 

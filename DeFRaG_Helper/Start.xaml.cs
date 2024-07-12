@@ -119,8 +119,9 @@ namespace DeFRaG_Helper
                 //lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
 
                 // Load last played map IDs and reverse for sorting
-                lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync()).ToList();
+                lastPlayedMapIds = mapHistoryManager.GetLastPlayedMaps();
                 lastPlayedMapIds.Reverse();
+
 
                 if (lastPlayedMapsView != null) // Check for null
                 {
@@ -183,8 +184,9 @@ namespace DeFRaG_Helper
         }
         public async Task RefreshMapListAsync()
         {
-            lastPlayedMapIds = (await mapHistoryManager.LoadLastPlayedMapsAsync()).ToList();
+            lastPlayedMapIds = mapHistoryManager.GetLastPlayedMaps();
             lastPlayedMapIds.Reverse(); // Ensure the list is reversed
+
             ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sort
             RefreshFilter(); // Refresh the view
         }
