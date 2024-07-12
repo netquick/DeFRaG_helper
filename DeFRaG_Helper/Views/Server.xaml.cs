@@ -33,22 +33,25 @@ namespace DeFRaG_Helper
         {
             var viewModel = await ServerViewModel.GetInstanceAsync();
 
-            // Create a view for the Servers collection and apply a filter
+            // Create a view for the Servers collection
             ICollectionView serversView = CollectionViewSource.GetDefaultView(viewModel.Servers);
-            // serversView.Filter = ServerHasPlayers;
+
+            // Apply a filter to show only servers with CurrentPlayers >= 0
+            serversView.Filter = ServerHasPlayers;
+
+            // Apply a sort description to order the servers by CurrentPlayers
+            serversView.SortDescriptions.Add(new SortDescription("CurrentPlayers", ListSortDirection.Descending));
+
+            // Set the DataContext and ItemsSource
             this.DataContext = this;
-
-            // Set the ItemsSource of your ItemsControl to the filtered view
-            serversView.Filter = null;
             ServersItemsControl.ItemsSource = serversView;
-
         }
 
         private bool ServerHasPlayers(object item)
         {
             if (item is ServerNode serverNode) // Replace ServerNode with your actual server class
             {
-                return serverNode.CurrentPlayers > 0; // Adjust CurrentPlayers to your actual property name
+                return serverNode.CurrentPlayers >= 0; // Show servers with CurrentPlayers >= 0
             }
             return false;
         }
