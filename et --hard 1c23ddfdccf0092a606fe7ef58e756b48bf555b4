@@ -1,0 +1,101 @@
+[33mcommit 1c23ddfdccf0092a606fe7ef58e756b48bf555b4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrefactor[m[33m, [m[1;31morigin/refactor[m[33m)[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 17:47:16 2024 +0200
+
+    Server sorting and filtering corrected
+
+[33mcommit 24f9b4f772d364c935a3eab2c3efe09e8229636d[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 17:37:58 2024 +0200
+
+    Updating Flags corrected
+
+[33mcommit b490e173854c444123b80c010743ccf1cc7734b6[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 16:09:39 2024 +0200
+
+    moved converters to .converters namespace
+
+[33mcommit 27c1bf0de205165db2b041a5e1f9385cedf42144[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 14:37:36 2024 +0200
+
+    added icon
+
+[33mcommit 8742cf61542a887d7099a31ae6a86288082399b0[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 14:28:24 2024 +0200
+
+    Startuplogic (File exists)
+
+[33mcommit 09c972d1943abbdc8415c22b7a7958fb1fffe29c[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 02:30:09 2024 +0200
+
+    Simple Log
+
+[33mcommit bd97a657672fec903a733ed56d1410bf52861113[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 01:06:00 2024 +0200
+
+    Finally the StartPage is working!
+
+[33mcommit 410c60b6cbb57fa478fe247050c474d2987009d1[m
+Author: netquick <netquick@gmx.ch>
+Date:   Fri Jul 12 00:45:55 2024 +0200
+
+    Startpage almost working, performance ok
+
+[33mcommit c12e4e41255715c5b81526259f515293011d47e4[m
+Author: netquick <netquick@gmx.ch>
+Date:   Thu Jul 11 17:23:07 2024 +0200
+
+    Collections show on start, but don't filter
+
+[33mcommit 70892ddc327b29245dbe0b9aaca8d28ba8d7af20[m
+Author: netquick <netquick@gmx.ch>
+Date:   Thu Jul 11 12:48:38 2024 +0200
+
+    Last played maps corrected to show correct maps
+
+[33mcommit 1b3825e31f1411acae672435e69560de69818d52[m
+Author: netquick <netquick@gmx.ch>
+Date:   Thu Jul 11 00:17:14 2024 +0200
+
+    Added Color to saved options, changed options logic, Cosmetic updates (Servers) FavoriteClick on highlight cards
+
+[33mcommit c3267ac929c404606009510159ac764c9c0011ff[m
+Author: netquick <netquick@gmx.ch>
+Date:   Wed Jul 10 20:50:27 2024 +0200
+
+    Changes start to filtered view (updating issues)
+
+[33mcommit 0dd905c66256960fca3a4e20ce639cef1c136789[m
+Author: netquick <netquick@gmx.ch>
+Date:   Tue Jul 9 21:21:39 2024 +0200
+
+    Added last played random list (needs improvment) Optimized Server Tab
+
+[33mcommit e3192403d59965a2fc0378ea700ba284630a71bc[m
+Author: netquick <netquick@gmx.ch>
+Date:   Tue Jul 9 15:24:20 2024 +0200
+
+    Implemented Server Page
+
+[33mcommit 9370b4354a12698489583f4331972ee45ae3175d[m
+Author: netquick <netquick@gmx.ch>
+Date:   Sun Jul 7 23:15:40 2024 +0200
+
+    Dropdownbutton logic, MapInstaller fixes, Formatting display in maps browser
+
+[33mcommit 934a1da809763bb43288c891880067345ab38fe0[m
+Author: netquick <netquick@gmx.ch>
+Date:   Sun Jul 7 21:00:54 2024 +0200
+
+    Add project files.
+
+[33mcommit 95f5bb436355a65bc2002c51e320917b82d822b8[m
+Author: netquick <netquick@gmx.ch>
+Date:   Sun Jul 7 21:00:52 2024 +0200
+
+    Add .gitattributes and .gitignore.

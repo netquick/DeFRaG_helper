@@ -75,6 +75,7 @@ namespace DeFRaG_Helper
                             entry.ExtractToFile(fullDestinationPath, true);
                         }
                         progress?.Report((i + 1) * 100.0 / totalFiles);
+                        MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar((i + 1) * 100.0 / totalFiles));
                     }
                 }
             }

@@ -58,7 +58,7 @@
                             <!-- Left half content -->
                             <!-- First Row Content, full width of the left half -->
                             <TextBlock Text="{Binding Name}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                       FontFamily="Segoe UI" FontSize="20" Foreground="{StaticResource ThemeColor}"/>
+                                       FontFamily="Segoe UI" FontSize="20" Foreground="{DynamicResource ThemeColor}"/>
                             <!-- Second Row, divided into two columns within the left half -->
                             <Grid Grid.Row="1" Grid.Column="0">
                                 <Grid.ColumnDefinitions>

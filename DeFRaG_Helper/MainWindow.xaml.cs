@@ -149,6 +149,41 @@ namespace DeFRaG_Helper
             await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
             CheckGameInstall.StartChecks();
 
+
+            await CheckAndInstallPreviewPictures();
+
+        }
+
+        private async Task CheckAndInstallPreviewPictures()
+        {
+            //get appdata path 
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appDataFolder = System.IO.Path.Combine(appDataPath, "DeFRaG_Helper");
+            string previewPicturesPath = System.IO.Path.Combine(appDataFolder, "PreviewImages");
+            if (!System.IO.Directory.Exists(previewPicturesPath))
+            {
+            SimpleLogger.Log("Images not found, downloading");
+                //download images from https://dl.netquick.ch/PreviewImages.zip using Downloader class
+                string url = "https://dl.netquick.ch/PreviewImages.zip";  
+                string zipPath = System.IO.Path.Combine(appDataFolder, "PreviewImages.zip");
+                var progressHandler = new Progress<double>(value =>
+                {
+                    UpdateProgressBar(value);
+                });
+                IProgress<double> progress = progressHandler;
+                ShowMessage("Downloading images");
+                await Downloader.DownloadFileAsync(url, zipPath, progress);
+                ShowMessage("Images downloaded, unpacking");
+                await Downloader.UnpackFile(zipPath, appDataFolder, progress);
+                SimpleLogger.Log("Images downloaded and extracted");
+
+
+            }
+            else
+            {
+                //check if images are up to date
+            }
+
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
