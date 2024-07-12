@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using WPFFolderBrowser;
 
 
 
@@ -59,7 +60,8 @@ namespace DeFRaG_Helper
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
             NavigationListView.SelectionChanged += NavigationListView_SelectionChanged;
-            CheckGameInstall.StartChecks();
+            AppConfig.OnRequestGameDirectory += RequestGameDirectoryAsync;
+
             // Initialize the timer with a 2-second interval
             hideProgressBarTimer = new System.Timers.Timer(2000);
             hideProgressBarTimer.Elapsed += HideProgressBarTimer_Elapsed;
@@ -69,7 +71,29 @@ namespace DeFRaG_Helper
         {
             ApplyFilterBasedOnPageAsync(e.Content);
         }
-
+        private async Task<string> RequestGameDirectoryAsync()
+        {
+            // Assuming you have a method to show a dialog and return the selected path
+            string selectedPath = await ShowDirectorySelectionDialogAsync();
+            return selectedPath;
+        }
+        public static async Task<string> ShowDirectorySelectionDialogAsync()
+        {
+            string folderPath = string.Empty;
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var dialog = new WPFFolderBrowserDialog
+                {
+                    Title = "Select a folder" // You can customize the dialog title here
+                };
+                var result = dialog.ShowDialog();
+                if (result == true) // Check if the dialog was accepted
+                {
+                    folderPath = dialog.FileName; // Get the selected folder path
+                }
+            });
+            return folderPath;
+        }
         private async void ApplyFilterBasedOnPageAsync(object navigatedContent)
         {
             try
@@ -90,8 +114,8 @@ namespace DeFRaG_Helper
                     };
 
                     // Load last played map IDs from MapHistoryManager and apply filter for maps
-                    MapHistoryManager historyManager = new MapHistoryManager("DeFRaG_Helper");
-                    List<int> lastPlayedMapIds = historyManager.GetLastPlayedMaps(); // This method is now synchronous
+                    var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+                    List<int> lastPlayedMapIds = mapHistoryManager.GetLastPlayedMaps(); // This method is now synchronous
                     // Show only maps with IDs in the lastPlayedMapIds list, show in reversed order
 
                 }
@@ -117,11 +141,14 @@ namespace DeFRaG_Helper
 
 
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MessagingService.Subscribe(ShowMessage);
             chkPhysics.IsChecked = AppConfig.PhysicsSetting == "VQ3";
             lblPhysics.Content = AppConfig.PhysicsSetting;
+            await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+            CheckGameInstall.StartChecks();
+
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

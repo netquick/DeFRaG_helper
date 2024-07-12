@@ -69,7 +69,7 @@ namespace DeFRaG_Helper
 
          
             string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            if (AppConfig.GameDirectoryPath == null)
+            if (string.IsNullOrEmpty(AppConfig.GameDirectoryPath))
             {
                 SimpleLogger.Log("Game directory path not set");
                 if (CheckInstall(path) && CheckExe(path))
@@ -124,6 +124,10 @@ namespace DeFRaG_Helper
 
 
                 }
+            }
+            else
+            {
+                SimpleLogger.Log($"Game directory path set to {AppConfig.GameDirectoryPath}");
             }
         }
 
@@ -187,7 +191,7 @@ namespace DeFRaG_Helper
             // Set the filter to only show directories
             openFileDialog.Filter = "Folder|*.none";
             openFileDialog.FileName = "Select Folder";
-
+            SimpleLogger.Log("Opening folder browser dialog");
             if (openFileDialog.ShowDialog() == true)
             {
                 // Return the directory path

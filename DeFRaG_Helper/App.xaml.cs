@@ -30,7 +30,7 @@ namespace DeFRaG_Helper
             ApplyThemeColor();
             // Create an instance of MapHistoryManager
             SimpleLogger.Log("Creating MapHistoryManager");
-            MapHistoryManager mapHistoryManager = new MapHistoryManager("DeFRaG_Helper");
+            var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
             SimpleLogger.Log("MapHistoryManager created");
 
             await AppConfig.EnsureDatabaseExistsAsync();

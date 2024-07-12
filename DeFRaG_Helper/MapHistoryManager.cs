@@ -8,11 +8,13 @@ namespace DeFRaG_Helper
 {
     public class MapHistoryManager
     {
+        private static MapHistoryManager instance;
         private readonly string filePath;
         private List<int> lastPlayedMapsInMemory = new List<int>(); // In-memory list
         public static event Action MapHistoryUpdated;
+        private Lazy<MapHistoryManager> mapHistoryManagerLazy = new Lazy<MapHistoryManager>(() => new MapHistoryManager("DeFRaG_Helper"));
 
-        public MapHistoryManager(string appName)
+        private MapHistoryManager(string appName)
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             SimpleLogger.Log($"AppDataPath from MapHistoryManager: {appDataPath}");
@@ -31,16 +33,40 @@ namespace DeFRaG_Helper
             LoadLastPlayedMapsFromFile();
 
         }
-
+        // Provide a static method to get the instance
+        public static MapHistoryManager GetInstance(string appName)
+        {
+            if (instance == null)
+            {
+                instance = new MapHistoryManager(appName);
+            }
+            return instance;
+        }
         private async void LoadLastPlayedMapsFromFile()
         {
-            if (File.Exists(filePath))
+            try
             {
-                SimpleLogger.Log($"Found file: {filePath}");
-                string json = await File.ReadAllTextAsync(filePath);
-                lastPlayedMapsInMemory = JsonSerializer.Deserialize<List<int>>(json) ?? new List<int>();
-                SimpleLogger.Log($"Loaded {lastPlayedMapsInMemory.Count} last played maps");
+                if (File.Exists(filePath))
+                {
+                    SimpleLogger.Log($"Found file: {filePath}");
+                    string json = await File.ReadAllTextAsync(filePath);
+                    lastPlayedMapsInMemory = JsonSerializer.Deserialize<List<int>>(json) ?? new List<int>();
+                    SimpleLogger.Log($"Loaded {lastPlayedMapsInMemory.Count} last played maps");
+                }
+                else
+                {
+                    //create the file if it doesn't exist
+                    await SaveLastPlayedMapsAsync();
+                    SimpleLogger.Log($"File not found: {filePath}");
+                }
             }
+            catch (Exception ex)
+            {
+                SimpleLogger.Log($"Failed to load last played maps from file: {filePath}");
+                SimpleLogger.Log(ex.Message);
+                throw;
+            }
+            
         }
 
         public async Task SaveLastPlayedMapsAsync()

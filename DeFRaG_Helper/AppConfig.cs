@@ -10,8 +10,9 @@ namespace DeFRaG_Helper
         private static readonly string configFilePath;
         public static string GameDirectoryPath { get; set; }
         public static string SelectedColor { get; set; }
-        public static string ButtonState { get; set; } 
-
+        public static string ButtonState { get; set; }
+        public delegate Task<string> RequestGameDirectoryDelegate();
+        public static event RequestGameDirectoryDelegate OnRequestGameDirectory;
         public static string PhysicsSetting { get; set; }
         public static string DatabasePath { get; set; } // Added for database path
         public static string DatabaseUrl { get; set; } // Added for database URL
@@ -24,6 +25,7 @@ namespace DeFRaG_Helper
             if (!Directory.Exists(appFolder))
             {
                 Directory.CreateDirectory(appFolder);
+                SimpleLogger.Log($"Created directory: {appFolder}");
             }
             // Default values for new properties
             DatabasePath = Path.Combine(appFolder, "MapData.db");
@@ -32,34 +34,54 @@ namespace DeFRaG_Helper
 
         public static async Task LoadConfigurationAsync()
         {
-            if (File.Exists(configFilePath))
+            try
             {
-                await SimpleLogger.LogAsync($"Found config {configFilePath}");
+                if (File.Exists(configFilePath))
+                {
+                    await SimpleLogger.LogAsync($"Found config {configFilePath}");
 
-                string json = await File.ReadAllTextAsync(configFilePath);
-                var config = JsonSerializer.Deserialize<Configuration>(json);
-                GameDirectoryPath = config?.GameDirectoryPath ?? string.Empty;
-                SelectedColor = config?.SelectedColor ?? "Yellow";
-                ButtonState = config?.ButtonState ?? "Play Game"; // Load button state
-                PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
-                DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
-                DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl; // Use default if not set
-                await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
-                await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
-                await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
-                await SimpleLogger.LogAsync($"PhysicsSetting: {PhysicsSetting}");
-                await SimpleLogger.LogAsync($"DatabasePath: {DatabasePath}");
-                await SimpleLogger.LogAsync($"DatabaseUrl: {DatabaseUrl}");
+                    string json = await File.ReadAllTextAsync(configFilePath);
+                    var config = JsonSerializer.Deserialize<Configuration>(json);
+                    GameDirectoryPath = config?.GameDirectoryPath ?? string.Empty;
+                    SelectedColor = config?.SelectedColor ?? "Yellow";
+                    ButtonState = config?.ButtonState ?? "Play Game"; // Load button state
+                    PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
+                    DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
+                    DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl; // Use default if not set
+                    await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
+                    await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
+                    await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
+                    await SimpleLogger.LogAsync($"PhysicsSetting: {PhysicsSetting}");
+                    await SimpleLogger.LogAsync($"DatabasePath: {DatabasePath}");
+                    await SimpleLogger.LogAsync($"DatabaseUrl: {DatabaseUrl}");
+                }
+                else
+                {
+                    //create the file if it doesn't exist
+
+                    await SimpleLogger.LogAsync($"{configFilePath} not found");
+                    //await SaveConfigurationAsync();
+
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await SimpleLogger.LogAsync($"{configFilePath} not found");
-
+                SimpleLogger.Log(ex.Message);
+                throw;
             }
+
         }
 
         public static async Task SaveConfigurationAsync()
         {
+
+            if (string.IsNullOrEmpty(GameDirectoryPath))
+            {
+                if (OnRequestGameDirectory != null)
+                {
+                    GameDirectoryPath = await OnRequestGameDirectory.Invoke();
+                }
+            }
             var config = new Configuration
             {
                 GameDirectoryPath = GameDirectoryPath,
@@ -79,8 +101,16 @@ namespace DeFRaG_Helper
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
-            await File.WriteAllTextAsync(configFilePath, json);
-            SimpleLogger.Log("Configuration saved");
+            try
+            {
+                await File.WriteAllTextAsync(configFilePath, json);
+                SimpleLogger.Log("Configuration saved");
+            }
+            catch (Exception ex)
+            {
+                SimpleLogger.Log(ex.Message);
+                throw;
+            }
         }
         public static async Task EnsureDatabaseExistsAsync()
         {
