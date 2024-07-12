@@ -6,7 +6,7 @@
 
         xmlns:local="clr-namespace:DeFRaG_Helper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="1200"
+        Title="DeFRaG" Height="650" Width="1200"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent">
 
     <Window.Resources>
