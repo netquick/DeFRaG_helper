@@ -8,14 +8,15 @@ namespace DeFRaG_Helper
     public static class AppConfig
     {
         private static readonly string configFilePath;
-        public static string GameDirectoryPath { get; set; }
-        public static string SelectedColor { get; set; }
-        public static string ButtonState { get; set; }
+        public static string? GameDirectoryPath { get; set; }
+        public static string? SelectedColor { get; set; }
+        public static string? ButtonState { get; set; }
+        public static string? PhysicsSetting { get; set; }
+        public static string? DatabasePath { get; set; } 
+        public static string? DatabaseUrl { get; set; } 
+
         public delegate Task<string> RequestGameDirectoryDelegate();
         public static event RequestGameDirectoryDelegate OnRequestGameDirectory;
-        public static string PhysicsSetting { get; set; }
-        public static string DatabasePath { get; set; } // Added for database path
-        public static string DatabaseUrl { get; set; } // Added for database URL
         static AppConfig()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -127,14 +128,6 @@ namespace DeFRaG_Helper
                 await SimpleLogger.LogAsync($"Database found at {DatabasePath}");
             }
         }
-        private class Configuration
-        {
-            public string GameDirectoryPath { get; set; }
-            public string SelectedColor { get; set; } 
-            public string ButtonState { get; set; } 
-            public string PhysicsSetting { get; set; }
-            public string DatabasePath { get; set; } // Added for database path
-            public string DatabaseUrl { get; set; } // Added for database URL
-        }
+        
     }
 }

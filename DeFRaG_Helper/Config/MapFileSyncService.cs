@@ -1,5 +1,6 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,9 +11,37 @@ using System.Windows;
 
 namespace DeFRaG_Helper
 {
+    public class MapFlagChangedEventArgs : EventArgs
+    {
+        public Map UpdatedMap { get; }
+
+        public MapFlagChangedEventArgs(Map updatedMap)
+        {
+            UpdatedMap = updatedMap;
+        }
+    }
     public class MapFileSyncService
     {
-        public Action<Map> OnMapFlagsChanged;
+        private static MapFileSyncService instance;
+        public static MapFileSyncService Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MapFileSyncService();
+                }
+                return instance;
+            }
+        }
+
+        public event EventHandler<MapFlagChangedEventArgs> MapFlagsChanged;
+
+        protected virtual void OnMapFlagsChanged(Map updatedMap)
+        {
+            MapFlagsChanged?.Invoke(this, new MapFlagChangedEventArgs(updatedMap));
+        }
+
 
         public async Task SyncMapFilesWithFileSystem(IEnumerable<Map> maps, IProgress<double> progress)
         {
@@ -64,7 +93,7 @@ namespace DeFRaG_Helper
                         {
                             // If there's a change, invoke the delegate to update the database. Call UpdateMapFlagsAsync method in MapViewModel
 
-                            OnMapFlagsChanged?.Invoke(map);
+                            OnMapFlagsChanged(map);
 
                         }
 
@@ -85,5 +114,8 @@ namespace DeFRaG_Helper
                 Debug.WriteLine($"Map: {map.MapName} Filename: {map.FileName}");
             }
         }
+
+
+
     }
 }

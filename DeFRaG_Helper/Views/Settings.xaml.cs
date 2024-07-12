@@ -65,7 +65,6 @@ namespace DeFRaG_Helper
             // Get the singleton instance of MapViewModel
             var mapViewModel = await MapViewModel.GetInstanceAsync();
             App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Syncing maps..."));
-            //MessagingService.SendMessage("Syncing maps...");
 
             // Access the Maps collection
             var maps = mapViewModel.Maps;
@@ -77,12 +76,13 @@ namespace DeFRaG_Helper
                 Console.WriteLine($"Progress: {progress}%");
             });
 
-            // Create an instance of MapFileSyncService
-            var syncService = new MapFileSyncService();
+            // Use the singleton instance of MapFileSyncService instead of creating a new one
+            var syncService = MapFileSyncService.Instance;
 
             // Start the synchronization process
             await syncService.SyncMapFilesWithFileSystem(maps, progressReporter);
         }
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             // Load the selected color from AppConfig and update the ComboBox selection

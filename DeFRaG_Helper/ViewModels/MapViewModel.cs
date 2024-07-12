@@ -65,11 +65,19 @@ namespace DeFRaG_Helper.ViewModels
 
                 await LoadMapsFromDatabase();
 
+                // Assuming MapFileSyncService is a singleton or accessible instance
+                MapFileSyncService syncService = MapFileSyncService.Instance;
+                syncService.MapFlagsChanged += SyncService_MapFlagsChanged;
+
+
 
                 isInitialized = true;
             }
         }
-      
+        private async void SyncService_MapFlagsChanged(object sender, MapFlagChangedEventArgs e)
+        {
+            await UpdateMapFlagsAsync(e.UpdatedMap);
+        }
         public event EventHandler DataLoaded;
 
         // Public method to allow external subscription to the DataLoaded event
@@ -188,24 +196,7 @@ namespace DeFRaG_Helper.ViewModels
             });
         }
 
-        private async Task StartSync(int totalMaps) 
-        {
-            await dbQueue.WhenAllCompleted(); // Wait for all operations to complete
 
-            // After loading data, raise the DataLoaded event on the UI thread
-            IProgress<double> syncProgressReporter = new Progress<double>(progress =>
-            {
-                App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(progress));
-            });
-            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage(totalMaps + " Maps loaded"));
-
-
-            // 2. Create an instance of MapFileSyncService
-            MapFileSyncService syncService = new MapFileSyncService();
-            syncService.OnMapFlagsChanged += async map => await UpdateMapFlagsAsync(map);
-            syncService.SyncMapFilesWithFileSystem(Maps, syncProgressReporter);
-
-        }
         public async Task UpdateMapFlagsAsync(Map map)
         {
             // Find the map in the collection
