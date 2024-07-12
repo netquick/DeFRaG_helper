@@ -1,7 +1,8 @@
 ﻿<Application x:Class="DeFRaG_Helper.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DeFRaG_Helper">
+             xmlns:local="clr-namespace:DeFRaG_Helper"
+             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters">
     <!--StartupUri="MainWindow.xaml">-->
              
     <Application.Resources>
@@ -10,14 +11,20 @@
                 <ResourceDictionary Source="CustomStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <!-- Correctly reference the BoolToVisibilityConverter within the local XML namespace -->
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-            <local:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
-            <local:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
-            <local:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+            <!-- Update this line -->
+            <converters:IntToInverseBooleanConverter x:Key="IntToInverseBooleanConverter"/>
+            <converters:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
+            <converters:SizeFormatConverter x:Key="SizeFormatConverter"/>
+            <converters:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+
+            <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+            <converters:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
             <SolidColorBrush x:Key="ThemeColor"/>
             <local:ServerViewModel x:Key="ServerViewModel" />
-            <local:ServerNameToTextBlockConverter x:Key="ServerNameToTextBlockConverter"/>
-            <local:PlayerCountConverter x:Key="PlayerCountConverter"/>
+            <converters:ServerNameToTextBlockConverter x:Key="ServerNameToTextBlockConverter"/>
+            <converters:PlayerCountConverter x:Key="PlayerCountConverter"/>
 
         </ResourceDictionary>
         

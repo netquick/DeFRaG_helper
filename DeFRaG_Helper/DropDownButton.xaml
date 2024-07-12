@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:DeFRaG_Helper"
+                xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
              SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <!-- Existing resources -->
-        <local:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+        <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
     </UserControl.Resources>
     <Border CornerRadius="10" Background="#2D2D2D">
         <Grid>
@@ -22,7 +23,7 @@
                 <Image.Source>
                     <Binding>
                         <Binding.Converter>
-                            <local:DynamicSvgConverter/>
+                            <converters:DynamicSvgConverter/>
                         </Binding.Converter>
                         <Binding.Source>
                             <sys:String>Icons/esports.svg</sys:String>

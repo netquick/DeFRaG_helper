@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Converters
 {
     public class DynamicSvgConverter : IValueConverter
     {

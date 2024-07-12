@@ -4,19 +4,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DeFRaG_Helper"
+      xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
 
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       x:Name="MapsList"
       Title="Mapspage">
-    <Page.Resources>
-        <local:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
-        <local:SizeFormatConverter x:Key="SizeFormatConverter"/>
-        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-        <local:IntToInverseBooleanConverter x:Key="IntToInverseBooleanConverter"/>
 
-    </Page.Resources>
     <Border CornerRadius="10" Background="#222222">
     <Grid>
         <Grid.RowDefinitions>
@@ -121,7 +116,7 @@
                                                 <Image.Source>
                                                     <Binding>
                                                         <Binding.Converter>
-                                                            <local:DynamicSvgConverter/>
+                                                            <converters:DynamicSvgConverter/>
                                                         </Binding.Converter>
                                                         <Binding.Source>
                                                             <sys:String>Icons/esports.svg</sys:String>
@@ -141,7 +136,7 @@
                                                 <Image.Source>
                                                     <Binding>
                                                         <Binding.Converter>
-                                                            <local:DynamicSvgConverter/>
+                                                            <converters:DynamicSvgConverter/>
                                                         </Binding.Converter>
                                                         <Binding.Source>
                                                             <sys:String>Icons/download.svg</sys:String>

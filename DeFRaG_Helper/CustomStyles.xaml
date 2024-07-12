@@ -1,14 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:DeFRaG_Helper">
-    
-    <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    <local:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
-    <local:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
-    <local:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
-    <local:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+                    xmlns:local="clr-namespace:DeFRaG_Helper"
+                    xmlns:converters="clr-namespace:DeFRaG_Helper.Converters">
 
-    <!-- Global Style for Buttons -->
+
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+    <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+    <converters:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
+    <converters:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+
     <!-- Global Style for Buttons -->
     <Style TargetType="Button">
         <Setter Property="Foreground" Value="#D3D3D3"/>

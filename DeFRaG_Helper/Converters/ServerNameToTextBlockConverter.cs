@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Converters
 {
     public class ServerNameToTextBlockConverter : IValueConverter
     {
@@ -18,7 +18,7 @@ namespace DeFRaG_Helper
         {
             if (value is string serverName)
             {
-                var segments = ServerNameToTextBlockConverter.ParseQuakeColorCodes(serverName); // Call the static method
+                var segments = ParseQuakeColorCodes(serverName); // Call the static method
                 var textBlock = new TextBlock
                 {
                     TextAlignment = TextAlignment.Center, // Center the text

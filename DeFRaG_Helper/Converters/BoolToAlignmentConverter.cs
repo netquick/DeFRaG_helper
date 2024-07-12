@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Converters
 {
     public class BoolToAlignmentConverter : IValueConverter
     {

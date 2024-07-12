@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Converters
 {
     public class InverseBooleanConverter : IValueConverter
     {

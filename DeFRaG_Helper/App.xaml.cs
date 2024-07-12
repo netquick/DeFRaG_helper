@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 using System.Windows.Media;
-
+using DeFRaG_Helper.Converters;
 namespace DeFRaG_Helper
 {
     /// <summary>
@@ -16,10 +16,20 @@ namespace DeFRaG_Helper
             base.OnStartup(e);
             // Initialize logging
             SimpleLogger.Log("Application starting");
-            LoadConfigurationAndStartAsync();
+            LoadConfigurationAndStartAsync().ContinueWith(_ =>
+            {
+                // This ensures the continuation runs on the UI thread
+                Dispatcher.Invoke(() =>
+                {
+                    // Now that configuration and resources are loaded, show the main window
+                    SimpleLogger.Log("Main window created");
+                    MainWindow mainWindow = new MainWindow();
+                    mainWindow.Show();
+                });
+            });
         }
 
-        private async void LoadConfigurationAndStartAsync()
+        private async Task LoadConfigurationAndStartAsync()
         {
             // Ensure the configuration is loaded before proceeding
             await SimpleLogger.LogAsync("Loading configuration");
@@ -35,14 +45,7 @@ namespace DeFRaG_Helper
 
             await AppConfig.EnsureDatabaseExistsAsync();
             SimpleLogger.Log("Database exists");
-            MainWindow mainWindow = new MainWindow();
-            //maybe this would be good?
-            //mainWindow.DataContext = mainWindow;
-            SimpleLogger.Log("Main window created");
-            mainWindow.Show();
-
-            // Assuming StartChecks is static and can be called like this
-            //CheckGameInstall.StartChecks();
+            // The main window creation and showing is moved to the continuation of this method in OnStartup
         }
         private void ApplyThemeColor()
         {

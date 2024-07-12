@@ -141,7 +141,9 @@ namespace DeFRaG_Helper
         {
             get
             {
-                var basePath = AppDomain.CurrentDomain.BaseDirectory; // Gets the base directory of the app
+                // Get the AppData directory and append your application's specific folder
+                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var basePath = System.IO.Path.Combine(appDataPath, "DeFRaG_Helper"); // Adjusted to use the AppData directory
 
                 if (map == null)
                 {
@@ -153,7 +155,6 @@ namespace DeFRaG_Helper
                     ? map.Substring(0, map.Length - 4) + ".jpg"
                     : map + ".jpg";
 
-                //var imagePath = System.IO.Path.Combine(basePath, "PreviewImages", $"{Map}.jpg"); // Assumes .jpg format
                 string imagePath = System.IO.Path.Combine(basePath, $"PreviewImages/{imageName}");
 
                 // Check if the image file exists
@@ -169,6 +170,7 @@ namespace DeFRaG_Helper
                 }
             }
         }
-        // Add other server properties as needed
+
+
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Converters
 {
     public class SidebarWidthConverter : IValueConverter
     {

@@ -25,8 +25,10 @@ namespace DeFRaG_Helper
                         ? MapName.Substring(0, MapName.Length - 4) + ".jpg"
                         : MapName + ".jpg";
 
-                    // Adjusted to the correct folder name "PreviewImages"
-                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                    // Get the AppData directory and append your application's folder
+                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    string basePath = System.IO.Path.Combine(appDataPath, "DeFRaG_Helper"); // Adjusted to use the AppData directory
+
                     string imagePath = System.IO.Path.Combine(basePath, $"PreviewImages/{imageName}");
 
                     // Check if the image file exists
@@ -44,6 +46,8 @@ namespace DeFRaG_Helper
                 return null;
             }
         }
+
+
 
 
 
