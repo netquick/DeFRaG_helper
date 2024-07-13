@@ -1,6 +1,7 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -118,15 +119,64 @@ namespace DeFRaG_Helper
 
 
 
-        private void LvDemos_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void LvDemos_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // Check if the actual item (not empty space) in the ListView was double-clicked
             var item = ((FrameworkElement)e.OriginalSource).DataContext as DemoItem;
             if (item != null)
             {
+               //we need the mapname of the actual demo
+               var mapName = item.MapName;
+                //now we have to check if the map is installed. We check "IsInstalled" property of the map
+                var viewModel = MapViewModel.GetInstanceAsync().Result; 
+                SimpleLogger.Log($"Checking for MapName: {mapName}");
+                var map = viewModel.Maps.FirstOrDefault(m => m.MapName == (mapName + ".bsp")); 
+                if (map != null)
+                {
+                    if (map.IsInstalled == 0)
+                    {
+                        await MapInstaller.InstallMap(map);
+                        SimpleLogger.Log($"Map {map.MapName} installed.");
+                    }
+                    //Prepare the progress handler to update the UI
+                    var progressHandler = new Progress<double>(value =>
+                    {
+                        App.Current.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(value));
+                    });
+                    //Prepare the link for the demo. It's contructed from http://95.31.6.66/~/api/get_file_list?uri=/demos/{mapName[0]}/{mapName}/" and the name of the demo
+                    var demoLink = $"http://95.31.6.66/demos/{mapName[0]}/{mapName}/{item.Name}";
+
+                    //check if there is a demo folder. If not, create it
+                    if (!System.IO.Directory.Exists(AppConfig.GameDirectoryPath + "\\defrag\\demos"))
+                    {
+                        System.IO.Directory.CreateDirectory(AppConfig.GameDirectoryPath + "\\defrag\\demos");
+                    }
+                    //check if there is a demo folder for the map. If not, create it
+                    if (!System.IO.Directory.Exists(AppConfig.GameDirectoryPath + $"\\defrag\\demos\\{mapName}"))
+                    {
+                        System.IO.Directory.CreateDirectory(AppConfig.GameDirectoryPath + $"\\defrag\\demos\\{mapName}");
+                    }
+
+                    //Download the demo to the demo folder
+                    await Downloader.DownloadFileAsync(demoLink, AppConfig.GameDirectoryPath + $"\\defrag\\demos\\{mapName}\\{item.Name}", progressHandler);
+                    
+
+
+
+                    //System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+demo {mapName}//{System.IO.Path.GetFileNameWithoutExtension(item.Name)}") ;
+                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+demo {mapName}/{System.IO.Path.GetFileNameWithoutExtension(item.Name)}");
+
+
+                }
+
+
+
+
                 // Implement your double-click logic here
                 // For example, navigate to a detail page or display a dialog
-                MessageBox.Show($"Double-clicked on item: {item.Name}");
+                ///MessageBox.Show($"Double-clicked on item: {item.Name}");
+
+
             }
         }
 

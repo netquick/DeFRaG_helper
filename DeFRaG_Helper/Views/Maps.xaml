@@ -107,7 +107,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Content for the four rows in the right half -->
-                                <Image Source="{Binding ImagePath}" Grid.Column="0" Width="100" />
+                                <Image Source="{Binding ImagePath}" Grid.Column="0" Width="100" MaxHeight="70" MaxWidth="100"/>
                                     <CheckBox Name="chkFav" IsChecked="{Binding IsFavorite}" Grid.Column="1" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="30, 0, 30, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
 
                                     <Button Name="btnPlay" Grid.Column="2" Width="40" Command="{Binding ElementName=MapsList, Path=DataContext.PlayMapCommand}" CommandParameter="{Binding}">
