@@ -204,6 +204,7 @@ namespace DeFRaG_Helper
                 new NavigationItem { Icon = "Icons/home.svg", Text = "Home", IsActive = true },
                 new NavigationItem { Icon = "Icons/map.svg", Text = "Maps" },
                 new NavigationItem { Icon = "Icons/globe.svg", Text = "Server" },
+                new NavigationItem { Icon = "Icons/slideshow.svg", Text = "Demos" },
                 new NavigationItem { Icon = "Icons/settings.svg", Text = "Settings" },
                 // Add other items here
             };
@@ -294,6 +295,7 @@ namespace DeFRaG_Helper
         private Start startPage = new Start();
         private Maps mapsPage = new Maps();
         private Settings settingsPage = new Settings();
+        private Demos demosPage = new Demos();
         private Server serverPage = new Server();
 
         // Define other pages similarly
@@ -322,6 +324,9 @@ namespace DeFRaG_Helper
                         break;
                     case "Server":
                         navigateToPage = serverPage;
+                        break;
+                    case "Demos":
+                            navigateToPage = demosPage; 
                         break;
                     case "Settings":
                         navigateToPage = settingsPage;

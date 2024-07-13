@@ -42,30 +42,47 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             var _ = InitializeDataContextAsync(); // Discard the task since we can't await in the constructor
+            RefreshView();
+            this.Loaded += Maps_Loaded;
 
         }
         private async Task InitializeDataContextAsync()
         {
             this.DataContext = await MapViewModel.GetInstanceAsync();
             SetupFiltering();
-
+            
         }
-
         private void SetupFiltering()
         {
+           
+            
+
             mapsView = CollectionViewSource.GetDefaultView(((MapViewModel)this.DataContext).Maps);
             mapsView.Filter = FilterMaps;
 
-            // Assuming chkFavorite, chkInstalled, and chkDownloaded are CheckBoxes in your XAML
-            chkFavorite.Checked += (s, e) => mapsView.Refresh();
-            chkFavorite.Unchecked += (s, e) => mapsView.Refresh();
-            chkInstalled.Checked += (s, e) => mapsView.Refresh();
-            chkInstalled.Unchecked += (s, e) => mapsView.Refresh();
-            chkDownloaded.Checked += (s, e) => mapsView.Refresh();
-            chkDownloaded.Unchecked += (s, e) => mapsView.Refresh();
-
-
-            searchBar.TextChanged += (s, e) => mapsView.Refresh();
+            // Subscribe to filter changes
+            chkFavorite.Checked += (s, e) => RefreshView();
+            chkFavorite.Unchecked += (s, e) => RefreshView();
+            chkInstalled.Checked += (s, e) => RefreshView();
+            chkInstalled.Unchecked += (s, e) => RefreshView();
+            chkDownloaded.Checked += (s, e) => RefreshView();
+            chkDownloaded.Unchecked += (s, e) => RefreshView();
+            searchBar.TextChanged += (s, e) => RefreshView();
+        }
+        private void RefreshView()
+        {
+            mapsView.Refresh();
+            UpdateLblCount();
+        }
+        private void UpdateLblCount()
+        {
+            // Assuming lblCount is the Label in your XAML that shows the count
+            lblCount.Content = mapsView.Cast<object>().Count().ToString();
+        }
+        //when maps is fully loaded
+        private void Maps_Loaded(object sender, RoutedEventArgs e)
+        {
+            lblCount.Content = mapsView.Cast<object>().Count().ToString();
 
         }
 
@@ -92,7 +109,6 @@ namespace DeFRaG_Helper
 
             return matchesFavorite && matchesInstalled && matchesDownloaded && matchesSearchText;
         }
-
 
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -130,35 +146,6 @@ namespace DeFRaG_Helper
             }
 
 
-        }
-
-        public void ApplyFilters()
-        {
-            if (mapsView != null)
-            {
-                mapsView.Filter = FilterMaps;
-                mapsView.Refresh(); // Refresh the view to apply the filter immediately
-            }
-        }
-        public void ClearFilters()
-        {
-            if (mapsView != null)
-            {
-                mapsView.Filter = null; // Remove the filter
-                mapsView.Refresh(); // Refresh the view to apply the change immediately
-            }
-        }
-        public void ApplyFilterBasedOnMapIds(List<int> mapIds)
-        {
-            mapsView.Filter = item =>
-            {
-                if (item is Map map)
-                {
-                    return mapIds.Contains(map.Id);
-                }
-                return false;
-            };
-            mapsView.Refresh(); // Ensure the view is updated
         }
     }
 }

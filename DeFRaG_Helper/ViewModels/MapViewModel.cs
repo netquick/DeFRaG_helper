@@ -30,10 +30,41 @@ namespace DeFRaG_Helper.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public IEnumerable<Map> FilterMaps(string filterText)
+        {
+            if (string.IsNullOrWhiteSpace(filterText))
+            {
+                return Maps;
+            }
 
+            return Maps.Where(m => m.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase));
+        }
 
+        private int _filteredMapsCount;
+        public int FilteredMapsCount
+        {
+            get => _filteredMapsCount;
+            set
+            {
+                if (_filteredMapsCount != value)
+                {
+                    _filteredMapsCount = value;
+                    OnPropertyChanged(nameof(FilteredMapsCount)); // Make sure your ViewModel implements INotifyPropertyChanged
+                }
+            }
+        }
 
-
+        // In MapViewModel or a shared ViewModel
+        private Map _selectedMap;
+        public Map SelectedMap
+        {
+            get => _selectedMap;
+            set
+            {
+                _selectedMap = value;
+                OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
+            }
+        }
 
 
 
@@ -190,7 +221,9 @@ namespace DeFRaG_Helper.ViewModels
                 {
                     dataLoaded = true; // Set the flag to true after loading data
                     DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
-                    MainWindow.Instance.HideProgressBar();
+                    //MainWindow.Instance.HideProgressBar();
+                    FilteredMapsCount = Maps.Count;
+
                     // Optionally, do a final UI refresh here if needed
                 });
             });

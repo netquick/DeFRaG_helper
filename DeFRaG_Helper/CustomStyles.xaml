@@ -9,6 +9,75 @@
     <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
     <converters:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
     <converters:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+    <!-- Define DataTemplate for DemoItem -->
+    <DataTemplate x:Key="DemoItemTemplate">
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock Text="{Binding Name}" FontWeight="Bold" Background="#444"/>
+            <TextBlock Text="{Binding Description}" Margin="5,0,0,0"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <Style x:Key="DarkListViewStyle" TargetType="ListView">
+            <Setter Property="Background" Value="#2d2d2d"/>
+            <Setter Property="Foreground" Value="#D3D3D3"/>
+            <Setter Property="BorderBrush" Value="#FF3F3F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <!-- Define the ControlTemplate -->
+            <!-- Add other setters as needed to match your theme -->
+        </Style>
+
+        <!-- ListViewItem Style with Hover Effect -->
+    <Style TargetType="ListViewItem">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeColor}"/>
+                <!-- Selected Background Color -->
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1F1F1F"/>
+                <!-- Hover Background Color -->
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    
+    
+    
+    
+    <!-- GridViewColumnHeader Style -->
+    <!-- GridViewColumnHeader Style -->
+    <Style TargetType="GridViewColumnHeader">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridViewColumnHeader">
+                    <Grid>
+                        <Border Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#FF3F3F46"/>
+        <Setter Property="Padding" Value="5"/>
+        <!-- Other setters as needed -->
+    </Style>
+
+    <Style x:Key="ColoredBorderScrollViewer" TargetType="ScrollViewer">
+        <Setter Property="BorderBrush" Value="Blue"/>
+        <!-- Change 'Blue' to your desired color -->
+        <Setter Property="BorderThickness" Value="1"/>
+        <!-- Adjust thickness as needed -->
+    </Style>
+
 
     <!-- Global Style for Buttons -->
     <Style TargetType="Button">
