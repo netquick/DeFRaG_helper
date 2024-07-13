@@ -14,5 +14,6 @@ namespace DeFRaG_Helper
         public string? PhysicsSetting { get; set; }
         public string? DatabasePath { get; set; }
         public string? DatabaseUrl { get; set; }
+        public string? MenuState { get; set; }
     }
 }

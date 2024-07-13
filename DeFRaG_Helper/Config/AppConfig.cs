@@ -11,6 +11,7 @@ namespace DeFRaG_Helper
         public static string? GameDirectoryPath { get; set; }
         public static string? SelectedColor { get; set; }
         public static string? ButtonState { get; set; }
+        public static string? MenuState { get; set; }
         public static string? PhysicsSetting { get; set; }
         public static string? DatabasePath { get; set; } 
         public static string? DatabaseUrl { get; set; } 
@@ -48,7 +49,8 @@ namespace DeFRaG_Helper
                     ButtonState = config?.ButtonState ?? "Play Game"; // Load button state
                     PhysicsSetting = config?.PhysicsSetting ?? "CPM"; // Default to "CPM" if not set
                     DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
-                    DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl; // Use default if not set
+                    DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl;
+                    MenuState = config?.MenuState ?? MenuState; // Use default if not set
                     await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
                     await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
                     await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
@@ -89,8 +91,9 @@ namespace DeFRaG_Helper
                 SelectedColor = SelectedColor,
                 ButtonState = ButtonState,
                 PhysicsSetting = PhysicsSetting,
-                DatabasePath = DatabasePath, // Save database path
-                DatabaseUrl = DatabaseUrl // Save database URL
+                DatabasePath = DatabasePath,
+                DatabaseUrl = DatabaseUrl,
+                MenuState = MenuState
 
             };
             SimpleLogger.Log($"GameDirectoryPath: {GameDirectoryPath}");

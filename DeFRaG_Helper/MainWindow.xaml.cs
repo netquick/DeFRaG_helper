@@ -208,6 +208,19 @@ namespace DeFRaG_Helper
                 new NavigationItem { Icon = "Icons/settings.svg", Text = "Settings" },
                 // Add other items here
             };
+            if (AppConfig.MenuState == "Collapsed")
+            {
+                SidebarColumn.Width = new GridLength(70); // Adjust to your collapsed width
+                                                          // Assuming you have a way to access the toggle button, e.g., a field named toggleButton
+                toggleButton.Content = ">"; // Or your icon for collapsed state
+                isSidebarCollapsed = true;
+            }
+            else // Default to expanded if not explicitly collapsed
+            {
+                SidebarColumn.Width = new GridLength(240); // Adjust to your expanded width
+                toggleButton.Content = "<"; // Or your icon for expanded state
+                isSidebarCollapsed = false;
+            }
             MainFrame.Navigate(Start.Instance);
 
         }
@@ -463,21 +476,24 @@ namespace DeFRaG_Helper
         {
             if (isSidebarCollapsed)
             {
-                // Expand the sidebar to its original width
+                // Expand the sidebar
                 SidebarColumn.Width = new GridLength(240); // Original width
-                                                           // Optionally, change the button content to indicate collapsing action
                 ((Button)sender).Content = "<"; // Adjust content as needed
                 isSidebarCollapsed = false;
+                AppConfig.MenuState = "Expanded";
             }
             else
             {
-                // Collapse the sidebar to 20px, keeping the toggle button visible
+                // Collapse the sidebar
                 SidebarColumn.Width = new GridLength(70); // Minimal width for collapsed state
-                                                          // Optionally, change the button content to indicate expanding action
                 ((Button)sender).Content = ">"; // Adjust content as needed
                 isSidebarCollapsed = true;
+                AppConfig.MenuState = "Collapsed";
             }
+            // Save the new state asynchronously
+            AppConfig.SaveConfigurationAsync().ConfigureAwait(false);
         }
+
 
         private async void Srv_Click(object sender, RoutedEventArgs e)
         {
