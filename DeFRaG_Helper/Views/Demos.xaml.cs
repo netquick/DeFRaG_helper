@@ -74,11 +74,13 @@ namespace DeFRaG_Helper
         //method to load the demo data
         private async void LoadDemoDataAsync()
         {
-            var viewModel = await MapViewModel.GetInstanceAsync();
-            var selectedMap = viewModel.SelectedMap;
-            if (selectedMap != null)
+            // Use the text from txtMapSearch as the search query
+            string searchQuery = txtMapSearch.Text.Trim();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
             {
-                var demoLink = DemoParser.GetDemoLink(selectedMap.Name);
+                // Use the search query to get the demo link
+                var demoLink = DemoParser.GetDemoLink(searchQuery);
                 var demoItems = await DemoParser.GetDemoLinksAsync(demoLink);
                 foreach (var item in demoItems)
                 {
@@ -86,7 +88,13 @@ namespace DeFRaG_Helper
                 }
                 lvDemos.ItemsSource = demoItems;
             }
+            else
+            {
+                // Optionally clear the list if the search query is empty
+                lvDemos.ItemsSource = null;
+            }
         }
+
 
         private async void TxtMapSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -96,9 +104,11 @@ namespace DeFRaG_Helper
                 {
                     // Clear the ListView's ItemsSource
                     lvDemos.ItemsSource = null;
+                    SimpleLogger.Log("Clear list");
                 }
                 else
                 {
+                    SimpleLogger.Log($"Searching for demos with map name: {txtMapSearch.Text}");
                     LoadDemoDataAsync();
                 }
             }
