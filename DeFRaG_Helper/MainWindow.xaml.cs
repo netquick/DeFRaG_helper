@@ -211,7 +211,7 @@ namespace DeFRaG_Helper
             if (AppConfig.MenuState == "Collapsed")
             {
                 SidebarColumn.Width = new GridLength(70); // Adjust to your collapsed width
-                                                          // Assuming you have a way to access the toggle button, e.g., a field named toggleButton
+                // Assuming you have a way to access the toggle button, e.g., a field named toggleButton
                 toggleButton.Content = ">"; // Or your icon for collapsed state
                 isSidebarCollapsed = true;
             }
