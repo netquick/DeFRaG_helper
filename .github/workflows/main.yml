@@ -24,3 +24,12 @@ jobs:
 
     - name: Run Tests
       run: dotnet test
+
+    - name: Publish Application
+      run: dotnet publish --configuration Release -o ./publish
+
+    - name: Upload Published App as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+       name: published-app
+       path: ./publish/**
