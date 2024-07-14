@@ -33,11 +33,11 @@ namespace DeFRaG_Helper
         private async void StartDelayedTasks()
         {
             // Wait for 1 minute after the application starts
-            await Task.Delay(TimeSpan.FromMinutes(1));
+            //await Task.Delay(TimeSpan.FromMinutes(1));
 
             // Execute your tasks here
-            BackgroundTaskRunner backgroundTaskRunner = new BackgroundTaskRunner();
-            await backgroundTaskRunner.RunTaskAsync();
+            //BackgroundTaskRunner backgroundTaskRunner = new BackgroundTaskRunner();
+            //await backgroundTaskRunner.RunTaskAsync();
         }
 
     

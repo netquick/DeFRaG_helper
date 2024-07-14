@@ -251,18 +251,30 @@ namespace DeFRaG_Helper.ViewModels
                     }
                 }
 
-                App.Current.Dispatcher.Invoke(() =>
+                await App.Current.Dispatcher.InvokeAsync(async () =>
                 {
                     dataLoaded = true; // Set the flag to true after loading data
                     DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
-                    //MainWindow.Instance.HideProgressBar();
+                                                               //MainWindow.Instance.HideProgressBar();
+                    await PerformPostDataLoadActions();
                     FilteredMapsCount = Maps.Count;
 
                     // Optionally, do a final UI refresh here if needed
                 });
+
+
             });
         }
 
+        private async Task PerformPostDataLoadActions()
+        {
+            // Ensure that BackgroundTaskRunner and CreateAndUpdateDB methods are awaited
+            BackgroundTaskRunner backgroundTaskRunner = new BackgroundTaskRunner();
+            await backgroundTaskRunner.RunTaskAsync();
+            await CreateAndUpdateDB.UpdateDB();
+
+            // Any other actions that need to be performed after data is loaded
+        }
 
         public async Task UpdateMapFlagsAsync(Map map)
         {

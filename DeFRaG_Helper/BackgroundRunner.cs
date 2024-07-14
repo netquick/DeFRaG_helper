@@ -10,6 +10,29 @@ namespace DeFRaG_Helper
 {
     public class BackgroundTaskRunner
     {
+
+
+        public BackgroundTaskRunner()
+        {
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
+            var viewModel = await MapViewModel.GetInstanceAsync();
+            // Subscribe to the DataLoaded event
+            viewModel.DataLoaded += ViewModel_DataLoaded;
+        }
+
+        private async void ViewModel_DataLoaded(object sender, EventArgs e)
+        {
+            // Optionally, unsubscribe if you only need to run this once
+            // ((MapViewModel)sender).DataLoaded -= ViewModel_DataLoaded;
+
+            // Maps are loaded, now start the background task
+            await RunTaskAsync();
+        }
+
         public async Task RunTaskAsync()
         {
             ShowMessage("Starting background task");
