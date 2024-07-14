@@ -223,6 +223,7 @@ namespace DeFRaG_Helper.ViewModels
 
                                     // Optionally, refresh the UI to show the newly loaded maps
                                 });
+
                             }
                         }
                     }
@@ -241,6 +242,8 @@ namespace DeFRaG_Helper.ViewModels
 
 
             });
+            await Task.CompletedTask;
+
         }
 
         private async Task PerformPostDataLoadActions()
@@ -276,6 +279,8 @@ namespace DeFRaG_Helper.ViewModels
                         await command.ExecuteNonQueryAsync();
                     }
                 });
+                await Task.CompletedTask;
+
             }
         }
 
@@ -310,36 +315,43 @@ namespace DeFRaG_Helper.ViewModels
         // Change the method to be an instance method instead of a static method
         public async Task UpdateOrAddMap(Map map)
         {
-            // Adjust the existence check to consider both Mapname and Filename
-            var existingMap = Maps.FirstOrDefault(m => m.Mapname == map.Mapname && m.Filename == map.Filename);
-
-            if (existingMap != null)
+            try
             {
-                // Map exists, update its properties
-                UpdateMapProperties(existingMap, map);
+                // Adjust the existence check to consider both Mapname and Filename
+                var existingMap = Maps.FirstOrDefault(m => m.Mapname == map.Mapname && m.Filename == map.Filename);
 
-                // Enqueue database update operation
-                DbQueue.Instance.Enqueue(async connection =>
+                if (existingMap != null)
                 {
-                    // Assuming you have a method to create and execute the SQL command for updating
-                    await DbActions.Instance.UpdateMap(map);
-                });
-                await Task.CompletedTask;
+                    // Map exists, update its properties
+                    UpdateMapProperties(existingMap, map);
 
+                    // Enqueue database update operation
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // Assuming you have a method to create and execute the SQL command for updating
+                        await DbActions.Instance.UpdateMap(existingMap);
+                    });
+                    await Task.CompletedTask;
+
+                }
+                else
+                {
+                    // Map does not exist, add it to the collection
+                    App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+
+                    // Enqueue database insert operation
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // Assuming you have a method to create and execute the SQL command for inserting
+                        await DbActions.Instance.AddMap(map);
+                    });
+                    await Task.CompletedTask;
+
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Map does not exist, add it to the collection
-                App.Current.Dispatcher.Invoke(() => Maps.Add(map));
-
-                // Enqueue database insert operation
-                DbQueue.Instance.Enqueue(async connection =>
-                {
-                    // Assuming you have a method to create and execute the SQL command for inserting
-                    await DbActions.Instance.AddMap(map);
-                });
-                await Task.CompletedTask;
-
+                SimpleLogger.Log($"Error updating or adding map: {ex.Message}");
             }
         }
 
@@ -366,7 +378,7 @@ namespace DeFRaG_Helper.ViewModels
             existingMap.Dependencies = newMap.Dependencies;
             existingMap.Weapons = newMap.Weapons;
             existingMap.Items = newMap.Items;
-            existingMap.Functions = newMap.Functions;
+            existingMap.Function = newMap.Function;
 
 
 
@@ -375,18 +387,7 @@ namespace DeFRaG_Helper.ViewModels
         }
 
         // Example placeholder methods for database operations
-        private async Task UpdateMapInDatabaseAsync(Map map)
-        {
-            // Implementation to update the map in the database
-            await DbActions.Instance.UpdateMap(map);
-        }
-
-        private async Task AddMapToDatabaseAsync(Map map)
-        {
-            // Implementation to add the map to the database
-            await DbActions.Instance.AddMap(map);
-
-        }
+   
 
 
 

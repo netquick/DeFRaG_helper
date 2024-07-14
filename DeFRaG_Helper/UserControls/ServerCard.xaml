@@ -17,8 +17,8 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Height="180" Background="Transparent">
                 <Grid>
-                    <Image HorizontalAlignment="Left" Width="240" Margin="30,30,30,10" Source="{Binding ImagePath}" Stretch="UniformToFill"/>
-                    <TextBlock Text="{Binding Physics}" Margin="223,162,17,10" FontWeight="Bold" Foreground="{DynamicResource ThemeColor}" TextWrapping="Wrap"/>
+                    <Image HorizontalAlignment="Left" Width="240" Margin="30,30,30,00" Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                    <TextBlock Text="{Binding Physics}" Margin="223,144,17,10" FontWeight="Bold" Foreground="{DynamicResource ThemeColor}" TextWrapping="Wrap"/>
 
                 </Grid>
             </Border>

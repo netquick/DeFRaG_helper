@@ -603,7 +603,7 @@ namespace DeFRaG_Helper
                                                 map.Items.Add(name);
                                                 break;
                                             case "Functions":
-                                                map.Functions.Add(name);
+                                                map.Function.Add(name);
                                                 break;
                                         }
                                     }
@@ -624,7 +624,7 @@ namespace DeFRaG_Helper
 
                     await DownloadImageAsync(imageUrl, "https://ws.q3df.org");
                 }
-                ShowMessage($"Details for {map.Name} updated successfully, {imageUrls.Count} images downloaded");
+                ShowMessage($"Details for {map.Name} updated successfully, {imageUrls.Count - 1} images downloaded");
 
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
@@ -675,7 +675,7 @@ WHERE LinkDetailpage = @LinkDetailpage", connection))
                     var slideMatch = slideRegex.Match(dataAttributes);
                     if (slideMatch.Success)
                     {
-                        SimpleLogger.Log($"Found slide {i}: {slideMatch.Groups[1].Value}");
+                        //SimpleLogger.Log($"Found slide {i}: {slideMatch.Groups[1].Value}");
                         imageUrls.Add(slideMatch.Groups[1].Value);
                     }
                 }

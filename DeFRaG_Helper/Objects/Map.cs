@@ -381,16 +381,16 @@ namespace DeFRaG_Helper
             }
         }
 
-        private List<string> functions = new List<string>();
-        public List<string> Functions
+        private List<string> function = new List<string>();
+        public List<string> Function
         {
-            get => functions;
+            get => function;
             set
             {
-                if (functions != value)
+                if (function != value)
                 {
-                    functions = value;
-                    OnPropertyChanged(nameof(Functions));
+                    function = value;
+                    OnPropertyChanged(nameof(Function));
                 }
             }
         }   

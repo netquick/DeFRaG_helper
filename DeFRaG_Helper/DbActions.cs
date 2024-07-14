@@ -71,6 +71,152 @@ namespace DeFRaG_Helper
                 }
             });
             await Task.CompletedTask;
+
+
+
+
+            //we need write Weapons, Items and Function to the corresponding tables
+            //Weapons
+            // Assuming 'MapWeapons' table has columns 'MapId' and 'WeaponId'
+            // 'map.Id' should be the identifier of the map, which you might need to retrieve or have available
+            // This example also assumes you have a method to get the weapon's ID by its name
+
+            // Assuming 'map.Id' is the identifier of the current map and 'map.Weapons' is a list of weapon names for the map
+            if (map.Weapons != null)
+            {
+                foreach (var weaponName in map.Weapons)
+                {
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the WeaponID from the 'Weapons' table
+                        int weaponId = -1;
+                        using (var command = new SqliteCommand("SELECT WeaponID FROM Weapons WHERE Weapon = @WeaponName", connection))
+                        {
+                            command.Parameters.AddWithValue("@WeaponName", weaponName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    weaponId = reader.GetInt32(0); // Assuming 'WeaponID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-weapon link already exists in 'MapWeapon'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapWeapon WHERE MapID = @MapId AND WeaponID = @WeaponId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@WeaponId", weaponId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the weapon exists and the map-weapon link does not exist, insert the link into 'MapWeapon'
+                        if (weaponId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapWeapon (MapID, WeaponID) VALUES (@MapId, @WeaponId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id);
+                                insertCommand.Parameters.AddWithValue("@WeaponId", weaponId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+
+
+            if (map.Items != null)
+            {
+                foreach (var itemName in map.Items)
+                {
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the ItemID from the 'Item' table
+                        int itemId = -1;
+                        using (var command = new SqliteCommand("SELECT ItemID FROM Item WHERE Item = @ItemName", connection))
+                        {
+                            command.Parameters.AddWithValue("@ItemName", itemName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    itemId = reader.GetInt32(0); // Assuming 'ItemID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-item link already exists in 'MapItem'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapItem WHERE MapID = @MapId AND ItemID = @ItemId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@ItemId", itemId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the item exists and the map-item link does not exist, insert the link into 'MapItem'
+                        if (itemId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapItem (MapID, ItemID) VALUES (@MapId, @ItemId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id); // Ensure you have the map's ID available
+                                insertCommand.Parameters.AddWithValue("@ItemId", itemId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+
+            if (map.Function != null)
+            {
+                foreach (var functionName in map.Function)
+                {
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the FunctionID from the 'Function' table
+                        int functionId = -1;
+                        using (var command = new SqliteCommand("SELECT FunctionID FROM Function WHERE Function = @FunctionName", connection))
+                        {
+                            command.Parameters.AddWithValue("@FunctionName", functionName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    functionId = reader.GetInt32(0); // Assuming 'FunctionID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-function link already exists in 'MapFunction'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapFunction WHERE MapID = @MapId AND FunctionID = @FunctionId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@FunctionId", functionId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the function exists and the map-function link does not exist, insert the link into 'MapFunction'
+                        if (functionId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapFunction (MapID, FunctionID) VALUES (@MapId, @FunctionId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id);
+                                insertCommand.Parameters.AddWithValue("@FunctionId", functionId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+
+
+
+
+
+
         }
 
 
@@ -129,6 +275,149 @@ namespace DeFRaG_Helper
                 }
             });
             await Task.CompletedTask;
+
+            SimpleLogger.Log($"Updated Base data for {map.Mapname}");
+
+            if (map.Weapons != null)
+            {
+                //SimpleLogger.Log($"Updating {map.Weapons.Count} Weapons for {map.Mapname}");
+
+                foreach (var weaponName in map.Weapons)
+                {
+                    //SimpleLogger.Log($"Updating {weaponName} for {map.Mapname}");
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the WeaponID from the 'Weapons' table
+                        int weaponId = -1;
+                        using (var command = new SqliteCommand("SELECT WeaponID FROM Weapon WHERE Weapon = @Weapon", connection))
+                        {
+                            command.Parameters.AddWithValue("@Weapon", weaponName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    weaponId = reader.GetInt32(0); // Assuming 'WeaponID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-weapon link already exists in 'MapWeapon'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapWeapon WHERE MapID = @MapId AND WeaponID = @WeaponId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@WeaponId", weaponId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the weapon exists and the map-weapon link does not exist, insert the link into 'MapWeapon'
+                        if (weaponId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapWeapon (MapID, WeaponID) VALUES (@MapId, @WeaponId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id);
+                                insertCommand.Parameters.AddWithValue("@WeaponId", weaponId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+            if (map.Items != null)
+            {
+                //SimpleLogger.Log($"Updating {map.Items.Count} Items for {map.Mapname}");
+
+                foreach (var itemName in map.Items)
+                {
+                    //SimpleLogger.Log($"Updating {itemName} for {map.Mapname}");
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the ItemID from the 'Item' table
+                        int itemId = -1;
+                        using (var command = new SqliteCommand("SELECT ItemID FROM Item WHERE Item = @ItemName", connection))
+                        {
+                            command.Parameters.AddWithValue("@ItemName", itemName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    itemId = reader.GetInt32(0); // Assuming 'ItemID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-item link already exists in 'MapItem'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapItem WHERE MapID = @MapId AND ItemID = @ItemId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@ItemId", itemId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the item exists and the map-item link does not exist, insert the link into 'MapItem'
+                        if (itemId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapItem (MapID, ItemID) VALUES (@MapId, @ItemId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id); // Ensure you have the map's ID available
+                                insertCommand.Parameters.AddWithValue("@ItemId", itemId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+
+            if (map.Function != null)
+            {
+                //SimpleLogger.Log($"Updating {map.Function.Count} Function for {map.Mapname}");
+
+                foreach (var functionName in map.Function)
+                {
+                    //SimpleLogger.Log($"Updating {functionName} for {map.Mapname}");
+                    DbQueue.Instance.Enqueue(async connection =>
+                    {
+                        // First, get the FunctionID from the 'Function' table
+                        int functionId = -1;
+                        using (var command = new SqliteCommand("SELECT FunctionID FROM \"Function\" WHERE \"Function\" = @FunctionName", connection))
+                        {
+                            command.Parameters.AddWithValue("@FunctionName", functionName);
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (reader.Read())
+                                {
+                                    functionId = reader.GetInt32(0); // Assuming 'FunctionID' is the first column
+                                }
+                            }
+                        }
+
+                        // Check if the map-function link already exists in 'MapFunction'
+                        bool exists = false;
+                        using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapFunction WHERE MapID = @MapId AND FunctionID = @FunctionId", connection))
+                        {
+                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@FunctionId", functionId);
+                            exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
+                        }
+
+                        // If the function exists and the map-function link does not exist, insert the link into 'MapFunction'
+                        if (functionId != -1 && !exists)
+                        {
+                            using (var insertCommand = new SqliteCommand(@"INSERT INTO MapFunction (MapID, FunctionID) VALUES (@MapId, @FunctionId)", connection))
+                            {
+                                insertCommand.Parameters.AddWithValue("@MapId", map.Id); // Ensure you have the map's ID available
+                                insertCommand.Parameters.AddWithValue("@FunctionId", functionId);
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    });
+                }
+            }
+
+
+
+
         }
 
 

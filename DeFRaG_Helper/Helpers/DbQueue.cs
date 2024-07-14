@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace DeFRaG_Helper
             _connectionString = connectionString;
         }
 
-        public void Enqueue(Func<SqliteConnection, Task> operation)
+        public void Enqueue(Func<SqliteConnection, Task> operation, [CallerMemberName] string callerMemberName = "")
         {
             _operations.Enqueue(operation);
             lock (_operations) // Use the operations queue itself as a simple lock
@@ -36,12 +37,12 @@ namespace DeFRaG_Helper
                 {
                     _isProcessing = true;
                     _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously); // Reset here
-                    Task.Run(() => ProcessQueue());
+                    Task.Run(() => ProcessQueue(callerMemberName)); // Pass the caller name to the processing method
                 }
             }
         }
 
-        private async Task ProcessQueue()
+        private async Task ProcessQueue(string callerMemberName)
         {
             while (_operations.TryDequeue(out var operation))
             {
@@ -52,17 +53,14 @@ namespace DeFRaG_Helper
                         await connection.OpenAsync();
                         await operation(connection);
                     }
+                    //SimpleLogger.Log($"DbQueue operation completed by {callerMemberName}");
                 }
                 catch (Exception ex)
                 {
-                    //message to showmessage in mainwindow
-
-                    Console.WriteLine($"DbQueue operation failed: {ex.Message}"); // Example logging
+                    Console.WriteLine($"DbQueue operation failed: {ex.Message} - Called by {callerMemberName}");
+                    SimpleLogger.Log($"DbQueue operation failed: {ex.Message}, {ex.StackTrace}- Called by {callerMemberName}");
                     _tcs.SetException(ex); // Consider setting the exception to signal failure
-
-                    //log to mainwindow
-                        SimpleLogger.Log($"DbQueue operation failed: {ex.Message}");
-                        return; // Exit on failure
+                    return; // Exit on failure
                 }
             }
 
@@ -71,6 +69,7 @@ namespace DeFRaG_Helper
                 if (!_operations.IsEmpty)
                 {
                     // If new operations were enqueued during processing, continue processing without setting _isProcessing to false.
+                    SimpleLogger.Log("DbQueue operations enqueued during processing");
                     return;
                 }
                 _isProcessing = false;
