@@ -21,30 +21,7 @@ namespace DeFRaG_Helper.ViewModels
         private static readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static readonly string AppDataFolder = Path.Combine(AppDataPath, "DeFRaG_Helper");
         private static readonly string DbPath = Path.Combine(AppDataFolder, "MapData.db");
-        private static DbQueue? _dbQueue;
 
-        private static readonly object _lock = new object();
-
-        public static DbQueue DbQueueInstance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (_dbQueue == null)
-                    {
-                        if (!Directory.Exists(AppDataFolder))
-                        {
-                            Directory.CreateDirectory(AppDataFolder);
-                        }
-                        // Form the connection string explicitly
-                        var connectionString = $"Data Source={DbPath};";
-                        _dbQueue = new DbQueue(connectionString);
-                    }
-                    return _dbQueue;
-                }
-            }
-        }
         private bool dataLoaded = false; // Flag to indicate if data has been loaded
 
         private static MapViewModel instance;
@@ -194,7 +171,7 @@ namespace DeFRaG_Helper.ViewModels
             var totalMaps = 0;
             if (dataLoaded) return;
 
-            DbQueueInstance.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 // First, determine the total number of maps
                 using (var countCommand = new SqliteCommand("SELECT COUNT(*) FROM Maps", connection))
@@ -288,7 +265,7 @@ namespace DeFRaG_Helper.ViewModels
                 // Other properties as needed
 
                 // Enqueue database update operation
-                DbQueueInstance.Enqueue(async connection =>
+                DbQueue.Instance.Enqueue(async connection =>
                 {
                     using (var command = new SqliteCommand("UPDATE Maps SET isDownloaded = @isDownloaded, isInstalled = @isInstalled WHERE ID = @ID", connection))
                     {
@@ -314,7 +291,7 @@ namespace DeFRaG_Helper.ViewModels
                 // Other properties as needed
 
                 // Enqueue database update operation
-                DbQueueInstance.Enqueue(async connection =>
+                DbQueue.Instance.Enqueue(async connection =>
                 {
                     using (var command = new SqliteCommand("UPDATE Maps SET isFavorite = @isFavorite WHERE ID = @ID", connection))
                     {
@@ -342,7 +319,7 @@ namespace DeFRaG_Helper.ViewModels
                 UpdateMapProperties(existingMap, map);
 
                 // Enqueue database update operation
-                DbQueueInstance.Enqueue(async connection =>
+                DbQueue.Instance.Enqueue(async connection =>
                 {
                     // Assuming you have a method to create and execute the SQL command for updating
                     await DbActions.Instance.UpdateMap(map);
@@ -356,7 +333,7 @@ namespace DeFRaG_Helper.ViewModels
                 App.Current.Dispatcher.Invoke(() => Maps.Add(map));
 
                 // Enqueue database insert operation
-                DbQueueInstance.Enqueue(async connection =>
+                DbQueue.Instance.Enqueue(async connection =>
                 {
                     // Assuming you have a method to create and execute the SQL command for inserting
                     await DbActions.Instance.AddMap(map);

@@ -15,21 +15,22 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" Height="200" Background="Transparent">
+            <Border Grid.Row="0" Height="180" Background="Transparent">
                 <Grid>
-                    <Image HorizontalAlignment="Left" Width="240" Margin="30,30,30,00" Source="{Binding ImagePath}" Stretch="UniformToFill"/>
-                    
+                    <Image HorizontalAlignment="Left" Width="240" Margin="30,30,30,10" Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                    <TextBlock Text="{Binding Physics}" Margin="223,162,17,10" FontWeight="Bold" Foreground="{DynamicResource ThemeColor}" TextWrapping="Wrap"/>
+
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1" CornerRadius="0, 0, 10,10" Height="100" Background="#2a2a2a" HorizontalAlignment="Stretch">
+            <Border Grid.Row="1" CornerRadius="0, 0, 10,10" Height="120" Background="#2a2a2a" HorizontalAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!-- Use ContentControl instead of TextBlock for the name -->
                     <ContentControl Grid.Row="0" FontSize="20" FontFamily="Segoe UI" Content="{Binding Name, Converter={StaticResource ServerNameToTextBlockConverter}}" HorizontalAlignment="Center"/>
@@ -52,10 +53,9 @@
                     <Grid Grid.Row="3">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="{Binding Map}" FontSize="12" Foreground="White" TextAlignment="Right" Margin="0,0,2,0"/>
-                            <TextBlock Text="{Binding Physics}" FontSize="12" Foreground="White" TextAlignment="Left" Margin="2,0,0,0"/>
                         </StackPanel>
                     </Grid>
-                    <Border Grid.Row="4" CornerRadius="10" Background="Transparent" Margin="5,0,5,5">
+                    <Border Grid.Row="4" CornerRadius="10" Background="Transparent" Margin="5,0,5,0">
                         <!-- Adjusted margin -->
                         <ItemsControl ItemsSource="{Binding Players}" HorizontalAlignment="Center">
                             <ItemsControl.ItemTemplate>

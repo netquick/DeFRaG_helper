@@ -24,34 +24,6 @@ namespace DeFRaG_Helper
         private static readonly string AppDataFolder = Path.Combine(AppDataPath, "DeFRaG_Helper");
         private static readonly string DbPath = Path.Combine(AppDataFolder, "MapData.db");
 
-        // Centralized DbQueue instance
-        private static DbQueue? _dbQueue;
-
-        private static readonly object _lock = new object();
-
-        public static DbQueue DbQueueInstance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (_dbQueue == null)
-                    {
-                        if (!Directory.Exists(AppDataFolder))
-                        {
-                            Directory.CreateDirectory(AppDataFolder);
-                        }
-                        // Form the connection string explicitly
-                        var connectionString = $"Data Source={DbPath};";
-                        _dbQueue = new DbQueue(connectionString);
-                    }
-                    return _dbQueue;
-                }
-            }
-        }
-
-
-
         private static void ShowMessage(string message)
         {
             App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.ShowMessage(message); });
@@ -67,30 +39,29 @@ namespace DeFRaG_Helper
             if (!System.IO.File.Exists(DbPath))
             {
                 //Create the datebase using dbqueue
-                CreateDBMaplist(_dbQueue);
+                CreateDBMaplist(DbQueue.Instance);
             }
-        
+
         }
 
         public  static async Task UpdateDB()
         {
             try
             {
-                ShowMessage("Updating database...");
+                ShowMessage("Checking for Database Updates");
                 // Create an instance of CreateAndUpdateDB
-                var dbUpdater = new CreateAndUpdateDB();
 
                 // Step 1: Check the amount of pages
-                int pageCount = await dbUpdater.GetLastPageNumberAsync() + 1;
+                int pageCount = await GetLastPageNumberAsync() + 1;
 
                 // Step 2: Parse each page and update the database
-                await dbUpdater.ParsePagesAsync(pageCount);
+                await ParsePagesAsync(pageCount);
 
                 await UpdateMapDetails();
                 //Update map details
                 //TODO: Implement the map details update logic here
                 
-                ShowMessage("Database update completed successfully.");
+                ShowMessage("Database update completed successfully");
             }
             catch (Exception ex)
             {
@@ -119,7 +90,7 @@ namespace DeFRaG_Helper
             };
 
             // Enqueue the operation
-            _dbQueue.Enqueue(createTableOperation);
+            DbQueue.Instance.Enqueue(createTableOperation);
         }
 
         public static async Task AddMapToList(string name, string linkDetailPage, string filename, int parsed)
@@ -140,10 +111,10 @@ namespace DeFRaG_Helper
                 await insertCmd.ExecuteNonQueryAsync();
             };
             // Enqueue the operation using the centralized instance
-            await Task.Run(() => _dbQueue.Enqueue(insertOperation));
+            await Task.Run(() => DbQueue.Instance.Enqueue(insertOperation));
         }
 
-        private async Task<int> GetLastPageNumberAsync()
+        private static async Task<int> GetLastPageNumberAsync()
         {
             var url = "https://ws.q3df.org/maps/?map=&show=50&page=0";
             var html = await httpClient.GetStringAsync(url);
@@ -166,17 +137,15 @@ namespace DeFRaG_Helper
 
 
         //parse map pages for new maps
-        private async Task ParsePagesAsync(int pageCount)
+        private static async Task ParsePagesAsync(int pageCount)
         {
 
-            // Ensure DbQueue is initialized
-            var dbQueue = CreateAndUpdateDB.DbQueueInstance;
 
             int consecutiveExistingMaps = 0;
             List<string> existingMapLinks = new List<string>();
 
             // Enqueue the operation to load LinkDetailpage values
-            _dbQueue.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 var command = new SqliteCommand("SELECT LinkDetailpage FROM Maplist", connection);
                 using (var reader = await command.ExecuteReaderAsync())
@@ -188,74 +157,83 @@ namespace DeFRaG_Helper
                     }
                 }
             });
-            await _dbQueue.WhenAllCompleted();
+            await DbQueue.Instance.WhenAllCompleted();
 
-            for (int i = 0; i < pageCount; i++)
+            try
             {
-                var url = $"https://ws.q3df.org/maps/?map=&show=50&page={i}";
-                var html = await httpClient.GetStringAsync(url);
-
-                // First, isolate the 'maps_table' table from the HTML content
-                var tableRegex = new Regex(@"<table[^>]+id=['""]maps_table['""][^>]*>(.*?)</table>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                var tableMatch = tableRegex.Match(html);
-                if (!tableMatch.Success) continue; // Skip if the table isn't found
-
-                var tableContent = tableMatch.Groups[1].Value;
-
-                // Now, parse each row within the isolated table content
-                var rowRegex = new Regex(@"<tr\s+class=['""]?[^'""]*['""]?>(.*?)</tr>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                var rows = rowRegex.Matches(tableContent);
-
-                foreach (Match row in rows)
+                for (int i = 0; i < pageCount; i++)
                 {
-                    var cellRegex = new Regex(@"<td.*?>(.*?)</td>", RegexOptions.Singleline);
-                    var cells = cellRegex.Matches(row.Value);
+                    var url = $"https://ws.q3df.org/maps/?map=&show=50&page={i}";
+                    var html = await httpClient.GetStringAsync(url);
 
-                    if (cells.Count >= 6)
+                    // First, isolate the 'maps_table' table from the HTML content
+                    var tableRegex = new Regex(@"<table[^>]+id=['""]maps_table['""][^>]*>(.*?)</table>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    var tableMatch = tableRegex.Match(html);
+                    if (!tableMatch.Success) continue; // Skip if the table isn't found
+
+                    var tableContent = tableMatch.Groups[1].Value;
+
+                    // Now, parse each row within the isolated table content
+                    var rowRegex = new Regex(@"<tr\s+class=['""]?[^'""]*['""]?>(.*?)</tr>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    var rows = rowRegex.Matches(tableContent);
+
+                    foreach (Match row in rows)
                     {
-                        // Assuming the second cell contains the link and name
-                        var detailLinkRegex = new Regex(@"<a.*?href=['""](.*?)['""].*?>(.*?)</a>", RegexOptions.Singleline);
-                        var detailLinkMatch = detailLinkRegex.Match(cells[1].Value);
+                        var cellRegex = new Regex(@"<td.*?>(.*?)</td>", RegexOptions.Singleline);
+                        var cells = cellRegex.Matches(row.Value);
 
-                        if (detailLinkMatch.Success)
+                        if (cells.Count >= 6)
                         {
-                            var detailsPageUrl = detailLinkMatch.Groups[1].Value.Trim();
-                            var fullDetailsPageUrl = $"https://ws.q3df.org{detailsPageUrl}";
-                            var name = detailLinkMatch.Groups[2].Value.Trim();
+                            // Assuming the second cell contains the link and name
+                            var detailLinkRegex = new Regex(@"<a.*?href=['""](.*?)['""].*?>(.*?)</a>", RegexOptions.Singleline);
+                            var detailLinkMatch = detailLinkRegex.Match(cells[1].Value);
 
-                            // Check if the map already exists using the loaded list
-                            if (existingMapLinks.Contains(fullDetailsPageUrl))
+                            if (detailLinkMatch.Success)
                             {
-                                consecutiveExistingMaps++;
-                                if (consecutiveExistingMaps >= 3)
+                                var detailsPageUrl = detailLinkMatch.Groups[1].Value.Trim();
+                                var fullDetailsPageUrl = $"https://ws.q3df.org{detailsPageUrl}";
+                                var name = detailLinkMatch.Groups[2].Value.Trim();
+
+                                // Check if the map already exists using the loaded list
+                                if (existingMapLinks.Contains(fullDetailsPageUrl))
                                 {
-                                    Console.WriteLine("3 consecutive maps found. Cancelling the process.");
-                                    return; // Cancel the process
+                                    consecutiveExistingMaps++;
+                                    if (consecutiveExistingMaps >= 3)
+                                    {
+                                        Console.WriteLine("3 consecutive maps found. Cancelling the process.");
+                                        return; // Cancel the process
+                                    }
+                                    continue; // Skip to the next map
                                 }
-                                continue; // Skip to the next map
+                                else
+                                {
+                                    consecutiveExistingMaps = 0; // Reset the counter if a new map is found
+                                    SimpleLogger.Log($"Parsing map: {fullDetailsPageUrl}");
+                                }
+
+                                // Assuming the third cell contains the filename in an <a> tag's href attribute
+                                var filenameRegex = new Regex(@"<a href=""/maps/downloads/(.*?)\.pk3"">", RegexOptions.Singleline);
+                                var filenameMatch = filenameRegex.Match(cells[2].Value);
+
+                                string filename = "";
+                                if (filenameMatch.Success)
+                                {
+                                    filename = filenameMatch.Groups[1].Value.Trim();
+                                }
+
+
+                                // Call AddMapToList with the extracted data
+                                await AddMapToList(name, fullDetailsPageUrl, filename, 0);
                             }
-                            else
-                            {
-                                consecutiveExistingMaps = 0; // Reset the counter if a new map is found
-                                SimpleLogger.Log($"Parsing map: {fullDetailsPageUrl}");
-                            }
-
-                            // Assuming the third cell contains the filename in an <a> tag's href attribute
-                            var filenameRegex = new Regex(@"<a href=""/maps/downloads/(.*?)\.pk3"">", RegexOptions.Singleline);
-                            var filenameMatch = filenameRegex.Match(cells[2].Value);
-
-                            string filename = "";
-                            if (filenameMatch.Success)
-                            {
-                                filename = filenameMatch.Groups[1].Value.Trim();
-                            }
-
-
-                            // Call AddMapToList with the extracted data
-                            await AddMapToList(name, fullDetailsPageUrl, filename, 0);
                         }
                     }
+                    SimpleLogger.Log($"Page {i + 1} of {pageCount} processed.");
+
                 }
+            } catch (Exception ex)
+            {
+                SimpleLogger.Log($"An error occurred during the database update: {ex.Message}");
+                throw;
             }
         }
 
@@ -265,7 +243,7 @@ namespace DeFRaG_Helper
             List<MapData> mapDataList = new List<MapData>();
 
             // Enqueue the operation to load all map data
-            _dbQueue.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 var command = new SqliteCommand("SELECT Name, LinkDetailpage, Filename, Parsed FROM Maplist", connection);
                 using (var reader = await command.ExecuteReaderAsync())
@@ -291,7 +269,7 @@ namespace DeFRaG_Helper
                     
                 }
             });
-            await _dbQueue.WhenAllCompleted();
+            await DbQueue.Instance.WhenAllCompleted();
 
             return mapDataList;
         }
@@ -306,7 +284,6 @@ namespace DeFRaG_Helper
             {
 
                 ShowMessage($"Updating Details for {map.Name}, Number of maps left: {mapCount}");
-                SimpleLogger.Log($"Updating Details for {map.Name}, Number of maps left: {mapCount}");
                 mapCount--;
                 await GetMapDetails(map); // Await the call to ensure completion
             }
@@ -644,11 +621,10 @@ namespace DeFRaG_Helper
                 {
                     var imageUrl = imageUrls[i];
                     // Use the map's name as the base file name for the image
-                    ShowMessage($"Downloading image {i + 1} of {imageUrls.Count}: {imageUrl}");
-                    SimpleLogger.Log($"Downloading image {i + 1} of {imageUrls.Count}: {imageUrl}");
 
                     await DownloadImageAsync(imageUrl, "https://ws.q3df.org");
                 }
+                ShowMessage($"Details for {map.Name} updated successfully, {imageUrls.Count} images downloaded");
 
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
@@ -665,7 +641,7 @@ namespace DeFRaG_Helper
         }
         public static async Task SetMapParsed(MapData map)
         {
-            DbQueueInstance.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 using (var command = new SqliteCommand(@"UPDATE Maplist 
 SET Parsed = 1 

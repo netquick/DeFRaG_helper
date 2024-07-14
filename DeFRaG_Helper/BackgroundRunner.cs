@@ -35,7 +35,7 @@ namespace DeFRaG_Helper
 
         public async Task RunTaskAsync()
         {
-            ShowMessage("Starting background task");
+            //ShowMessage("Starting background task");
             await CheckInstallState();       
             //implement sync with files and update db tasks here
 
@@ -54,6 +54,7 @@ namespace DeFRaG_Helper
             int totalMaps = viewModel.Maps.Count;
             int processedMaps = 0;
 
+            int countChanged = 0;
             foreach (var map in viewModel.Maps)
             {
                 var mapPath = AppConfig.GameDirectoryPath + "\\defrag\\" + map.Filename;
@@ -87,7 +88,8 @@ namespace DeFRaG_Helper
                 // Optionally, update the map in the ViewModel if it changed
                 if (mapChanged)
                 {
-                    ShowMessage($"Updating map flags for {map.Mapname}");
+                    //ShowMessage($"Updating map flags for {map.Mapname}");
+                    countChanged++;
                     await viewModel.UpdateMapFlagsAsync(map);
                 }
 
@@ -100,6 +102,7 @@ namespace DeFRaG_Helper
                     App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.UpdateProgressBar(progress); });
                 }
             }
+            ShowMessage($"Checked {processedMaps} maps, {countChanged} maps changed");
         }
 
 

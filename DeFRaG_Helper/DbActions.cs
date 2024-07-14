@@ -19,28 +19,6 @@ namespace DeFRaG_Helper
         private static readonly string AppDataFolder = System.IO.Path.Combine(AppDataPath, "DeFRaG_Helper");
         private static readonly string DbPath = System.IO.Path.Combine(AppDataFolder, "MapData.db");
         private static readonly string connectionString = $"Data Source={DbPath};";
-
-        public static DbQueue dbQueue = new DbQueue(connectionString);
-        public static DbQueue DbQueueInstance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (dbQueue == null)
-                    {
-                        if (!Directory.Exists(AppDataFolder))
-                        {
-                            Directory.CreateDirectory(AppDataFolder);
-                        }
-                        // Form the connection string explicitly
-                        var connectionString = $"Data Source={DbPath};";
-                        dbQueue = new DbQueue(connectionString);
-                    }
-                    return dbQueue;
-                }
-            }
-        }
         private DbActions() { }
 
         // Public static method to get the instance
@@ -61,7 +39,7 @@ namespace DeFRaG_Helper
 
         public async Task AddMap(Map map)
         {
-            DbQueueInstance.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 using (var command = new SqliteCommand(@"INSERT INTO Maps 
         (Name, Mapname, Filename, Releasedate, Author, Mod, Size, Physics, Hits, LinkDetailpage, Style, LinksOnlineRecordsQ3DFVQ3, LinksOnlineRecordsQ3DFCPM, LinksOnlineRecordsRacingVQ3, LinksOnlineRecordsRacingCPM, LinkDemosVQ3, LinkDemosCPM, DependenciesTextures) 
@@ -107,7 +85,7 @@ namespace DeFRaG_Helper
 
         public async Task UpdateMap(Map map)
         {
-            DbQueueInstance.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 using (var command = new SqliteCommand(@"UPDATE Maps SET 
             Name = @Name, 
@@ -158,7 +136,7 @@ namespace DeFRaG_Helper
         //method to set the parsed flag in Maplist for the given map
         public async Task SetMapParsed(MapData map)
         {
-            DbQueueInstance.Enqueue(async connection =>
+            DbQueue.Instance.Enqueue(async connection =>
             {
                 using (var command = new SqliteCommand(@"UPDATE Maplist 
 SET Parsed = 1 
