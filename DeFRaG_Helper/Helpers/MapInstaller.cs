@@ -30,13 +30,13 @@ namespace DeFRaG_Helper
                 //download the map
 
 
-                await Downloader.DownloadFileAsync($"https://ws.q3df.org/maps/downloads/{map.FileName}", AppConfig.GameDirectoryPath + $"\\defrag\\{map.FileName}", progress);
+                await Downloader.DownloadFileAsync($"https://ws.q3df.org/maps/downloads/{map.Filename}", AppConfig.GameDirectoryPath + $"\\defrag\\{map.Filename}", progress);
 
             } else if (map.IsDownloaded == 1 && map.IsInstalled == 0)
             {
                 //install the map from archive by it's filename
 
-                System.IO.File.Move(AppConfig.GameDirectoryPath + $"\\archive\\{map.FileName}", AppConfig.GameDirectoryPath + $"\\defrag\\{map.FileName}"); 
+                System.IO.File.Move(AppConfig.GameDirectoryPath + $"\\archive\\{map.Filename}", AppConfig.GameDirectoryPath + $"\\defrag\\{map.Filename}"); 
             }
             map.IsDownloaded = 1;
             map.IsInstalled = 1;
@@ -55,7 +55,7 @@ namespace DeFRaG_Helper
             if (map.IsInstalled == 1)
             {
                 //uninstall the map
-                System.IO.File.Move($"defrag/{map.FileName}", $"archive/{map.FileName}");
+                System.IO.File.Move($"defrag/{map.Filename}", $"archive/{map.Filename}");
             }
             map.IsInstalled = 0;
             //update the map in Maps Viewmodel

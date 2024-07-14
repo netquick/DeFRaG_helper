@@ -34,7 +34,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <!-- For labels -->
                                         <ColumnDefinition Width="*"/>
-                                        <!-- For PlayerName, MapName content -->
+                                        <!-- For PlayerName, Mapname content -->
                                         <ColumnDefinition Width="Auto"/>
                                         <!-- For labels -->
                                         <ColumnDefinition Width="*"/>
@@ -57,7 +57,7 @@
 
                                     <!-- Map Name -->
                                     <TextBlock Text="Map: " FontWeight="Bold" Foreground="White" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding MapName}" Foreground="White" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Mapname}" Foreground="White" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"/>
 
                                     <!-- Physics -->
                                     <TextBlock Text="Country: " FontWeight="Bold" Foreground="White" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"/>

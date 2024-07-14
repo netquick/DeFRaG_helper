@@ -55,16 +55,16 @@ namespace DeFRaG_Helper
                 int initialIsDownloaded = map.IsDownloaded ?? 0;
                 int initialIsInstalled = map.IsInstalled ?? 0;
                 // Check in the "defrag" folder
-                if (map.FileName != null)
+                if (map.Filename != null)
                 {
                     await Task.Run(() =>
                     {
-                        if (AppConfig.GameDirectoryPath == null || (map.FileName == null))
+                        if (AppConfig.GameDirectoryPath == null || (map.Filename == null))
                         {
-                            MessageBox.Show($"Game directory path {AppConfig.GameDirectoryPath} or map filename {map.FileName} is not set in the configuration file.");
+                            MessageBox.Show($"Game directory path {AppConfig.GameDirectoryPath} or map filename {map.Filename} is not set in the configuration file.");
                         }
 
-                        string defragFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "defrag", map.FileName);
+                        string defragFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "defrag", map.Filename);
                         if (System.IO.File.Exists(defragFilePath))
                         {
                             map.IsDownloaded = 1;
@@ -73,7 +73,7 @@ namespace DeFRaG_Helper
                         else
                         {
                             // If not found in "defrag", check in the "archive" folder
-                            string archiveFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "archive", map.FileName);
+                            string archiveFilePath = System.IO.Path.Combine(AppConfig.GameDirectoryPath, "archive", map.Filename);
                             if (System.IO.File.Exists(archiveFilePath))
                             {
                                 map.IsDownloaded = 1;
@@ -111,7 +111,7 @@ namespace DeFRaG_Helper
                     progress?.Report(progressPercentage);
 
                 }
-                Debug.WriteLine($"Map: {map.MapName} Filename: {map.FileName}");
+                Debug.WriteLine($"Map: {map.Mapname} Filename: {map.Filename}");
             }
         }
 

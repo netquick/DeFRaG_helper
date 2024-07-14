@@ -126,7 +126,7 @@ namespace DeFRaG_Helper
                     var random = new Random();
                     var randomMap = matchingMaps[random.Next(matchingMaps.Count)];
 
-                    App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage($"Random map: {randomMap.MapName} out of {matchingMaps.Count}"));
+                    App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage($"Random map: {randomMap.Mapname} out of {matchingMaps.Count}"));
 
                     //we need check if the map is downloaded and installed, if not, we will install it
                     await MapInstaller.InstallMap(randomMap);
@@ -135,8 +135,8 @@ namespace DeFRaG_Helper
                     await mapHistoryManager.UpdateLastPlayedMapsAsync(randomMap.Id);
 
 
-                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.MapName)}"); 
-                    Debug.WriteLine($"Random map: {randomMap.MapName} out of {matchingMaps.Count}");
+                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.Mapname)}"); 
+                    Debug.WriteLine($"Random map: {randomMap.Mapname} out of {matchingMaps.Count}");
                 }
             }
             OnMapPlayed();

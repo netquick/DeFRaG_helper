@@ -60,7 +60,7 @@ namespace DeFRaG_Helper
         {
             var mainWindow = Application.Current.MainWindow as MainWindow;
             int physicsSetting = mainWindow.GetPhysicsSetting(); // method in MainWindow
-            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(Map.MapName)}");
+            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(Map.Mapname)}");
 
         }
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)

@@ -38,8 +38,8 @@ namespace DeFRaG_Helper
             {
                 if (dir.Contains("defrag"))
                 {
-                    return true;
                     SimpleLogger.Log("Defrag folder found");
+                    return true;
                 }
             }
             SimpleLogger.Log("Defrag folder not found");

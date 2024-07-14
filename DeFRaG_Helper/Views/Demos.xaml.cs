@@ -57,16 +57,16 @@ namespace DeFRaG_Helper
             var selectedMap = viewModel.SelectedMap;
             if (selectedMap != null)
             {
-                //MapName without extension
+                //Mapname without extension
 
-                var demoLink = DemoParser.GetDemoLink(System.IO.Path.GetFileNameWithoutExtension(selectedMap.MapName));
+                var demoLink = DemoParser.GetDemoLink(System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname));
                 var demoItems = await DemoParser.GetDemoLinksAsync(demoLink);
                 foreach (var item in demoItems)
                 {
                     item.DecodeName();
                 }
                 lvDemos.ItemsSource = demoItems;
-                txtMapSearch.Text = System.IO.Path.GetFileNameWithoutExtension(selectedMap.MapName);
+                txtMapSearch.Text = System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname);
 
             }
         }
@@ -136,17 +136,17 @@ namespace DeFRaG_Helper
             if (item != null)
             {
                //we need the mapname of the actual demo
-               var mapName = item.MapName;
+               var mapName = item.Mapname;
                 //now we have to check if the map is installed. We check "IsInstalled" property of the map
                 var viewModel = MapViewModel.GetInstanceAsync().Result; 
-                SimpleLogger.Log($"Checking for MapName: {mapName}");
-                var map = viewModel.Maps.FirstOrDefault(m => m.MapName == (mapName + ".bsp")); 
+                SimpleLogger.Log($"Checking for Mapname: {mapName}");
+                var map = viewModel.Maps.FirstOrDefault(m => m.Mapname == (mapName + ".bsp")); 
                 if (map != null)
                 {
                     if (map.IsInstalled == 0)
                     {
                         await MapInstaller.InstallMap(map);
-                        SimpleLogger.Log($"Map {map.MapName} installed.");
+                        SimpleLogger.Log($"Map {map.Mapname} installed.");
                     }
                     //Prepare the progress handler to update the UI
                     var progressHandler = new Progress<double>(value =>
@@ -173,7 +173,7 @@ namespace DeFRaG_Helper
 
 
 
-                    //System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+demo {mapName}//{System.IO.Path.GetFileNameWithoutExtension(item.Name)}") ;
+                    //System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+demo {mapName}//{System.IO.Path.GetFilenameWithoutExtension(item.Name)}") ;
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+demo {mapName}/{System.IO.Path.GetFileNameWithoutExtension(item.Name)}");
 
 

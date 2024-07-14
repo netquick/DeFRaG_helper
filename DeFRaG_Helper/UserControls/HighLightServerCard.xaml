@@ -35,9 +35,9 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <!-- Binding the MapName and FileName properties -->
+                    <!-- Binding the Mapname and Filename properties -->
                     <ContentControl Grid.Row="0" Content="{Binding Name, Converter={StaticResource ServerNameToTextBlockConverter}}" FontSize="14" Foreground="White" HorizontalAlignment="Center" />
-                    <!-- Assuming Author and ReleaseDate are concatenated in the ViewModel -->
+                    <!-- Assuming Author and Releasedate are concatenated in the ViewModel -->
                     <TextBlock Grid.Row="1" Text="{Binding Physics}" FontSize="10" Foreground="White" HorizontalAlignment="Center"/>
                     <TextBlock Grid.Row="2" FontSize="9" Foreground="White" HorizontalAlignment="Center">
                         <TextBlock.Text>

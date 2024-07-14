@@ -26,9 +26,9 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <!-- Binding the MapName and FileName properties -->
-                    <TextBlock Grid.Row="0" Text="{Binding MapName}" FontSize="10" Foreground="White" HorizontalAlignment="Center" />
-                    <!-- Assuming Author and ReleaseDate are concatenated in the ViewModel -->
+                    <!-- Binding the Mapname and Filename properties -->
+                    <TextBlock Grid.Row="0" Text="{Binding Mapname}" FontSize="10" Foreground="White" HorizontalAlignment="Center" />
+                    <!-- Assuming Author and Releasedate are concatenated in the ViewModel -->
                     <TextBlock Grid.Row="1" Text="{Binding Author}" FontSize="10" Foreground="White" HorizontalAlignment="Center"/>
                     <!-- Binding the Hits property -->
                     <TextBlock Grid.Row="2" Text="{Binding Hits}" FontSize="9" Foreground="White" HorizontalAlignment="Center"/>

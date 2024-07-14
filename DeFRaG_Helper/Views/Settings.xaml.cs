@@ -93,6 +93,24 @@ namespace DeFRaG_Helper
                 txtGamePath.Text = AppConfig.GameDirectoryPath;
             }
         }
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await CreateAndUpdateDB.UpdateDB();
+                    // Optionally, use Dispatcher to update the UI thread with success message
+                }
+                catch (Exception ex)
+                {
+                    // Handle the exception, e.g., log it or show an error message on the UI thread using Dispatcher
+                }
+            });
+        }
+
+
     }
-    
+
 }

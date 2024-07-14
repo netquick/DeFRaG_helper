@@ -24,27 +24,50 @@ namespace DeFRaG_Helper
         public void Enqueue(Func<SqliteConnection, Task> operation)
         {
             _operations.Enqueue(operation);
-            if (!_isProcessing)
+            lock (_operations) // Use the operations queue itself as a simple lock
             {
-                _isProcessing = true;
-                Task.Run(() => ProcessQueue());
+                if (!_isProcessing)
+                {
+                    _isProcessing = true;
+                    _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously); // Reset here
+                    Task.Run(() => ProcessQueue());
+                }
             }
-            _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously); // Reset for new operations
         }
 
         private async Task ProcessQueue()
         {
             while (_operations.TryDequeue(out var operation))
             {
-                using (var connection = new SqliteConnection(_connectionString))
+                try
                 {
-                    await connection.OpenAsync();
-                    await operation(connection);
+                    using (var connection = new SqliteConnection(_connectionString))
+                    {
+                        await connection.OpenAsync();
+                        await operation(connection);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"DbQueue operation failed: {ex.Message}"); // Example logging
+                    _tcs.SetException(ex); // Consider setting the exception to signal failure
+                    return; // Exit on failure
                 }
             }
-            _isProcessing = false;
+
+            lock (_operations)
+            {
+                if (!_operations.IsEmpty)
+                {
+                    // If new operations were enqueued during processing, continue processing without setting _isProcessing to false.
+                    return;
+                }
+                _isProcessing = false;
+            }
             _tcs.SetResult(true); // Signal completion
         }
+
+
 
         public Task WhenAllCompleted() => _tcs.Task;
     }

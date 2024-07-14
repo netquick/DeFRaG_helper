@@ -15,5 +15,6 @@ namespace DeFRaG_Helper
         public string? DatabasePath { get; set; }
         public string? DatabaseUrl { get; set; }
         public string? MenuState { get; set; }
+        public string? ConnectionString { get; set; }
     }
 }

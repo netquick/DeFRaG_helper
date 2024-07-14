@@ -15,6 +15,7 @@ namespace DeFRaG_Helper
         public static string? PhysicsSetting { get; set; }
         public static string? DatabasePath { get; set; } 
         public static string? DatabaseUrl { get; set; } 
+        public static string? ConnectionString { get; set; }
 
         public delegate Task<string> RequestGameDirectoryDelegate();
         public static event RequestGameDirectoryDelegate OnRequestGameDirectory;
@@ -32,6 +33,7 @@ namespace DeFRaG_Helper
             // Default values for new properties
             DatabasePath = Path.Combine(appFolder, "MapData.db");
             DatabaseUrl = "https://dl.netquick.ch/MapData.db"; // Placeholder URL
+            ConnectionString = $"Data Source={DatabasePath}";
         }
 
         public static async Task LoadConfigurationAsync()
@@ -51,6 +53,7 @@ namespace DeFRaG_Helper
                     DatabasePath = config?.DatabasePath ?? DatabasePath; // Use default if not set
                     DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl;
                     MenuState = config?.MenuState ?? MenuState; // Use default if not set
+                    ConnectionString = config?.ConnectionString ?? ConnectionString; // Use default if not set
                     await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
                     await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
                     await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
@@ -93,7 +96,8 @@ namespace DeFRaG_Helper
                 PhysicsSetting = PhysicsSetting,
                 DatabasePath = DatabasePath,
                 DatabaseUrl = DatabaseUrl,
-                MenuState = MenuState
+                MenuState = MenuState,
+                ConnectionString = ConnectionString
 
             };
             SimpleLogger.Log($"GameDirectoryPath: {GameDirectoryPath}");

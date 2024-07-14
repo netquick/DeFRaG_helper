@@ -303,6 +303,7 @@ namespace DeFRaG_Helper
                 };
                 timer.Start();
             });
+            SimpleLogger.Log(message);
         }
 
         private Start startPage = new Start();

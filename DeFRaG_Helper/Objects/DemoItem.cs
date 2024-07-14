@@ -8,7 +8,7 @@ namespace DeFRaG_Helper
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public long Size { get; set; }
-        public string MapName { get; private set; }
+        public string Mapname { get; private set; }
         public string Type { get; private set; }
         public string Physics { get; private set; }
         public string Time { get; private set; }
@@ -31,11 +31,11 @@ namespace DeFRaG_Helper
 
         public void DecodeName()
         {
-            var pattern = @"^(?<MapName>[^\[]+)\[(?<Type>[^\.]+)\.(?<Physics>[^\]]+)\](?<Time>\d{2}\.\d{2}\.\d{3})\((?<PlayerName>[^\.]+)\.(?<PlayerCountry>[^\)]+)\)";
+            var pattern = @"^(?<Mapname>[^\[]+)\[(?<Type>[^\.]+)\.(?<Physics>[^\]]+)\](?<Time>\d{2}\.\d{2}\.\d{3})\((?<PlayerName>[^\.]+)\.(?<PlayerCountry>[^\)]+)\)";
             var match = Regex.Match(Name, pattern);
             if (match.Success)
             {
-                MapName = match.Groups["MapName"].Value;
+                Mapname = match.Groups["Mapname"].Value;
                 Type = match.Groups["Type"].Value;
                 Physics = match.Groups["Physics"].Value;
                 Time = match.Groups["Time"].Value;

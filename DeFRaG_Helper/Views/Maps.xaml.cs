@@ -54,11 +54,12 @@ namespace DeFRaG_Helper
         }
         private void SetupFiltering()
         {
-           
-            
-
             mapsView = CollectionViewSource.GetDefaultView(((MapViewModel)this.DataContext).Maps);
             mapsView.Filter = FilterMaps;
+
+            // Change sorting to descending to have the newest maps at the top
+            mapsView.SortDescriptions.Clear(); // It's good practice to clear existing sort descriptions first
+            mapsView.SortDescriptions.Add(new SortDescription("Releasedate", ListSortDirection.Descending));
 
             // Subscribe to filter changes
             chkFavorite.Checked += (s, e) => RefreshView();
@@ -69,6 +70,8 @@ namespace DeFRaG_Helper
             chkDownloaded.Unchecked += (s, e) => RefreshView();
             searchBar.TextChanged += (s, e) => RefreshView();
         }
+
+
         private void RefreshView()
         {
             mapsView.Refresh();
@@ -103,8 +106,8 @@ namespace DeFRaG_Helper
             // Safely check if the map's properties contain the search text, accounting for potential null values
             bool matchesSearchText = string.IsNullOrEmpty(searchText) || searchText == "filter..." || // Ignore if searchText is default or empty
                                      (map.Name?.ToLower().Contains(searchText) ?? false) ||
-                                     (map.MapName?.ToLower().Contains(searchText) ?? false) ||
-                                     (map.FileName?.ToLower().Contains(searchText) ?? false) ||
+                                     (map.Mapname?.ToLower().Contains(searchText) ?? false) ||
+                                     (map.Filename?.ToLower().Contains(searchText) ?? false) ||
                                      (map.Author?.ToLower().Contains(searchText) ?? false);
 
             return matchesFavorite && matchesInstalled && matchesDownloaded && matchesSearchText;

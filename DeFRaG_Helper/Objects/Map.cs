@@ -18,12 +18,12 @@ namespace DeFRaG_Helper
         {
             get
             {
-                if (!string.IsNullOrEmpty(MapName))
+                if (!string.IsNullOrEmpty(Mapname))
                 {
                     // Replace .bsp extension with .jpg
-                    string imageName = MapName.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
-                        ? MapName.Substring(0, MapName.Length - 4) + ".jpg"
-                        : MapName + ".jpg";
+                    string imageName = Mapname.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                        ? Mapname.Substring(0, Mapname.Length - 4) + ".jpg"
+                        : Mapname + ".jpg";
 
                     // Get the AppData directory and append your application's folder
                     string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -79,7 +79,7 @@ namespace DeFRaG_Helper
             }
         }
         private string mapName;
-        public string? MapName
+        public string? Mapname
         {
             get => mapName;
             set
@@ -87,21 +87,21 @@ namespace DeFRaG_Helper
                 if (mapName != value)
                 {
                     mapName = value;
-                    OnPropertyChanged(nameof(MapName));
+                    OnPropertyChanged(nameof(Mapname));
                 }
             }
         }
 
-        private string fileName;
-        public string? FileName
+        private string filename;
+        public string? Filename
         {
-            get => fileName;
+            get => filename;
             set
             {
-                if (fileName != value)
+                if (filename != value)
                 {
-                    fileName = value;
-                    OnPropertyChanged(nameof(FileName));
+                    filename = value;
+                    OnPropertyChanged(nameof(Filename));
                 }
             }
         }
@@ -134,16 +134,16 @@ namespace DeFRaG_Helper
             }
         }
 
-        private string releaseDate;
-        public string? ReleaseDate
+        private string releasedate;
+        public string? Releasedate
         {
-            get => releaseDate;
+            get => releasedate;
             set
             {
-                if (releaseDate != value)
+                if (releasedate != value)
                 {
-                    releaseDate = value;
-                    OnPropertyChanged(nameof(ReleaseDate));
+                    releasedate = value;
+                    OnPropertyChanged(nameof(Releasedate));
                 }
             }
         }
@@ -204,16 +204,16 @@ namespace DeFRaG_Helper
             }
         }
 
-        private string downloadlink;
-        public string? Downloadlink
+        private string linkDetailpage;
+        public string? LinkDetailpage
         {
-            get => downloadlink;
+            get => linkDetailpage;
             set
             {
-                if (downloadlink != value)
+                if (linkDetailpage != value)
                 {
-                    downloadlink = value;
-                    OnPropertyChanged(nameof(Downloadlink));
+                    linkDetailpage = value;
+                    OnPropertyChanged(nameof(LinkDetailpage));
                 }
             }
         }
@@ -259,5 +259,140 @@ namespace DeFRaG_Helper
                 }
             }
         }
+
+        private string? linksOnlineRecordsQ3DFVQ3;
+        public string? LinksOnlineRecordsQ3DFVQ3
+        {
+            get => linksOnlineRecordsQ3DFVQ3;
+            set
+            {
+                if (linksOnlineRecordsQ3DFVQ3 != value)
+                {
+                    linksOnlineRecordsQ3DFVQ3 = value;
+                    OnPropertyChanged(nameof(LinksOnlineRecordsQ3DFVQ3));
+                }
+            }
+        }
+        private string? linksOnlineRecordsQ3DFCPM;
+        public string? LinksOnlineRecordsQ3DFCPM
+        {
+            get => linksOnlineRecordsQ3DFCPM;
+            set
+            {
+                if (linksOnlineRecordsQ3DFCPM != value)
+                {
+                    linksOnlineRecordsQ3DFCPM = value;
+                    OnPropertyChanged(nameof(LinksOnlineRecordsQ3DFCPM));
+                }
+            }
+        }
+        private string? linksOnlineRecordsRacingVQ3;
+        public string? LinksOnlineRecordsRacingVQ3
+        {
+            get => linksOnlineRecordsRacingVQ3;
+            set
+            {
+                if (linksOnlineRecordsRacingVQ3 != value)
+                {
+                    linksOnlineRecordsRacingVQ3 = value;
+                    OnPropertyChanged(nameof(LinksOnlineRecordsRacingVQ3));
+                }
+            }
+        }
+        private string? linksOnlineRecordsRacingCPM;
+        public string? LinksOnlineRecordsRacingCPM
+        {
+            get => linksOnlineRecordsRacingCPM;
+            set
+            {
+                if (linksOnlineRecordsRacingCPM != value)
+                {
+                    linksOnlineRecordsRacingCPM = value;
+                    OnPropertyChanged(nameof(LinksOnlineRecordsRacingCPM));
+                }
+            }
+        }
+        private string? linkDemosVQ3;
+        public string? LinkDemosVQ3
+        {
+            get => linkDemosVQ3;
+            set
+            {
+                if (linkDemosVQ3 != value)
+                {
+                    linkDemosVQ3 = value;
+                    OnPropertyChanged(nameof(LinkDemosVQ3));
+                }
+            }
+        }
+        private string? linkDemosCPM;
+        public string? LinkDemosCPM
+        {
+            get => linkDemosCPM;
+            set
+            {
+                if (linkDemosCPM != value)
+                {
+                    linkDemosCPM = value;
+                    OnPropertyChanged(nameof(LinkDemosCPM));
+                }
+            }
+        }
+
+        private string? dependencies;
+        public string? Dependencies
+        {
+            get => dependencies;
+            set
+            {
+                if (dependencies != value)
+                {
+                    dependencies = value;
+                    OnPropertyChanged(nameof(Dependencies));
+                }
+            }
+        }
+
+        private List<string> weapons = new List<string>();
+        public List<string> Weapons
+        {
+            get => weapons;
+            set
+            {
+                if (weapons != value)
+                {
+                    weapons = value;
+                    OnPropertyChanged(nameof(Weapons));
+                }
+            }
+        }
+
+        private List<string> items = new List<string>();
+        public List<string> Items
+        {
+            get => items;
+            set
+            {
+                if (items != value)
+                {
+                    items = value;
+                    OnPropertyChanged(nameof(Items));
+                }
+            }
+        }
+
+        private List<string> functions = new List<string>();
+        public List<string> Functions
+        {
+            get => functions;
+            set
+            {
+                if (functions != value)
+                {
+                    functions = value;
+                    OnPropertyChanged(nameof(Functions));
+                }
+            }
+        }   
     }
 }
