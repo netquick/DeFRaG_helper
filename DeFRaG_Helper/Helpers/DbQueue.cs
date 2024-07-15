@@ -53,12 +53,12 @@ namespace DeFRaG_Helper
                         await connection.OpenAsync();
                         await operation(connection);
                     }
-                    //SimpleLogger.Log($"DbQueue operation completed by {callerMemberName}");
+                    //MessageHelper.Log($"DbQueue operation completed by {callerMemberName}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"DbQueue operation failed: {ex.Message} - Called by {callerMemberName}");
-                    SimpleLogger.Log($"DbQueue operation failed: {ex.Message}, {ex.StackTrace}- Called by {callerMemberName}");
+                    MessageHelper.Log($"DbQueue operation failed: {ex.Message}, {ex.StackTrace}- Called by {callerMemberName}");
                     _tcs.SetException(ex); // Consider setting the exception to signal failure
                     return; // Exit on failure
                 }
@@ -69,7 +69,7 @@ namespace DeFRaG_Helper
                 if (!_operations.IsEmpty)
                 {
                     // If new operations were enqueued during processing, continue processing without setting _isProcessing to false.
-                    SimpleLogger.Log("DbQueue operations enqueued during processing");
+                    MessageHelper.Log("DbQueue operations enqueued during processing");
                     return;
                 }
                 _isProcessing = false;

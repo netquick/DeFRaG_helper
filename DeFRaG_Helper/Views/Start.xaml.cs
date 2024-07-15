@@ -128,7 +128,7 @@ namespace DeFRaG_Helper
                 }
                 catch (Exception ex)
                 {
-                    SimpleLogger.Log(ex.Message);
+                    MessageHelper.Log(ex.Message);
                     throw;
                 }
        

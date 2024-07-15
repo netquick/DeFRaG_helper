@@ -351,7 +351,7 @@ namespace DeFRaG_Helper.ViewModels
             }
             catch (Exception ex)
             {
-                SimpleLogger.Log($"Error updating or adding map: {ex.Message}");
+                MessageHelper.Log($"Error updating or adding map: {ex.Message}");
             }
         }
 

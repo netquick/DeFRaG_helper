@@ -276,15 +276,15 @@ namespace DeFRaG_Helper
             });
             await Task.CompletedTask;
 
-            SimpleLogger.Log($"Updated Base data for {map.Mapname}");
+            MessageHelper.Log($"Updated Base data for {map.Mapname}");
 
             if (map.Weapons != null)
             {
-                //SimpleLogger.Log($"Updating {map.Weapons.Count} Weapons for {map.Mapname}");
+                //MessageHelper.Log($"Updating {map.Weapons.Count} Weapons for {map.Mapname}");
 
                 foreach (var weaponName in map.Weapons)
                 {
-                    //SimpleLogger.Log($"Updating {weaponName} for {map.Mapname}");
+                    //MessageHelper.Log($"Updating {weaponName} for {map.Mapname}");
                     DbQueue.Instance.Enqueue(async connection =>
                     {
                         // First, get the WeaponID from the 'Weapons' table
@@ -325,11 +325,11 @@ namespace DeFRaG_Helper
             }
             if (map.Items != null)
             {
-                //SimpleLogger.Log($"Updating {map.Items.Count} Items for {map.Mapname}");
+                //MessageHelper.Log($"Updating {map.Items.Count} Items for {map.Mapname}");
 
                 foreach (var itemName in map.Items)
                 {
-                    //SimpleLogger.Log($"Updating {itemName} for {map.Mapname}");
+                    //MessageHelper.Log($"Updating {itemName} for {map.Mapname}");
                     DbQueue.Instance.Enqueue(async connection =>
                     {
                         // First, get the ItemID from the 'Item' table
@@ -371,11 +371,11 @@ namespace DeFRaG_Helper
 
             if (map.Function != null)
             {
-                //SimpleLogger.Log($"Updating {map.Function.Count} Function for {map.Mapname}");
+                //MessageHelper.Log($"Updating {map.Function.Count} Function for {map.Mapname}");
 
                 foreach (var functionName in map.Function)
                 {
-                    //SimpleLogger.Log($"Updating {functionName} for {map.Mapname}");
+                    //MessageHelper.Log($"Updating {functionName} for {map.Mapname}");
                     DbQueue.Instance.Enqueue(async connection =>
                     {
                         // First, get the FunctionID from the 'Function' table

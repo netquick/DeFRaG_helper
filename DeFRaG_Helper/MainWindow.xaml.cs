@@ -11,6 +11,8 @@ using System.Windows.Navigation;
 using WPFFolderBrowser;
 
 
+/// <summary>
+/// MainWindow.xaml.cs for general UI logic
 
 namespace DeFRaG_Helper
 {
@@ -45,18 +47,19 @@ namespace DeFRaG_Helper
             {
                 if (_instance == null)
                     _instance = Application.Current.MainWindow as MainWindow;
+                MessageHelper.Log("MainWindow Instance");
+
                 return _instance;
-                SimpleLogger.Log("MainWindow Instance");
             }
         }
         public MainWindow()
         {
             InitializeComponent();
-            SimpleLogger.Log("MainWindow Constructor");
+            MessageHelper.Log("MainWindow Constructor");
             MainFrame.Navigated += MainFrame_Navigated;
 
             this.SourceInitialized += MainWindow_SourceInitialized;
-            SimpleLogger.Log("MainWindow SourceInitialized");
+            MessageHelper.Log("MainWindow SourceInitialized");
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
             NavigationListView.SelectionChanged += NavigationListView_SelectionChanged;
@@ -67,16 +70,22 @@ namespace DeFRaG_Helper
             hideProgressBarTimer.Elapsed += HideProgressBarTimer_Elapsed;
             hideProgressBarTimer.AutoReset = false; // Ensure the timer runs only once per start
         }
+
+        //Method to apply filters based on the page navigated to in the MainFrame
         private void MainFrame_Navigated(object sender, NavigationEventArgs e)
         {
             ApplyFilterBasedOnPageAsync(e.Content);
         }
+
+        //Method to request game directory
         private async Task<string> RequestGameDirectoryAsync()
         {
             // Assuming you have a method to show a dialog and return the selected path
             string selectedPath = await ShowDirectorySelectionDialogAsync();
             return selectedPath;
         }
+
+        //Method to show a folder selection dialog
         public static async Task<string> ShowDirectorySelectionDialogAsync()
         {
             string folderPath = string.Empty;
@@ -94,6 +103,9 @@ namespace DeFRaG_Helper
             });
             return folderPath;
         }
+
+
+        //Method to apply filters based on the page navigated to in the MainFrame
         private async void ApplyFilterBasedOnPageAsync(object navigatedContent)
         {
             try
@@ -140,7 +152,6 @@ namespace DeFRaG_Helper
 
 
 
-
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MessagingService.Subscribe(ShowMessage);
@@ -154,6 +165,7 @@ namespace DeFRaG_Helper
 
         }
 
+        //Method to check and install preview pictures
         private async Task CheckAndInstallPreviewPictures()
         {
             //get appdata path 
@@ -162,7 +174,7 @@ namespace DeFRaG_Helper
             string previewPicturesPath = System.IO.Path.Combine(appDataFolder, "PreviewImages");
             if (!System.IO.Directory.Exists(previewPicturesPath))
             {
-            SimpleLogger.Log("Images not found, downloading");
+            MessageHelper.Log("Images not found, downloading");
                 //download images from https://dl.netquick.ch/PreviewImages.zip using Downloader class
                 string url = "https://dl.netquick.ch/PreviewImages.zip";  
                 string zipPath = System.IO.Path.Combine(appDataFolder, "PreviewImages.zip");
@@ -175,7 +187,7 @@ namespace DeFRaG_Helper
                 await Downloader.DownloadFileAsync(url, zipPath, progress);
                 ShowMessage("Images downloaded, unpacking");
                 await Downloader.UnpackFile(zipPath, appDataFolder, progress);
-                SimpleLogger.Log("Images downloaded and extracted");
+                MessageHelper.Log("Images downloaded and extracted");
 
 
             }
@@ -190,6 +202,8 @@ namespace DeFRaG_Helper
         {
             MessagingService.Unsubscribe(ShowMessage);
         }
+
+        //Method to auto close the progress bar after 2 seconds
         private void HideProgressBarTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Dispatcher.Invoke(() =>
@@ -197,6 +211,8 @@ namespace DeFRaG_Helper
                 progressBar.Visibility = Visibility.Hidden;
             });
         }
+
+        //method to Load Navigation Bar
         public void LoadNavigationBar()
         {
             NavigationListView.ItemsSource = new List<NavigationItem>
@@ -225,14 +241,7 @@ namespace DeFRaG_Helper
 
         }
 
-        public void ShowProgressBar()
-        {
-            progressBar.Visibility = Visibility.Visible;
-        }
-        public void HideProgressBar()
-        {
-            progressBar.Visibility = Visibility.Hidden;
-        }
+        //Method to update progress bar
         public void UpdateProgressBar(double value)
         {
             Debug.WriteLine("Updating progress bar: " + value);
@@ -251,6 +260,7 @@ namespace DeFRaG_Helper
         }
 
 
+        //Method to get physics setting
         public int GetPhysicsSetting ()
         {
             // get state of chkPhysics checkbox and return the corresponding value for physics setting. 2 for CPM, 1 for VQ3
@@ -258,6 +268,8 @@ namespace DeFRaG_Helper
 
         }
 
+
+        //Method to set physics setting in checkbox toggle
         private void PhysicsMode_Changed(object sender, RoutedEventArgs e)
         {
             // Implementation logic here
@@ -270,6 +282,8 @@ namespace DeFRaG_Helper
                 lblPhysics.Content = AppConfig.PhysicsSetting;
             }
         }
+
+        //TODO: check if this method is directly called 
         public void ShowMessage(string message)
         {
             Dispatcher.Invoke(() =>
@@ -303,16 +317,18 @@ namespace DeFRaG_Helper
                 };
                 timer.Start();
             });
-            SimpleLogger.Log(message);
+            MessageHelper.Log(message);
         }
 
+
+        // Define the pages to navigate to
         private Start startPage = new Start();
         private Maps mapsPage = new Maps();
         private Settings settingsPage = new Settings();
         private Demos demosPage = new Demos();
         private Server serverPage = new Server();
 
-        // Define other pages similarly
+        //Method to handle navigation list view selection changed
         private void NavigationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (NavigationListView.SelectedItem is NavigationItem selectedItem)
@@ -357,7 +373,7 @@ namespace DeFRaG_Helper
         }
 
 
-
+        //Method to handle source initialized
         private void MainWindow_SourceInitialized(object sender, EventArgs e)
         {
             int isEnabled = 0;
@@ -372,6 +388,10 @@ namespace DeFRaG_Helper
                 DwmExtendFrameIntoClientArea(hWnd, ref margins);
             }
         }
+
+
+        //Method to implement drag and drop functionality
+
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // Allows the window to be dragged around by the custom title bar
@@ -380,6 +400,8 @@ namespace DeFRaG_Helper
                 this.DragMove();
             }
         }
+
+        //Method to implement window resizing functionality on doubleclick
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2) // Check if it's a double-click
@@ -405,7 +427,7 @@ namespace DeFRaG_Helper
         }
 
 
-
+        //Button click events for minimize, maximize and close buttons
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -421,6 +443,7 @@ namespace DeFRaG_Helper
             this.Close();
         }
 
+        //Method to handle window resizing
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -430,6 +453,7 @@ namespace DeFRaG_Helper
             Debug.WriteLine("Got focus");
         }
 
+        //Methods to handle window resizing
         private void OnRightDragDelta(object sender, DragDeltaEventArgs e)
         {
             double newWidth = this.Width + e.HorizontalChange;
@@ -473,6 +497,8 @@ namespace DeFRaG_Helper
         }
         private bool isSidebarCollapsed = false; // Tracks the sidebar state
 
+
+        //Method to toggle sidebar
         private void ToggleSidebar(object sender, RoutedEventArgs e)
         {
             if (isSidebarCollapsed)
@@ -494,21 +520,5 @@ namespace DeFRaG_Helper
             // Save the new state asynchronously
             AppConfig.SaveConfigurationAsync().ConfigureAwait(false);
         }
-
-
-        private async void Srv_Click(object sender, RoutedEventArgs e)
-        {
-            Quake3ServerQuery query = new Quake3ServerQuery("83.243.73.220", 27961);
-            var (Success, Response) = await query.QueryServerAsync();
-            if (Success)
-            {
-                MessageBox.Show($"Query Successful: {Response}");
-            }
-            else
-            {
-                MessageBox.Show($"Query Failed: {Response}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
     }
 }

@@ -104,11 +104,11 @@ namespace DeFRaG_Helper
                 {
                     // Clear the ListView's ItemsSource
                     lvDemos.ItemsSource = null;
-                    SimpleLogger.Log("Clear list");
+                    MessageHelper.Log("Clear list");
                 }
                 else
                 {
-                    SimpleLogger.Log($"Searching for demos with map name: {txtMapSearch.Text}");
+                    MessageHelper.Log($"Searching for demos with map name: {txtMapSearch.Text}");
                     LoadDemoDataAsync();
                 }
             }
@@ -139,14 +139,14 @@ namespace DeFRaG_Helper
                var mapName = item.Mapname;
                 //now we have to check if the map is installed. We check "IsInstalled" property of the map
                 var viewModel = MapViewModel.GetInstanceAsync().Result; 
-                SimpleLogger.Log($"Checking for Mapname: {mapName}");
+                MessageHelper.Log($"Checking for Mapname: {mapName}");
                 var map = viewModel.Maps.FirstOrDefault(m => m.Mapname == (mapName + ".bsp")); 
                 if (map != null)
                 {
                     if (map.IsInstalled == 0)
                     {
                         await MapInstaller.InstallMap(map);
-                        SimpleLogger.Log($"Map {map.Mapname} installed.");
+                        MessageHelper.Log($"Map {map.Mapname} installed.");
                     }
                     //Prepare the progress handler to update the UI
                     var progressHandler = new Progress<double>(value =>

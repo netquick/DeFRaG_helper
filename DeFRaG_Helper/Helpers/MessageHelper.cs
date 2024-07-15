@@ -20,12 +20,12 @@ namespace DeFRaG_Helper
             SimpleLogger.Log(message);
         }
 
-        public static void LogMessage(string message)
+        public static void Log(string message)
         {
             SimpleLogger.Log(message);
         }
 
-        public static async Task LogMessageAsync(string message)
+        public static async Task LogAsync(string message)
         {
             await SimpleLogger.LogAsync(message);
         }

@@ -66,7 +66,7 @@ namespace DeFRaG_Helper
             catch (Exception ex)
             {
                 // Handle any errors that might occur during the update process
-                SimpleLogger.Log($"An error occurred during the database update: {ex.Message}");
+                MessageHelper.Log($"An error occurred during the database update: {ex.Message}");
             }
         }
 
@@ -208,7 +208,7 @@ namespace DeFRaG_Helper
                                 else
                                 {
                                     consecutiveExistingMaps = 0; // Reset the counter if a new map is found
-                                    SimpleLogger.Log($"Parsing map: {fullDetailsPageUrl}");
+                                    MessageHelper.Log($"Parsing map: {fullDetailsPageUrl}");
                                 }
 
                                 // Assuming the third cell contains the filename in an <a> tag's href attribute
@@ -227,12 +227,12 @@ namespace DeFRaG_Helper
                             }
                         }
                     }
-                    SimpleLogger.Log($"Page {i + 1} of {pageCount} processed.");
+                    MessageHelper.Log($"Page {i + 1} of {pageCount} processed.");
 
                 }
             } catch (Exception ex)
             {
-                SimpleLogger.Log($"An error occurred during the database update: {ex.Message}");
+                MessageHelper.Log($"An error occurred during the database update: {ex.Message}");
                 throw;
             }
         }
@@ -675,7 +675,7 @@ WHERE LinkDetailpage = @LinkDetailpage", connection))
                     var slideMatch = slideRegex.Match(dataAttributes);
                     if (slideMatch.Success)
                     {
-                        //SimpleLogger.Log($"Found slide {i}: {slideMatch.Groups[1].Value}");
+                        //MessageHelper.Log($"Found slide {i}: {slideMatch.Groups[1].Value}");
                         imageUrls.Add(slideMatch.Groups[1].Value);
                     }
                 }

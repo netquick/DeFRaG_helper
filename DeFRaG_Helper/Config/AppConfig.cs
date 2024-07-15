@@ -28,7 +28,7 @@ namespace DeFRaG_Helper
             if (!Directory.Exists(appFolder))
             {
                 Directory.CreateDirectory(appFolder);
-                SimpleLogger.Log($"Created directory: {appFolder}");
+                MessageHelper.Log($"Created directory: {appFolder}");
             }
             // Default values for new properties
             DatabasePath = Path.Combine(appFolder, "MapData.db");
@@ -42,7 +42,7 @@ namespace DeFRaG_Helper
             {
                 if (File.Exists(configFilePath))
                 {
-                    await SimpleLogger.LogAsync($"Found config {configFilePath}");
+                    await MessageHelper.LogAsync($"Found config {configFilePath}");
 
                     string json = await File.ReadAllTextAsync(configFilePath);
                     var config = JsonSerializer.Deserialize<Configuration>(json);
@@ -54,25 +54,25 @@ namespace DeFRaG_Helper
                     DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl;
                     MenuState = config?.MenuState ?? MenuState; // Use default if not set
                     ConnectionString = config?.ConnectionString ?? ConnectionString; // Use default if not set
-                    await SimpleLogger.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
-                    await SimpleLogger.LogAsync($"SelectedColor: {SelectedColor}");
-                    await SimpleLogger.LogAsync($"ButtonState: {ButtonState}");
-                    await SimpleLogger.LogAsync($"PhysicsSetting: {PhysicsSetting}");
-                    await SimpleLogger.LogAsync($"DatabasePath: {DatabasePath}");
-                    await SimpleLogger.LogAsync($"DatabaseUrl: {DatabaseUrl}");
+                    await MessageHelper.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
+                    await MessageHelper.LogAsync($"SelectedColor: {SelectedColor}");
+                    await MessageHelper.LogAsync($"ButtonState: {ButtonState}");
+                    await MessageHelper.LogAsync($"PhysicsSetting: {PhysicsSetting}");
+                    await MessageHelper.LogAsync($"DatabasePath: {DatabasePath}");
+                    await MessageHelper.LogAsync($"DatabaseUrl: {DatabaseUrl}");
                 }
                 else
                 {
                     //create the file if it doesn't exist
 
-                    await SimpleLogger.LogAsync($"{configFilePath} not found");
+                    await MessageHelper.LogAsync($"{configFilePath} not found");
                     //await SaveConfigurationAsync();
 
                 }
             }
             catch (Exception ex)
             {
-                SimpleLogger.Log(ex.Message);
+                MessageHelper.Log(ex.Message);
                 throw;
             }
 
@@ -100,23 +100,23 @@ namespace DeFRaG_Helper
                 ConnectionString = ConnectionString
 
             };
-            SimpleLogger.Log($"GameDirectoryPath: {GameDirectoryPath}");
-            SimpleLogger.Log($"SelectedColor: {SelectedColor}");
-            SimpleLogger.Log($"ButtonState: {ButtonState}");
-            SimpleLogger.Log($"PhysicsSetting: {PhysicsSetting}");
-            SimpleLogger.Log($"DatabasePath: {DatabasePath}");
-            SimpleLogger.Log($"DatabaseUrl: {DatabaseUrl}");
+            MessageHelper.Log($"GameDirectoryPath: {GameDirectoryPath}");
+            MessageHelper.Log($"SelectedColor: {SelectedColor}");
+            MessageHelper.Log($"ButtonState: {ButtonState}");
+            MessageHelper.Log($"PhysicsSetting: {PhysicsSetting}");
+            MessageHelper.Log($"DatabasePath: {DatabasePath}");
+            MessageHelper.Log($"DatabaseUrl: {DatabaseUrl}");
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(config, options);
             try
             {
                 await File.WriteAllTextAsync(configFilePath, json);
-                SimpleLogger.Log("Configuration saved");
+                MessageHelper.Log("Configuration saved");
             }
             catch (Exception ex)
             {
-                SimpleLogger.Log(ex.Message);
+                MessageHelper.Log(ex.Message);
                 throw;
             }
         }
@@ -124,15 +124,15 @@ namespace DeFRaG_Helper
         {
             if (!File.Exists(DatabasePath))
             {
-                await SimpleLogger.LogAsync("Database not found, downloading...");
+                await MessageHelper.LogAsync("Database not found, downloading...");
                 // Use Downloader to download the database
                 // Assuming Downloader has a static method DownloadFileAsync for this purpose
                 await Downloader.DownloadFileAsync(DatabaseUrl, DatabasePath, null);
-                await SimpleLogger.LogAsync("Database downloaded");
+                await MessageHelper.LogAsync("Database downloaded");
             }
             else
             {
-                await SimpleLogger.LogAsync($"Database found at {DatabasePath}");
+                await MessageHelper.LogAsync($"Database found at {DatabasePath}");
             }
         }
         
