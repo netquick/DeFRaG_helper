@@ -2,12 +2,19 @@
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
   xmlns:local="clr-namespace:DeFRaG_Helper"
+  xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800"
   Title="Start"
       Loaded="Page_Loaded">
+    <Page.Resources>
+        <!-- Existing resources -->
+        <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+    </Page.Resources>
     <Border CornerRadius="10" Background="#FF2D2D2D">
         <Grid Background="Transparent">
 
@@ -21,14 +28,45 @@
                 <ComboBoxItem Content="Orange" Background="Orange"/>
                 <ComboBoxItem Content="Pink" Background="Pink"/>
                 <ComboBoxItem Content="Brown" Background="Brown"/>
+                <ComboBoxItem Content="MetroGreen" Background="#669900"/>
+                <ComboBoxItem Content="MetroOrange" Background="#ff8800"/>
+                <ComboBoxItem Content="MetroRed" Background="#cc0000"/>
+                <ComboBoxItem Content="MetroPurple" Background="#9933cc"/>
+                <ComboBoxItem Content="MetroPink" Background="#ff33cc"/>
+                <ComboBoxItem Content="MetroBrown" Background="#996633"/>
+                <ComboBoxItem Content="MetroGray" Background="#666666"/>
+                <ComboBoxItem Content="MetroBlue" Background="#0066cc"/>
 
             </ComboBox>
-            <Button Name="btnSync" Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35" Click="btnSync_Click"/>
+            <Button Name="btnSync" Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35" Click="btnSync_Click" IsEnabled="False"/>
             <TextBox Name="txtGamePath" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="14" Height="31" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="433"/>
             <Label Content="Theme Color" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" VerticalAlignment="Top" Width="180"/>
             <Label Content="Game Path" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,125,0,0" VerticalAlignment="Top" Width="180"/>
-            <Button x:Name="btnUpdate" Content="Update Maps" Margin="636,62,10,0" VerticalAlignment="Top" Height="34" Click="btnUpdate_Click"/>
-
+            <Button x:Name="btnUpdate" Content="Update Maps" Margin="636,62,10,0" VerticalAlignment="Top" Height="34" Click="btnUpdate_Click" IsEnabled="False"/>
+            <Image x:Name="Icon" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False">
+                <Image.Source>
+                    <Binding>
+                        <Binding.Converter>
+                            <converters:DynamicSvgConverter/>
+                        </Binding.Converter>
+                        <Binding.Source>
+                            <sys:String>Icons/Weapons/iconw_rocket.svg</sys:String>
+                        </Binding.Source>
+                    </Binding>
+                </Image.Source>
+            </Image>
+            <Image x:Name="Icon2" Height="30" Width="30" Margin="50,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False">
+                <Image.Source>
+                    <Binding>
+                        <Binding.Converter>
+                            <converters:DynamicSvgConverter/>
+                        </Binding.Converter>
+                        <Binding.Source>
+                            <sys:String>Icons/Weapons/iconw_shotgun.svg</sys:String>
+                        </Binding.Source>
+                    </Binding>
+                </Image.Source>
+            </Image>
         </Grid>
     </Border>
 </Page>

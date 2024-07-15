@@ -39,7 +39,8 @@ namespace DeFRaG_Helper
             if (!System.IO.File.Exists(DbPath))
             {
                 //Create the datebase using dbqueue
-                CreateDBMaplist(DbQueue.Instance);
+                CreateDBMaplist();
+                CreateAllDB();
             }
 
         }
@@ -72,7 +73,7 @@ namespace DeFRaG_Helper
 
 
 
-        public static void CreateDBMaplist(DbQueue dbQueue)
+        public static void CreateDBMaplist()
         {
             // Define the operation to create the Maplist table
             Func<SqliteConnection, Task> createTableOperation = async (connection) =>
@@ -603,7 +604,7 @@ namespace DeFRaG_Helper
                                                 map.Items.Add(name);
                                                 break;
                                             case "Functions":
-                                                map.Function.Add(name);
+                                                map.Functions.Add(name);
                                                 break;
                                         }
                                     }
@@ -737,15 +738,593 @@ WHERE LinkDetailpage = @LinkDetailpage", connection))
         }
 
 
+        public async static void CreateAllDB()
+        {
+            CreateDBMaps();
+            FillGameTypeTable();
+            FillModTable();
+            FillWeaponTable();
+            FillFunctionable();
+            FillItemTable();
+        }
+
+        private static void CreateDBMaps()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+                var createTableCmd = connection.CreateCommand();
+                createTableCmd.CommandText =
+                    @"CREATE TABLE Maps (
+                ID INTEGER PRIMARY KEY, 
+                Name TEXT, 
+                Mapname TEXT, 
+                Filename TEXT, 
+                Releasedate TEXT, 
+                Author TEXT, 
+                Mod TEXT, 
+                Size DOUBLE,
+                Physics INT,
+                Hits INTEGER, 
+                LinkDetailpage TEXT,  
+                Style TEXT, 
+                LinksOnlineRecordsQ3DFVQ3 TEXT, 
+                LinksOnlineRecordsQ3DFCPM TEXT, 
+                LinksOnlineRecordsRacingVQ3 TEXT, 
+                LinksOnlineRecordsRacingCPM TEXT, 
+                LinkDemosVQ3 TEXT, 
+                LinkDemosCPM TEXT, 
+                DependenciesTextures TEXT, 
+                Screenshot TEXT, 
+                Levelshot TEXT, 
+                Topview TEXT 
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+
+                // Create Players table
+                var createPlayersTableCmd = connection.CreateCommand();
+                createPlayersTableCmd.CommandText =
+                    @"CREATE TABLE GameType (
+                GameTypeID INTEGER PRIMARY KEY,
+                GameType TEXT
+                )";
+
+                await createTableCmd.ExecuteNonQueryAsync();
 
 
-        //method to update the map in database  
+                // Create MapGameType junction table
+                var createMapGameTypeTableCmd = connection.CreateCommand();
+                createMapGameTypeTableCmd.CommandText =
+                    @"CREATE TABLE MapGameType (
+                MapID INTEGER,
+                GameTypeID INTEGER,
+                PRIMARY KEY (MapID, GameTypeID),
+                FOREIGN KEY (MapID) REFERENCES Maps(ID),
+                FOREIGN KEY (GameTypeID) REFERENCES GameType(GameTypeID)
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
 
+                // Create Mod table
+                var createModTableCmd = connection.CreateCommand();
+                createModTableCmd.CommandText =
+                    @"CREATE TABLE Mod (
+                ModID INTEGER PRIMARY KEY,
+                Mod TEXT
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
 
-        //method to download images
+                // Create MapMod junction table
+                var createMapModTableCmd = connection.CreateCommand();
+                createMapModTableCmd.CommandText =
+                    @"CREATE TABLE MapMod (
+                MapID INTEGER,
+                ModID INTEGER,
+                PRIMARY KEY (MapID, ModID),
+                FOREIGN KEY (MapID) REFERENCES Maps(ID),
+                FOREIGN KEY (ModID) REFERENCES Mod(ModID)
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
 
-        //method to set "Parsed" for a map
+                //Create weapon table
+                var createWeaponTableCmd = connection.CreateCommand();
+                createWeaponTableCmd.CommandText =
+                    @"CREATE TABLE Weapon (
+                WeaponID INTEGER PRIMARY KEY,
+                Weapon TEXT
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
 
+                // Create MapWeapon junction table
+                var createMapWeaponTableCmd = connection.CreateCommand();
+                createMapWeaponTableCmd.CommandText =
+                    @"CREATE TABLE MapWeapon (
+                MapID INTEGER,
+                WeaponID INTEGER,
+                PRIMARY KEY (MapID, WeaponID),
+                FOREIGN KEY (MapID) REFERENCES Maps(ID),
+                FOREIGN KEY (WeaponID) REFERENCES Weapon(WeaponID)
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+
+                //Create item table
+                var createItemTableCmd = connection.CreateCommand();
+                createItemTableCmd.CommandText =
+                    @"CREATE TABLE Item (
+                ItemID INTEGER PRIMARY KEY,
+                Item TEXT
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+
+                // Create MapItem junction table
+                var createMapItemTableCmd = connection.CreateCommand();
+
+                createMapItemTableCmd.CommandText =
+                    @"CREATE TABLE MapItem (
+                MapID INTEGER,
+                ItemID INTEGER,
+                PRIMARY KEY (MapID, ItemID),
+                FOREIGN KEY (MapID) REFERENCES Maps(ID),
+                FOREIGN KEY (ItemID) REFERENCES Item(ItemID)
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+
+                // Create Functions table
+                var createFunctionsTableCmd = connection.CreateCommand();
+                createFunctionsTableCmd.CommandText =
+                    @"CREATE TABLE Function (
+                FunctionID INTEGER PRIMARY KEY,
+                Function TEXT
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+
+                // Create MapFunction junction table
+                var createMapFunctionTableCmd = connection.CreateCommand();
+                createMapFunctionTableCmd.CommandText =
+                    @"CREATE TABLE MapFunction (
+                MapID INTEGER,
+                FunctionID INTEGER,
+                PRIMARY KEY (MapID, FunctionID),
+                FOREIGN KEY (MapID) REFERENCES Maps(ID),
+                FOREIGN KEY (FunctionID) REFERENCES Functions(FunctionID)
+                )";
+                await createTableCmd.ExecuteNonQueryAsync();
+            };
+            DbQueue.Instance.Enqueue(operation);
+
+        }
+
+        //method to fill the optional tables
+        private static void FillGameTypeTable()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+                // Fill GameType table
+                var insertGameTypeCmd = connection.CreateCommand();
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('CTF')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('SP')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('FFA')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('TDM')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Tournament')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('OneFlag')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Overload')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Harvester')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Classic CTF')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Capture Strike')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Domination')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Lastman survivor')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Mission')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Reverse CTF')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Team Survivor')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Follow the leader')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Capture and hold')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('Bomb and defuse')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('CTF Urban Terror')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO GameType (GameType) VALUES ('TDM Urban Terror')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+            };
+            DbQueue.Instance.Enqueue(operation);
+
+        }
+
+        private static void FillModTable()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+                // Fill Mod table
+                var insertGameTypeCmd = connection.CreateCommand();
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Defrag')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Defrag Freestyle')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Weapons Factory Arena')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Urban Terror')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Fortress')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Threewave')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Navy Seals')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Team Arena')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Rocket Arena')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Rally')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('True Combat')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Reaction Quake 3')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Tremulous')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('FreakBall')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Jailbreak')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('ProBall')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Domination')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('World of Padman')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Jailbreak: Prisoners of War')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Bid for Power')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Western Quake 3')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('MatchMod 2000')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Challenge Pro Mode Arena')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('Sidrial')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Mod (Mod) VALUES ('PainKeep Arena')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+            };
+            DbQueue.Instance.Enqueue(operation);
+        }
+
+        private static void FillWeaponTable()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+                // Fill GameType table
+                var insertGameTypeCmd = connection.CreateCommand();
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Gauntlet')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Machinegun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Shotgun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Grenade Launcher')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Rocket Launcher')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Lightning Gun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Railgun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Plasma Gun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('BFG10K')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Grappling hook')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Chaingun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Nailgun')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Weapon (Weapon) VALUES ('Prox Launcher')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+            };
+            DbQueue.Instance.Enqueue(operation);
+        }
+
+        private static void FillFunctionable()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+
+                // Fill GameType table
+                var insertGameTypeCmd = connection.CreateCommand();
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Door/Gate')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Button')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Teleporter')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Jumppad/Launchramp')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Moving Object/platform')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Shooter Grenade')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Shooter Rocket')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Shooter Plasma')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Slick')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Lava')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Water')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Slime')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Fog')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Breakable')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Ambient Sound')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Function (Function) VALUES ('Timer')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+            };
+            DbQueue.Instance.Enqueue(operation);
+        }
+
+        private static void FillItemTable()
+        {
+            Func<SqliteConnection, Task> operation = async (connection) =>
+            {
+                // Fill GameType table
+                var insertGameTypeCmd = connection.CreateCommand();
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Body Armor Red')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Body Armor Yellow')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Body Armor Green')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Shard Armor')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Battle Suit')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Flight')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Haste')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Health')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Health Small')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Health Large')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Mega Health')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Quad')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Regeneration')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Invisibility')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Medikit')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Personal Teleporter')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Ammo Regen')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Scout')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Guard')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Doubler')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Kamikaze')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+
+                insertGameTypeCmd.CommandText =
+                    @"INSERT INTO Item (Item) VALUES ('Invulnerability')";
+                await insertGameTypeCmd.ExecuteNonQueryAsync();
+            };
+            DbQueue.Instance.Enqueue(operation);
+        }
 
 
 

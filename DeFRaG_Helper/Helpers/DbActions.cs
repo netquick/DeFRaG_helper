@@ -169,9 +169,9 @@ namespace DeFRaG_Helper
                 }
             }
 
-            if (map.Function != null)
+            if (map.Functions != null)
             {
-                foreach (var functionName in map.Function)
+                foreach (var functionName in map.Functions)
                 {
                     DbQueue.Instance.Enqueue(async connection =>
                     {
@@ -369,11 +369,11 @@ namespace DeFRaG_Helper
                 }
             }
 
-            if (map.Function != null)
+            if (map.Functions != null)
             {
                 //MessageHelper.Log($"Updating {map.Function.Count} Function for {map.Mapname}");
 
-                foreach (var functionName in map.Function)
+                foreach (var functionName in map.Functions)
                 {
                     //MessageHelper.Log($"Updating {functionName} for {map.Mapname}");
                     DbQueue.Instance.Enqueue(async connection =>

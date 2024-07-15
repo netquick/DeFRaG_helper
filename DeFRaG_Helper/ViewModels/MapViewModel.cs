@@ -163,9 +163,6 @@ namespace DeFRaG_Helper.ViewModels
             }
         }
 
-
-
-
         private async Task LoadMapsFromDatabase()
         {
             var totalMaps = 0;
@@ -183,7 +180,50 @@ namespace DeFRaG_Helper.ViewModels
                 int refreshThreshold = 10; // Number of maps after which the UI is refreshed
 
                 // Existing database loading logic...
-                using (var command = new SqliteCommand("SELECT * FROM Maps", connection))
+                using (var command = new SqliteCommand(@"SELECT 
+                    Maps.ID, 
+                    Maps.Name, 
+                    Maps.Mapname, 
+                    Maps.Filename, 
+                    Maps.Releasedate, 
+                    Maps.Author, 
+                    Maps.Mod, 
+                    Maps.Size, 
+                    Maps.Physics, 
+                    Maps.Hits, 
+                    Maps.LinkDetailpage, 
+                    Maps.Style, 
+                    Maps.isDownloaded, 
+                    Maps.isInstalled, 
+                    Maps.isFavorite, 
+                    GROUP_CONCAT(DISTINCT MapWeapon.WeaponID) AS Weapons, 
+                    GROUP_CONCAT(DISTINCT MapItem.ItemID) AS Items, 
+                    GROUP_CONCAT(DISTINCT MapFunction.FunctionID) AS Functions
+                FROM 
+                    Maps 
+                LEFT JOIN 
+                    MapWeapon ON Maps.ID = MapWeapon.MapID 
+                LEFT JOIN 
+                    MapItem ON Maps.ID = MapItem.MapID 
+                LEFT JOIN 
+                    MapFunction ON Maps.ID = MapFunction.MapID 
+                GROUP BY 
+                    Maps.ID, 
+                    Maps.Name, 
+                    Maps.Mapname, 
+                    Maps.Filename, 
+                    Maps.Releasedate, 
+                    Maps.Author, 
+                    Maps.Mod, 
+                    Maps.Size, 
+                    Maps.Physics, 
+                    Maps.Hits, 
+                    Maps.LinkDetailpage, 
+                    Maps.Style, 
+                    Maps.isDownloaded, 
+                    Maps.isInstalled, 
+                    Maps.isFavorite;
+                ", connection))
                 {
                     using (var reader = await command.ExecuteReaderAsync())
                     {
@@ -205,8 +245,12 @@ namespace DeFRaG_Helper.ViewModels
                                 Style = reader.IsDBNull(reader.GetOrdinal("Style")) ? null : reader.GetString(reader.GetOrdinal("Style")),
                                 IsDownloaded = reader.IsDBNull(reader.GetOrdinal("isDownloaded")) ? 0 : reader.GetInt32(reader.GetOrdinal("isDownloaded")),
                                 IsInstalled = reader.IsDBNull(reader.GetOrdinal("isInstalled")) ? 0 : reader.GetInt32(reader.GetOrdinal("isInstalled")),
-                                IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite"))
-                                // Add other properties as needed
+                                IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite")),
+                                Weapons = reader.IsDBNull(reader.GetOrdinal("Weapons")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Weapons")).Split(',').ToList(),
+                                Items = reader.IsDBNull(reader.GetOrdinal("Items")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Items")).Split(',').ToList(),
+                                Functions = reader.IsDBNull(reader.GetOrdinal("Functions")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Functions")).Split(',').ToList(),
+
+
                             };
                             // Since we're on a background thread, ensure UI updates are dispatched on the UI thread
                             App.Current.Dispatcher.Invoke(() => Maps.Add(map));
@@ -245,6 +289,14 @@ namespace DeFRaG_Helper.ViewModels
             await Task.CompletedTask;
 
         }
+
+
+
+
+
+
+
+
 
         private async Task PerformPostDataLoadActions()
         {
@@ -378,7 +430,7 @@ namespace DeFRaG_Helper.ViewModels
             existingMap.Dependencies = newMap.Dependencies;
             existingMap.Weapons = newMap.Weapons;
             existingMap.Items = newMap.Items;
-            existingMap.Function = newMap.Function;
+            existingMap.Functions = newMap.Functions;
 
 
 
