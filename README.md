@@ -19,7 +19,7 @@ Startscreen offers access to active servers and the l0 last played Random maps
 
 Map Browser with over 18k maps, launch by individual playbuttons or download
 
-![image](https://github.com/user-attachments/assets/e1059278-35e2-492a-bd61-bdf56ce0a5b4)
+![image](https://github.com/user-attachments/assets/6551e348-9741-49a3-9558-56f10c82bc4c)
 
 
 Server Browser included
