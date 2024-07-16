@@ -196,17 +196,23 @@ namespace DeFRaG_Helper.ViewModels
                     Maps.isDownloaded, 
                     Maps.isInstalled, 
                     Maps.isFavorite, 
-                    GROUP_CONCAT(DISTINCT MapWeapon.WeaponID) AS Weapons, 
-                    GROUP_CONCAT(DISTINCT MapItem.ItemID) AS Items, 
-                    GROUP_CONCAT(DISTINCT MapFunction.FunctionID) AS Functions
+                    GROUP_CONCAT(DISTINCT Weapon.Weapon) AS Weapons, 
+                    GROUP_CONCAT(DISTINCT Item.Item) AS Items, 
+                    GROUP_CONCAT(DISTINCT Function.Function) AS Functions
                 FROM 
                     Maps 
                 LEFT JOIN 
                     MapWeapon ON Maps.ID = MapWeapon.MapID 
                 LEFT JOIN 
+                    Weapon ON MapWeapon.WeaponID = Weapon.WeaponID
+                LEFT JOIN 
                     MapItem ON Maps.ID = MapItem.MapID 
                 LEFT JOIN 
+                    Item ON MapItem.ItemID = Item.ItemID
+                LEFT JOIN 
                     MapFunction ON Maps.ID = MapFunction.MapID 
+                LEFT JOIN 
+                    Function ON MapFunction.FunctionID = Function.FunctionID
                 GROUP BY 
                     Maps.ID, 
                     Maps.Name, 
@@ -222,7 +228,7 @@ namespace DeFRaG_Helper.ViewModels
                     Maps.Style, 
                     Maps.isDownloaded, 
                     Maps.isInstalled, 
-                    Maps.isFavorite;
+                    Maps.isFavorite
                 ", connection))
                 {
                     using (var reader = await command.ExecuteReaderAsync())
@@ -252,6 +258,9 @@ namespace DeFRaG_Helper.ViewModels
 
 
                             };
+
+
+
                             // Since we're on a background thread, ensure UI updates are dispatched on the UI thread
                             App.Current.Dispatcher.Invoke(() => Maps.Add(map));
 
@@ -262,11 +271,16 @@ namespace DeFRaG_Helper.ViewModels
                                 // Update progress bar and potentially refresh the UI here
                                 App.Current.Dispatcher.Invoke(() =>
                                 {
+                                    map.GenerateWeaponIcons();
+                                    map.GenerateItemIcons();
+                                    map.GenerateFunctionIcons();
+
                                     MainWindow.Instance.UpdateProgressBar(progress);
                                     MapsBatchLoaded?.Invoke(this, EventArgs.Empty);
 
                                     // Optionally, refresh the UI to show the newly loaded maps
                                 });
+                                OnPropertyChanged(nameof(Maps));
 
                             }
                         }

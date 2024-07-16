@@ -1,4 +1,5 @@
 ﻿using DeFRaG_Helper.Objects;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace DeFRaG_Helper
@@ -395,32 +396,181 @@ namespace DeFRaG_Helper
                 }
             }
         }
-
-        public List<MapIcon> GenerateIcons()
+        private ObservableCollection<MapIcon>? weaponIcons;
+        public ObservableCollection<MapIcon> WeaponIcons
         {
-            List<MapIcon> icons = new List<MapIcon>();
+            get
+            {
+                if (weaponIcons == null || !weaponIcons.Any())
+                {
+                    weaponIcons = GenerateWeaponIcons();
+                }
+                return weaponIcons;
+            }
+            set
+            {
+                if (weaponIcons != value)
+                {
+                    weaponIcons = value;
+                    OnPropertyChanged(nameof(weaponIcons));
+                }
+            }
+        }
+        private ObservableCollection<MapIcon>? itemIcons;
+        public ObservableCollection<MapIcon> ItemIcons
+        {
+            get
+            {
+                if (itemIcons == null || !itemIcons.Any())
+                {
+                    itemIcons = GenerateItemIcons();
+                }
+                return itemIcons;
+            }
+            set
+            {
+                if (itemIcons != value)
+                {
+                    itemIcons = value;
+                    OnPropertyChanged(nameof(itemIcons));
+                }
+            }
+        }
+        private ObservableCollection<MapIcon>? functionIcons;
+        public ObservableCollection<MapIcon> FunctionIcons
+        {
+            get
+            {
+                if (functionIcons == null || !functionIcons.Any())
+                {
+                    functionIcons = GenerateFunctionIcons();
+                }
+                return functionIcons;
+            }
+            set
+            {
+                if (functionIcons != value)
+                {
+                    functionIcons = value;
+                    OnPropertyChanged(nameof(functionIcons));
+                }
+            }
+        }
+        public ObservableCollection<MapIcon> GenerateWeaponIcons()
+        {
+            ObservableCollection<MapIcon> newWeaponIcons = new ObservableCollection<MapIcon>();
 
             // Example mapping for demonstration purposes
             Dictionary<string, (string path, string color)> iconMapping = new Dictionary<string, (string, string)>
-    {
-        {"Rocket Launcher", ("Icons/Weapons/iconw_rocket.svg", "Red")},
-        {"Plasmagun", ("Icons/Weapons/iconw_plasma.svg", "Blue")},
-        // Add mappings for other weapons, items, and functions
-    };
+            {
+                {"Rocket Launcher", ("Icons/Weapons/iconw_rocket.svg", "Red")},
+                {"Plasmagun", ("Icons/Weapons/iconw_plasma.svg", "Blue")},
+                {"Railgun", ("Icons/Weapons/iconw_railgun.svg", "Green") },
+                {"Shotgun", ("Icons/Weapons/iconw_shotgun.svg", "Yellow") },
+                {"Lightning Gun", ("Icons/Weapons/iconw_lightning.svg", "Orange") },
+                {"Big fucking gun", ("Icons/Weapons/iconw_bfg.svg", "Black") },
+                {"Gauntlet", ("Icons/Wepons/iconw_gauntlet.svg", "Cyan") },
+                {"Grappling hook", ("Icons/Weapons/iconw_grapple.svg", "Green") },
+                {"Grenade Launcher", ("Icons/Weapons/iconw_grenade.svg", "Green") },
+                {"Machinegun", ("Icons/Weapons/iconsw_machinegun", "yellow") },
+                {"Proximity Mine Launcher (Team Arena)", ("Icons/Weapons/proxmine.svg", "Red") },
+                {"Chaingun (Team Arena)", ("Icons/Weapons/chaingun.svg", "Black") },
+                {"Nailgun (Team Arena)", ("Icons/Weapons/nailgun.svg", "Green") }
+
+        };
 
             foreach (var weapon in Weapons)
             {
                 if (iconMapping.TryGetValue(weapon, out var iconInfo))
                 {
-                    icons.Add(new MapIcon { SvgPath = iconInfo.path, Color = iconInfo.color });
+                    newWeaponIcons.Add(new MapIcon { SvgPath = iconInfo.path, Color = iconInfo.color });
                 }
             }
+            return newWeaponIcons;
+        }
+        public ObservableCollection<MapIcon> GenerateItemIcons()
+        {
+            ObservableCollection<MapIcon> newItemIcons = new ObservableCollection<MapIcon>();
 
-            // Repeat for Items and Functions if necessary
+            // Example mapping for demonstration purposes
+            Dictionary<string, (string path, string color)> iconMapping = new Dictionary<string, (string, string)>
+            {
+                {"Body Armor (Red Armor)", ("Icons/Items/iconr_red.svg", "Red") },
+                {"Combat Armor (Yellow Armor)", ("Icons(Items/iconr_yellow.svg", "Yellow") },
+                {"Battle Suit", ("Icons/Items/envirosuit.svg", "Orange") },
+                {"Shard Armor", ("Icons/Items/iconr_shard.svg", "Green") },
+                {"Flight", ("Icons/Items/flight.svg", "Purple") },
+                {"Haste", ("Icons/Items/haste.svg", "Yellow") },
+                {"Health", ("Icons/Items/iconh_red", "Red") },
+                {"Large health", ("Icons/Items/iconh_yellow.svg", "Yellow") },
+                {"Mega health", ("Icons/Items/iconh_mega.svg", "Blue") },
+                {"Small health", ("Icons/Items/iconh_green.svg", "Green") },
+                {"Invisibility", ("Icons/Items/invis.svg", "Purple") },
+                {"Quad-damage", ("Icons/Items/quad.svg", "Cyan") },
+                {"Regeneration", ("Icons/Items/regen.svg", "Green") },
+                {"Personal Teleporter", ("Icons/Items/teleporter.svg", "Blue") },
+                {"Medikit", ("Icons/Items/medkit.svg", "Red") },
+                {"Ammo Regen (Team Arena)", ("Icons/Items/ammo_regen.svg", "Yellow") },
+                {"Scout (Team Arena)", ("Icons/Items/scout.svg", "Green") },
+                {"Doubler (Team Arena)", ("Icons/Items/doubler.svg", "Red") },
+                {"Guard (Team Arena)", ("Icons/Items/guard.svg", "Blue") },
+                {"Kamikaze (Team Arena)", ("Icons/Items/kamikaze.svg", "Red") },
+                {"Invulnerability (Team Arena)", ("Icons/Items/invulnerability.svg", "Blue") },
+                {"Green Armor (CPMA)", ("Icons/Items/iconr_green.svg", "Green") }
+               
+               
+                
 
-            return icons;
+        };
+
+            foreach (var item in Items)
+            {
+                if (iconMapping.TryGetValue(item, out var iconInfo))
+                {
+                    newItemIcons.Add(new MapIcon { SvgPath = iconInfo.path, Color = iconInfo.color });
+                }
+            }
+            return newItemIcons;
+        }
+        public ObservableCollection<MapIcon> GenerateFunctionIcons()
+        {
+            ObservableCollection<MapIcon> newFunctionIcons = new ObservableCollection<MapIcon>();
+
+            // Example mapping for demonstration purposes
+            Dictionary<string, (string path, string color)> iconMapping = new Dictionary<string, (string, string)>
+            {
+                {"Door/Gate", ("Icons/Functions/door.svg", "Red") },
+                {"Button", ("Icons/Functions/button.svg", "Red") },
+                {"Teleporter/Portal", ("Icons/Functions/tele.svg", "Blue") },
+                {"Jumppad/Launchramp", ("Icons/Functions/push.svg", "Yellow") },
+                {"Moving object/platform", ("Icons/Functions/moving.svg", "Gray") },
+                {"Shooter Grenade", ("Icons/Functions/shootergl.svg", "Green") },
+                {"Shooter Plasma", ("Icons/Functions/shooterpg.svg", "Purple") },
+                {"Shooter Rocket", ("Icons/Functions/shooterrl.svg", "Red") },
+                {"Slick", ("Icons/Functions/slick.svg", "Yellow") },
+                {"Water", ("Icons/Functions/water.svg", "Blue") },
+                {"Fog", ("Icons/Functions/fog.svg", "Gray") },
+                {"Slime", ("Icons/Functions/slime.svg", "Green") },
+                {"Lava", ("Icons/Functions/lava.svg", "Red") },
+                {"breakable", ("Icons/Functions/break.svg", "Gray") },
+                {"Ambient sounds", ("Icons/Functions/Speaker_Icon.svg", "Gray") },
+                {"Timer", ("Icons/Functions/timer.svg", "Gray") }
+
+
+        };
+
+            foreach (var function in Functions)
+            {
+                if (iconMapping.TryGetValue(function, out var iconInfo))
+                {
+                    newFunctionIcons.Add(new MapIcon { SvgPath = iconInfo.path, Color = iconInfo.color });
+                }
+            }
+            return newFunctionIcons;
         }
 
-
     }
+
+
 }
+

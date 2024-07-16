@@ -36,6 +36,13 @@
                 <ComboBoxItem Content="MetroBrown" Background="#996633"/>
                 <ComboBoxItem Content="MetroGray" Background="#666666"/>
                 <ComboBoxItem Content="MetroBlue" Background="#0066cc"/>
+                <ComboBoxItem Content="MetroCyan" Background="#0099cc"/>
+                <ComboBoxItem Content="MetroLime" Background="#99cc00"/>
+                <ComboBoxItem Content="MetroMagenta" Background="#cc0066"/>
+                <ComboBoxItem Content="MetroTeal" Background="#339999"/>
+                <ComboBoxItem Content="MetroIndigo" Background="#003399"/>
+                <ComboBoxItem Content="MetroViolet" Background="#663399"/>
+
 
             </ComboBox>
             <Button Name="btnSync" Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35" Click="btnSync_Click" IsEnabled="False"/>

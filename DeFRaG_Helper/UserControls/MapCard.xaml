@@ -9,6 +9,9 @@
              xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
 
              d:DesignHeight="100" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
+    </UserControl.Resources>
     <Border CornerRadius="10" Background="#2c2c2c">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -27,7 +30,7 @@
         </Grid.RowDefinitions>
 
         <!-- Name TextBlock, now correctly spanning only the left half -->
-        <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Name" Text="{Binding Name}" FontFamily="Segoe UI" FontSize="20" Foreground="White" Margin="10, 5, 0, 5"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Name" Text="{Binding Name}" FontFamily="Segoe UI" FontSize="20" Foreground="{DynamicResource ThemeColor}" Margin="10, 5, 0, 5"/>
 
         <!-- Nested Grid for detailed information, placed in the second row of the main grid -->
         <Grid Grid.Row="1" Grid.Column="0">
@@ -62,21 +65,70 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <!-- add right content  -->
-            <ItemsControl ItemsSource="{Binding Icons, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Image Width="30" Height="30">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
-                                    <Binding Path="SvgPath"/>
-                                    <Binding Path="Color"/>
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <ItemsControl Grid.Row="0" ItemsSource="{Binding WeaponIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="18" Height="18" Margin="0, 2, 5, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding ItemIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="18" Height="18" Margin="0, 2, 5, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl Grid.Row="2" ItemsSource="{Binding FunctionIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="18" Height="18" Margin="0, 2, 5, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
 
                 <Image Grid.Column="1" Source="{Binding ImagePath}" MaxHeight="70" Width="120" MaxWidth="120" Margin="5" ></Image>
             <CheckBox Grid.Column="2" Name="chkFav" IsChecked="{Binding IsFavorite}" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="20, 0, 20, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
@@ -119,7 +171,7 @@
                     <TextBlock Text="" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="btnEdit" Grid.Column="5" Width="40" Margin="5, 10, 5, 10"
+            <Button Name="btnEdit" Grid.Column="5" Width="40" Margin="5, 10, 10, 10"
                 Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
                 CommandParameter="{Binding}"
                 IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
