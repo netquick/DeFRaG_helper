@@ -27,7 +27,7 @@ Server Browser included
 ![image](https://github.com/user-attachments/assets/7dde283b-eb0f-42d0-8f9f-b6c6826ea4c0)
 
 
-Demo Browser to play demos by doubleclick. Required map will be installed as well. Abusing breakdown-hq api for this.
+Demo Browser to play demos by doubleclick. Required map will be installed as well. 
 
 ![image](https://github.com/user-attachments/assets/61ab3470-bdb6-4717-ab5e-fe20d031889d)
 
