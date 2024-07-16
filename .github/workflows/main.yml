@@ -5,6 +5,10 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch: # This line enables manual triggering of the workflow
+
+permissions:
+  contents: write
 
 jobs:
   build-and-test:
@@ -26,10 +30,37 @@ jobs:
       run: dotnet test
 
     - name: Publish Application
-      run: dotnet publish --configuration Release -o ./publish
+      run: dotnet publish --configuration Release -o ./publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained=false
+
 
     - name: Upload Published App as Artifact
       uses: actions/upload-artifact@v2
       with:
-       name: published-app
-       path: ./publish/**
+        name: published-app
+        path: ./publish/**
+
+    - name: Get Current Date
+      id: current_date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      shell: bash
+
+    - name: Create Release
+      id: create_release # This ID is used to reference the output of this step
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: release-${{ steps.current_date.outputs.date }}-${{ github.run_number }}
+        release_name: Release ${{ steps.current_date.outputs.date }}-${{ github.run_number }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # Correctly references the output of the Create Release step
+        asset_path: ./publish/DeFRaG_Helper.exe
+        asset_name: DeFRaG_Helper.exe
+        asset_content_type: application/octet-stream
