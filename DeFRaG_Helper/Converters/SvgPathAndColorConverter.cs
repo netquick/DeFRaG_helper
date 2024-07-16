@@ -9,26 +9,27 @@ using System.Xml.Linq;
 
 namespace DeFRaG_Helper.Converters
 {
-    public class DynamicSvgConverter : IValueConverter
+    public class SvgPathAndColorConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = value as string;
-            if (string.IsNullOrEmpty(path))
-                return DependencyProperty.UnsetValue; // Fix for Problem 4
+            if (values.Length != 2 || !(values[0] is string path) || !(values[1] is string colorParam))
+                return DependencyProperty.UnsetValue;
 
             Brush colorBrush = Brushes.White; // Default color
-            if (parameter is string colorParam)
+            if (!string.IsNullOrEmpty(colorParam))
             {
                 var tempBrush = new BrushConverter().ConvertFromString(colorParam);
-                if (tempBrush != null) // Fix for Problem 5
+                if (tempBrush != null)
                 {
                     colorBrush = (Brush)tempBrush;
                 }
             }
 
-            StreamResourceInfo streamResourceInfo = null; // Declare outside try block for wider scope
+            // The rest of the method follows the same logic as in DynamicSvgConverter's Convert method,
+            // but uses the path and colorBrush determined from the values array.
 
+            StreamResourceInfo streamResourceInfo = null;
             var resourcePath = $"pack://application:,,,/DeFRaG_Helper;component/{path}";
             try
             {
@@ -38,7 +39,7 @@ namespace DeFRaG_Helper.Converters
                 {
                     using (var stream = streamResourceInfo.Stream)
                     {
-                        return LoadSvgFromStream(stream, colorBrush); // Fix for Problem 1
+                        return LoadSvgFromStream(stream, colorBrush);
                     }
                 }
             }
@@ -55,7 +56,7 @@ namespace DeFRaG_Helper.Converters
                 {
                     using (var stream = System.IO.File.OpenRead(filePath))
                     {
-                        return LoadSvgFromStream(stream, colorBrush); // Fix for Problem 2
+                        return LoadSvgFromStream(stream, colorBrush);
                     }
                 }
                 catch (Exception ex)
@@ -64,12 +65,7 @@ namespace DeFRaG_Helper.Converters
                 }
             }
 
-            if (streamResourceInfo != null) // Check for null to fix Problem 3
-            {
-                return LoadSvgFromStream(streamResourceInfo.Stream, colorBrush);
-            }
-
-            return DependencyProperty.UnsetValue; // Return a non-null default value if all else fails
+            return DependencyProperty.UnsetValue;
         }
 
         private object LoadSvgFromStream(System.IO.Stream stream, Brush colorBrush)
@@ -101,7 +97,8 @@ namespace DeFRaG_Helper.Converters
             return new DrawingImage(drawing);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

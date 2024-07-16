@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DeFRaG_Helper.Objects;
+using System.ComponentModel;
 
 namespace DeFRaG_Helper
 {
@@ -393,6 +394,33 @@ namespace DeFRaG_Helper
                     OnPropertyChanged(nameof(Functions));
                 }
             }
-        }   
+        }
+
+        public List<MapIcon> GenerateIcons()
+        {
+            List<MapIcon> icons = new List<MapIcon>();
+
+            // Example mapping for demonstration purposes
+            Dictionary<string, (string path, string color)> iconMapping = new Dictionary<string, (string, string)>
+    {
+        {"Rocket Launcher", ("Icons/Weapons/iconw_rocket.svg", "Red")},
+        {"Plasmagun", ("Icons/Weapons/iconw_plasma.svg", "Blue")},
+        // Add mappings for other weapons, items, and functions
+    };
+
+            foreach (var weapon in Weapons)
+            {
+                if (iconMapping.TryGetValue(weapon, out var iconInfo))
+                {
+                    icons.Add(new MapIcon { SvgPath = iconInfo.path, Color = iconInfo.color });
+                }
+            }
+
+            // Repeat for Items and Functions if necessary
+
+            return icons;
+        }
+
+
     }
 }

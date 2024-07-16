@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:DeFRaG_Helper"
       xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-
+      xmlns:uc="clr-namespace:DeFRaG_Helper.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       x:Name="MapsList"
@@ -36,130 +36,18 @@
             
         </Border>
             <ListView Grid.Row="1" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" BorderBrush="Transparent" HorizontalAlignment="Stretch" Background="Transparent">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <!-- Content of items-->
-                    <Border CornerRadius="10" Background="#282828" HorizontalAlignment="Stretch" Padding="10" Margin="3">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <!-- Left half content -->
-                            <!-- First Row Content, full width of the left half -->
-                            <TextBlock Text="{Binding Name}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                       FontFamily="Segoe UI" FontSize="20" Foreground="{DynamicResource ThemeColor}"/>
-                            <!-- Second Row, divided into two columns within the left half -->
-                            <Grid Grid.Row="1" Grid.Column="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Mapname}" Grid.Column="0"
-                                           FontFamily="Segoe UI" FontSize="12" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding GameType}" Grid.Column="1"
-                                           FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                    <TextBlock Text="{Binding Size, Converter={StaticResource SizeFormatConverter}}" Grid.Column="2"
-                                             FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                    <TextBlock Grid.Column="3" FontFamily="Segoe UI" FontSize="10" Foreground="LightGray">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="Hits: {0}">
-                                                <Binding Path="Hits"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </Grid>
-                            <!-- Third Row, also divided into two columns within the left half -->
-                            <Grid Grid.Row="2" Grid.Column="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Filename}" Grid.Column="0"
-                                           FontFamily="Segoe UI" FontSize="12" Foreground="LightGray"/>
-                                    <TextBlock Text="{Binding Physics, Converter={StaticResource PhysicsModeConverter}}" Grid.Column="1"
-                                           FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Author}" Grid.Column="2"
-                                           FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                                <TextBlock Text="{Binding Releasedate}" Grid.Column="3"
-                                           FontFamily="Segoe UI" FontSize="10" Foreground="LightGray"/>
-                            </Grid>
-                            <!-- Right half content -->
-                            <Grid Grid.Column="1" Grid.RowSpan="3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <!-- Content for the four rows in the right half -->
-                                <Image Source="{Binding ImagePath}" Grid.Column="0" Width="100" MaxHeight="70" MaxWidth="100"/>
-                                    <CheckBox Name="chkFav" IsChecked="{Binding IsFavorite}" Grid.Column="1" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="30, 0, 30, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <uc:MapCard DataContext="{Binding}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                                    <Button Name="btnPlay" Grid.Column="2" Width="40" Command="{Binding ElementName=MapsList, Path=DataContext.PlayMapCommand}" CommandParameter="{Binding}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Width="20" Height="20" Margin="0,0,5,0" VerticalAlignment="Center">
-                                                <Image.Source>
-                                                    <Binding>
-                                                        <Binding.Converter>
-                                                            <converters:DynamicSvgConverter/>
-                                                        </Binding.Converter>
-                                                        <Binding.Source>
-                                                            <sys:String>Icons/esports.svg</sys:String>
-                                                        </Binding.Source>
-                                                    </Binding>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock Text="" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button Name="btnDownload" Grid.Column="3" Width="40" 
-                                        Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
-                                        CommandParameter="{Binding}"
-                                        IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Width="20" Height="20" Margin="0,0,5,0" VerticalAlignment="Center">
-                                                <Image.Source>
-                                                    <Binding>
-                                                        <Binding.Converter>
-                                                            <converters:DynamicSvgConverter/>
-                                                        </Binding.Converter>
-                                                        <Binding.Source>
-                                                            <sys:String>Icons/download.svg</sys:String>
-                                                        </Binding.Source>
-                                                    </Binding>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock Text="" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-
-
-
-                                </Grid>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-
-
-
-
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
+        </Grid>
     </Border>
 </Page>

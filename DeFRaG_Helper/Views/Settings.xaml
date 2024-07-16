@@ -67,6 +67,9 @@
                     </Binding>
                 </Image.Source>
             </Image>
+            <Image Source="{Binding PathToSvg, Converter={StaticResource DynamicSvgConverter}, ConverterParameter='Red'}"/>
+
+
         </Grid>
     </Border>
 </Page>

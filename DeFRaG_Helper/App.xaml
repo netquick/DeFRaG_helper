@@ -18,6 +18,7 @@
             <converters:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
             <converters:SizeFormatConverter x:Key="SizeFormatConverter"/>
             <converters:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+            <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter" />
 
             <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
             <converters:SidebarWidthConverter x:Key="SidebarWidthConverter"/>

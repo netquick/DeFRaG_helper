@@ -50,6 +50,7 @@ namespace DeFRaG_Helper
 
             await AppConfig.LoadConfigurationAsync();
             await MessageHelper.LogAsync($"Configuration loaded: {AppConfig.GameDirectoryPath}");
+            AppConfig.UpdateThemeColor();
 
             ApplyThemeColor();
             // Create an instance of MapHistoryManager

@@ -2,7 +2,9 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using System.Windows.Media;
+using System.Windows;
+using System.Diagnostics;
 namespace DeFRaG_Helper
 {
     public static class AppConfig
@@ -18,7 +20,7 @@ namespace DeFRaG_Helper
         public static string? ConnectionString { get; set; }
 
         public delegate Task<string> RequestGameDirectoryDelegate();
-        public static event RequestGameDirectoryDelegate OnRequestGameDirectory;
+        public static event RequestGameDirectoryDelegate? OnRequestGameDirectory;
         static AppConfig()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -60,6 +62,8 @@ namespace DeFRaG_Helper
                     await MessageHelper.LogAsync($"PhysicsSetting: {PhysicsSetting}");
                     await MessageHelper.LogAsync($"DatabasePath: {DatabasePath}");
                     await MessageHelper.LogAsync($"DatabaseUrl: {DatabaseUrl}");
+
+
                 }
                 else
                 {
@@ -77,6 +81,35 @@ namespace DeFRaG_Helper
             }
 
         }
+        public static void UpdateThemeColor()
+        {
+            try
+            {
+                // Attempt to convert SelectedColor to a SolidColorBrush
+                if (!string.IsNullOrEmpty(AppConfig.SelectedColor))
+                {
+                    var color = (Color)ColorConverter.ConvertFromString(AppConfig.SelectedColor);
+                    var brush = new SolidColorBrush(color);
+                    Application.Current.Resources["ThemeColor"] = brush;
+                }
+                else
+                {
+                    throw new FormatException("SelectedColor is null or empty.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Debug.WriteLine($"Failed to update theme color, applying default color. Error: {ex.Message}");
+
+                // Apply a default color
+                var defaultColor = Colors.Yellow; // Example default color
+                Application.Current.Resources["ThemeColor"] = new SolidColorBrush(defaultColor);
+            }
+        }
+
+
+
 
         public static async Task SaveConfigurationAsync()
         {
