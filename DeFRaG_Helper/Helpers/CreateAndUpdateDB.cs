@@ -284,15 +284,15 @@ namespace DeFRaG_Helper
             foreach (var map in mapList)
             {
 
-                ShowMessage($"Updating Details for {map.Name}, Number of maps left: {mapCount}");
+                ///ShowMessage($"Updating Details for {map.Name}, Number of maps left: {mapCount}");
                 mapCount--;
-                await GetMapDetails(map); // Await the call to ensure completion
+                await GetMapDetails(map, mapCount); // Await the call to ensure completion
             }
         }
 
 
         //method to parse details for individual map
-        private async static Task GetMapDetails(MapData tempMap)
+        private async static Task GetMapDetails(MapData tempMap, int mapCount)
         {
             //ShowMessage($"Updating Details for {tempMap.Name}");
 
@@ -342,7 +342,7 @@ namespace DeFRaG_Helper
                                 if (cleanMatch.Success)
                                 {
                                     // If the pattern matches, use the cleaned filename and append the .bsp extension
-                                    map.Mapname = cleanMatch.Groups[1].Value + ".bsp";
+                                    map.Mapname = DecodeHtmlString(cleanMatch.Groups[1].Value + ".bsp");
                                 }
                                 else
                                 {
@@ -377,7 +377,7 @@ namespace DeFRaG_Helper
                                 if (authorMatch.Success)
                                 {
                                     // If the pattern matches, use the author's name
-                                    map.Author = authorMatch.Groups[2].Value;
+                                    map.Author = DecodeHtmlString(authorMatch.Groups[2].Value);
                                 }
                                 else
                                 {
@@ -625,7 +625,7 @@ namespace DeFRaG_Helper
 
                     await DownloadImageAsync(imageUrl, "https://ws.q3df.org");
                 }
-                ShowMessage($"Details for {map.Name} updated successfully, {imageUrls.Count - 1} images downloaded");
+                ShowMessage($"Details updated and {imageUrls.Count - 1} images downloaded for {map.Name}, {mapCount} maps left");
 
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
@@ -640,6 +640,12 @@ namespace DeFRaG_Helper
 
 
         }
+        public static string DecodeHtmlString(string htmlString)
+        {
+            return System.Net.WebUtility.HtmlDecode(htmlString);
+        }
+
+
         public static async Task SetMapParsed(MapData map)
         {
             DbQueue.Instance.Enqueue(async connection =>
