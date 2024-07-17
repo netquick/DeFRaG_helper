@@ -65,7 +65,7 @@ namespace DeFRaG_Helper
                 {
                     item.DecodeName();
                 }
-                lvDemos.ItemsSource = demoItems;
+                icDemos.ItemsSource = demoItems;
                 txtMapSearch.Text = System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname);
 
             }
@@ -86,12 +86,12 @@ namespace DeFRaG_Helper
                 {
                     item.DecodeName();
                 }
-                lvDemos.ItemsSource = demoItems;
+                icDemos.ItemsSource = demoItems;
             }
             else
             {
                 // Optionally clear the list if the search query is empty
-                lvDemos.ItemsSource = null;
+                icDemos.ItemsSource = null;
             }
         }
 
@@ -103,7 +103,7 @@ namespace DeFRaG_Helper
                 if (string.IsNullOrWhiteSpace(txtMapSearch.Text))
                 {
                     // Clear the ListView's ItemsSource
-                    lvDemos.ItemsSource = null;
+                    icDemos.ItemsSource = null;
                     MessageHelper.Log("Clear list");
                 }
                 else

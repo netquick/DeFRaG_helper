@@ -89,5 +89,18 @@ namespace DeFRaG_Helper
                 await mapViewModel.UpdateFavoriteStateAsync(map);
             }
         }
+
+        private void UserControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Change to a slightly lighter or darker background color on hover
+            MainBorder.Background = new SolidColorBrush(Color.FromRgb(62, 62, 62)); // Example color
+        }
+
+        private void UserControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            // Revert to the original background color
+            MainBorder.Background = new SolidColorBrush(Color.FromRgb(45, 45, 45)); // Example color
+        }
+
     }
 }

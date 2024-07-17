@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DeFRaG_Helper"
+      xmlns:uc="clr-namespace:DeFRaG_Helper.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Demos">
@@ -12,9 +13,10 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border Height="50" Background="#222222">
+            <Border Grid.Row="0" Height="50" Background="#222222">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -25,65 +27,22 @@
                     <TextBox Name="txtMapSearch" Width="340" Margin="10, 0, 10, 0" FontFamily="Segoe UI" FontSize="20" VerticalAlignment="Center" Grid.Column="0" Foreground="White" KeyDown="TxtMapSearch_KeyDown"/>
                 </Grid>
             </Border>
-                <ListView Name="lvDemos" Grid.Row="1" Margin="10" ItemsSource="{Binding DemoItems}" Style="{StaticResource DarkListViewStyle}" MouseDoubleClick="LvDemos_MouseDoubleClick" HorizontalContentAlignment="Stretch">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="#222222" Margin="5" Padding="10" CornerRadius="5">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <!-- For labels -->
-                                        <ColumnDefinition Width="*"/>
-                                        <!-- For PlayerName, Mapname content -->
-                                        <ColumnDefinition Width="Auto"/>
-                                        <!-- For labels -->
-                                        <ColumnDefinition Width="*"/>
-                                        <!-- For Physics, Type content -->
-                                        <!-- Add or adjust columns as needed -->
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <!-- For the first row of information -->
-                                        <RowDefinition Height="Auto"/>
-                                        <!-- For the second row of information -->
-                                        <!-- Add more rows as needed -->
-                                        <RowDefinition Height="Auto"/>
-
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Player Name -->
-                                    <TextBlock Text="Name: " FontWeight="Bold" Foreground="White" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="16" />
-                                    <TextBlock Text="{Binding PlayerName}" Foreground="{DynamicResource ThemeColor}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="16"/>
-
-                                    <!-- Map Name -->
-                                    <TextBlock Text="Map: " FontWeight="Bold" Foreground="White" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Mapname}" Foreground="White" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"/>
-
-                                    <!-- Physics -->
-                                    <TextBlock Text="Country: " FontWeight="Bold" Foreground="White" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding PlayerCountry}" Foreground="White" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center"/>
-
-                                    <!-- Type -->
-                                    <TextBlock Text="Type: " FontWeight="Bold" Foreground="White" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Type}" Foreground="White" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center"/>
-
-                                    <TextBlock Text="Time: " FontWeight="Bold" Foreground="White" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Time}" Foreground="{DynamicResource ThemeColor}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center"/>
-
-                                    <TextBlock Text="Physics: " FontWeight="Bold" Foreground="White" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Physics}" Foreground="White" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center"/>
-
-                                    <!-- Add more TextBlocks for additional information as needed -->
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-
-
-
-
-                </ListView>
-            
+            <Border Grid.Row="1" Height="120" Background="#2c2c2c" Margin="10" CornerRadius="10" >
+                <ScrollViewer>
+                    
+                </ScrollViewer>
+            </Border>
+            <Border Grid.Row="2" Margin="0" Background="#222222" CornerRadius="10">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Name="icDemos" ItemsSource="{Binding DemoItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <uc:DemoCard DataContext="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
         </Grid>
     </Border>
 </Page>

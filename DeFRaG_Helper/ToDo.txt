@@ -1,0 +1,9 @@
+﻿- Images from 3 folders
+- Demo: Collection for miniview
+- Settings: Include Image setting
+- Search
+- Language
+- Edit maps
+- Config editor
+- Records
+- Versioning

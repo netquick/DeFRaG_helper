@@ -25,8 +25,17 @@
             <!-- Define the ControlTemplate -->
             <!-- Add other setters as needed to match your theme -->
         </Style>
+    <Style x:Key="DarkListViewStyle2" TargetType="ListView">
+        <Setter Property="Background" Value="#222222"/>
+        <Setter Property="Foreground" Value="#D3D3D3"/>
+        <Setter Property="BorderBrush" Value="#222222"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        
+        <!-- Define the ControlTemplate -->
+        <!-- Add other setters as needed to match your theme -->
+    </Style>
 
-        <!-- ListViewItem Style with Hover Effect -->
+    <!-- ListViewItem Style with Hover Effect -->
     <Style TargetType="ListViewItem">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
