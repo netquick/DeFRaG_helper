@@ -13,6 +13,8 @@
             <!-- Correctly reference the BoolToVisibilityConverter within the local XML namespace -->
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+            <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+
             <!-- Update this line -->
             <converters:IntToInverseBooleanConverter x:Key="IntToInverseBooleanConverter"/>
             <converters:PhysicsModeConverter x:Key="PhysicsModeConverter"/>

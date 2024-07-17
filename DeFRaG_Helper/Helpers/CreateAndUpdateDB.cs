@@ -630,9 +630,15 @@ namespace DeFRaG_Helper
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
 
+                if (map.Name == null || map.Name == "")
+                    {
+                    map.Name = Path.GetFileNameWithoutExtension(tempMap.Name);
+                }
+
+                //Update or add map to the database
                 await mapViewModel.UpdateOrAddMap(map);
 
-
+                //set the map as parsed
                 await SetMapParsed(tempMap);
 
 

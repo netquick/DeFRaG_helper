@@ -3,10 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DeFRaG_Helper"
+             xmlns:local="clr-namespace:DeFRaG_Helper.UserControls"
+             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
+
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
+    <UserControl.Resources>
+        <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
 
+    </UserControl.Resources>
     <Border Margin="10" CornerRadius="10" Background="#2d2d2d" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid>
             <Grid.RowDefinitions>
@@ -15,7 +22,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Height="140" MaxWidth="200">
                 <Image Margin="10,10,10,0" Source="{Binding ImagePath}" MaxWidth="160"/>
-                <TextBlock Text="{Binding Name}" FontSize="20" Foreground="White" Margin="20,10,20,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="160"/>
+                <TextBlock Text="{Binding Name}" FontSize="20" Foreground="White" Margin="20,10,20,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="160" HorizontalAlignment="Center"/>
             </Grid>
             <!-- Adjusted inner Border with straight upper corners and rounded bottom corners -->
             <Border Grid.Row="1" Height="60" Background="#2a2a2a" CornerRadius="0,0,10,10">
@@ -33,11 +40,10 @@
                     <!-- Binding the Hits property -->
                     <TextBlock Grid.Row="2" Text="{Binding Hits}" FontSize="9" Foreground="White" HorizontalAlignment="Center"/>
                     <!-- Assuming there's a Favorite property -->
-                    <CheckBox Grid.Row="3" Height="26" Content="Favorite" Margin="0, 4, 0, 0" HorizontalAlignment="Center" IsChecked="{Binding IsFavorite}" Style="{StaticResource FavoriteCheckBoxStyle}" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
+
+                    <CheckBox Grid.Row="2" Name="chkFav" IsChecked="{Binding IsFavorite, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"  
+          Width="40" Height="40" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Top" Margin="70,0,70,0" 
+          Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked" Grid.RowSpan="2" />
                 </Grid>
             </Border>
         </Grid>

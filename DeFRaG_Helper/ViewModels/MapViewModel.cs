@@ -259,6 +259,10 @@ namespace DeFRaG_Helper.ViewModels
 
                             };
 
+                            if (map.Name == null || map.Name == "")
+                            {
+                                map.Name = Path.GetFileNameWithoutExtension(map.Mapname);
+                            }
 
 
                             // Since we're on a background thread, ensure UI updates are dispatched on the UI thread

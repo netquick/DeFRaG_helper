@@ -45,36 +45,14 @@
 
 
             </ComboBox>
-            <Button Name="btnSync" Content="Sync maps" Margin="636,10,10,0" VerticalAlignment="Top" Height="35" Click="btnSync_Click" IsEnabled="False"/>
-            <TextBox Name="txtGamePath" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="14" Height="31" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="433"/>
+            <TextBox Name="txtGamePath" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="20" Height="32" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="433" LostFocus="txtGamePath_LostFocus"/>
             <Label Content="Theme Color" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" VerticalAlignment="Top" Width="180"/>
             <Label Content="Game Path" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,125,0,0" VerticalAlignment="Top" Width="180"/>
-            <Button x:Name="btnUpdate" Content="Update Maps" Margin="636,62,10,0" VerticalAlignment="Top" Height="34" Click="btnUpdate_Click" IsEnabled="False"/>
-            <Image x:Name="Icon" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False">
-                <Image.Source>
-                    <Binding>
-                        <Binding.Converter>
-                            <converters:DynamicSvgConverter/>
-                        </Binding.Converter>
-                        <Binding.Source>
-                            <sys:String>Icons/Weapons/iconw_rocket.svg</sys:String>
-                        </Binding.Source>
-                    </Binding>
-                </Image.Source>
-            </Image>
-            <Image x:Name="Icon2" Height="30" Width="30" Margin="50,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False">
-                <Image.Source>
-                    <Binding>
-                        <Binding.Converter>
-                            <converters:DynamicSvgConverter/>
-                        </Binding.Converter>
-                        <Binding.Source>
-                            <sys:String>Icons/Weapons/iconw_shotgun.svg</sys:String>
-                        </Binding.Source>
-                    </Binding>
-                </Image.Source>
-            </Image>
-            <Image Source="{Binding PathToSvg, Converter={StaticResource DynamicSvgConverter}, ConverterParameter='Red'}"/>
+            <Button Content="set" Name="btnSet" HorizontalAlignment="Left" Height="32" Margin="448,159,0,0" VerticalAlignment="Top" Width="56" RenderTransformOrigin="4.143,-2.414" Click="btnSet_Click"/>
+            <CheckBox Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,225,0,0" VerticalAlignment="Top"/>
+            <Label Content="Download Images on Map update" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,225,0,0" VerticalAlignment="Top" Width="208"/>
+
+
 
 
         </Grid>

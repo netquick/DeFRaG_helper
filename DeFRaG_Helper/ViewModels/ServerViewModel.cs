@@ -133,11 +133,10 @@ namespace DeFRaG_Helper
 
             await Task.WhenAll(tasks);
 
-
-            //TODO: Make sure the mainview is updated after all servers have been updated
-            // Refresh the SortedServersView on the UI thread after all updates
+            // Refresh the ServersView on the UI thread after all updates
             App.Current.Dispatcher.Invoke(() =>
             {
+                ServersView.Refresh(); // Explicitly refresh the view
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Servers)));
             });
         }

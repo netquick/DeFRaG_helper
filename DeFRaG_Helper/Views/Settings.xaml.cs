@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFFolderBrowser;
 
 namespace DeFRaG_Helper
 {
@@ -60,6 +61,14 @@ namespace DeFRaG_Helper
             }
         }
 
+        private async void txtGamePath_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Update the GameDirectoryPath in AppConfig
+            AppConfig.GameDirectoryPath = txtGamePath.Text;
+
+            // Optionally, save the configuration to persist the change
+            await AppConfig.SaveConfigurationAsync();
+        }
 
         private async void btnSync_Click(object sender, RoutedEventArgs e)
         {
@@ -128,6 +137,55 @@ namespace DeFRaG_Helper
                     // Handle the exception, e.g., log it or show an error message on the UI thread using Dispatcher
                 }
             });
+        }
+
+        private async void btnSet_Click(object sender, RoutedEventArgs e)
+        {
+            await RequestGameDirectoryAsync();
+        }
+
+        //Method to request game directory
+        private async Task<string> RequestGameDirectoryAsync()
+        {
+            // Save the current path from the txtGamePath TextBox
+            string currentPath = txtGamePath.Text;
+
+            // Show the directory selection dialog and get the selected path
+            string selectedPath = await ShowDirectorySelectionDialogAsync();
+
+            // Check if a folder was selected (i.e., the dialog was not canceled)
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                // Update the txtGamePath TextBox only if a new folder was selected
+                txtGamePath.Text = selectedPath;
+            }
+            else
+            {
+                // If the dialog was canceled, restore the previous path
+                selectedPath = currentPath;
+            }
+
+            return selectedPath;
+        }
+
+
+        //Method to show a folder selection dialog
+        public static async Task<string> ShowDirectorySelectionDialogAsync()
+        {
+            string folderPath = string.Empty;
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var dialog = new WPFFolderBrowserDialog
+                {
+                    Title = "Select a folder" // You can customize the dialog title here
+                };
+                var result = dialog.ShowDialog();
+                if (result == true) // Check if the dialog was accepted
+                {
+                    folderPath = dialog.FileName; // Get the selected folder path
+                }
+            });
+            return folderPath;
         }
 
 

@@ -117,9 +117,11 @@ namespace DeFRaG_Helper
             {
                 // Assuming chkPhysics is accessible or you have a method in MainWindow to get its value
                 int physicsSetting = mainWindow.GetPhysicsSetting(); // method in MainWindow
-                //from the physics setting, we need to get maps with the same physics setting or 0 or 3 to find a random map
+                                                                     //from the physics setting, we need to get maps with the same physics setting or 0 or 3 to find a random map
 
-                var matchingMaps = viewModel.Maps.Where(m => m.Physics == physicsSetting || m.Physics == 0 || m.Physics == 3).ToList();
+                var matchingMaps = viewModel.Maps
+                    .Where(m => (m.Physics == physicsSetting || m.Physics == 0 || m.Physics == 3) && m.GameType == "Defrag")
+                    .ToList();
 
                 if (matchingMaps.Any())
                 {

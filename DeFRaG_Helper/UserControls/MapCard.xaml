@@ -11,13 +11,16 @@
              d:DesignHeight="100" d:DesignWidth="1000">
     <UserControl.Resources>
         <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+
     </UserControl.Resources>
     <Border CornerRadius="10" Background="#2c2c2c">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="6*"/>
             <!-- Left half -->
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="4*"/>
             <!-- Right half (empty in this example) -->
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -39,10 +42,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Mapname" Text="{Binding Name}" FontSize="14" Foreground="White" Margin="10, 0, 10, 0" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="1" Grid.Column="0" x:Name="Filename" Text="{Binding Filename}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
@@ -50,7 +53,7 @@
             <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Date" Text="{Binding Releasedate}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="0" Grid.Column="2" x:Name="Hits" Text="{Binding Hits}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="1" Grid.Column="2" x:Name="Size" Text="{Binding Size, Converter={StaticResource SizeFormatConverter}}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="0" Grid.Column="3" x:Name="Type" Text="{Binding Gametype}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
+            <TextBlock Grid.Row="0" Grid.Column="3" x:Name="Type" Text="{Binding GameType}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="1" Grid.Column="3" x:Name="Style" Text="{Binding Style}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
         </Grid>
 
@@ -131,9 +134,12 @@
                 </Grid>
 
                 <Image Grid.Column="1" Source="{Binding ImagePath}" MaxHeight="70" Width="120" MaxWidth="120" Margin="5" ></Image>
-            <CheckBox Grid.Column="2" Name="chkFav" IsChecked="{Binding IsFavorite}" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="20, 0, 20, 0" Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
+                <CheckBox Grid.Column="2" Name="chkFav" IsChecked="{Binding IsFavorite, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"  
+                          Width="60" Height="60" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Center" Margin="0, 0, 0, 0" 
+                          Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
 
-            <Button Name="btnPlay" Grid.Column="3" Width="40" Margin="5, 10, 5, 10" 
+
+                <Button Name="btnPlay" Grid.Column="3" Width="40" Margin="5, 10, 5, 10" 
                     Command="{Binding ElementName=MapsList, Path=DataContext.PlayMapCommand}" CommandParameter="{Binding}">
                 <StackPanel Orientation="Horizontal">
                     <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
@@ -173,8 +179,7 @@
             </Button>
             <Button Name="btnEdit" Grid.Column="5" Width="40" Margin="5, 10, 10, 10"
                 Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
-                CommandParameter="{Binding}"
-                IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
+                CommandParameter="{Binding}">
                 <StackPanel Orientation="Horizontal">
                     <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
                         <Image.Source>
