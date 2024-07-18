@@ -39,12 +39,15 @@ namespace DeFRaG_Helper
 
         public async Task AddMap(Map map)
         {
+            int newMapId = -1; // Variable to store the new map ID
+
+
             DbQueue.Instance.Enqueue(async connection =>
             {
                 using (var command = new SqliteCommand(@"INSERT INTO Maps 
         (Name, Mapname, Filename, Releasedate, Author, Mod, Size, Physics, Hits, LinkDetailpage, Style, LinksOnlineRecordsQ3DFVQ3, LinksOnlineRecordsQ3DFCPM, LinksOnlineRecordsRacingVQ3, LinksOnlineRecordsRacingCPM, LinkDemosVQ3, LinkDemosCPM, DependenciesTextures) 
         VALUES 
-        (@Name, @Mapname, @Filename, @Releasedate, @Author, @Mod, @Size, @Physics, @Hits, @LinkDetailpage, @Style, @LinksOnlineRecordsQ3DFVQ3, @LinksOnlineRecordsQ3DFCPM, @LinksOnlineRecordsRacingVQ3, @LinksOnlineRecordsRacingCPM, @LinkDemosVQ3, @LinkDemosCPM, @DependenciesTextures  )", connection))
+        (@Name, @Mapname, @Filename, @Releasedate, @Author, @Mod, @Size, @Physics, @Hits, @LinkDetailpage, @Style, @LinksOnlineRecordsQ3DFVQ3, @LinksOnlineRecordsQ3DFCPM, @LinksOnlineRecordsRacingVQ3, @LinksOnlineRecordsRacingCPM, @LinkDemosVQ3, @LinkDemosCPM, @DependenciesTextures  ); select last_insert_rowid();", connection))
                 {
                     command.Parameters.AddWithValue("@Name", map.Name ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Mapname", map.Mapname ?? (object)DBNull.Value);
@@ -64,9 +67,9 @@ namespace DeFRaG_Helper
                     command.Parameters.AddWithValue("@LinkDemosVQ3", map.LinkDemosVQ3 ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@LinkDemosCPM", map.LinkDemosCPM ?? (object)DBNull.Value); 
                     command.Parameters.AddWithValue("@DependenciesTextures", map.Dependencies ?? (object)DBNull.Value);
-     
 
 
+                    newMapId = Convert.ToInt32(await command.ExecuteScalarAsync());
                     await command.ExecuteNonQueryAsync();
                 }
             });
@@ -90,7 +93,7 @@ namespace DeFRaG_Helper
                     {
                         // First, get the WeaponID from the 'Weapons' table
                         int weaponId = -1;
-                        using (var command = new SqliteCommand("SELECT WeaponID FROM Weapons WHERE Weapon = @WeaponName", connection))
+                        using (var command = new SqliteCommand("SELECT WeaponID FROM Weapon WHERE Weapon = @WeaponName", connection))
                         {
                             command.Parameters.AddWithValue("@WeaponName", weaponName);
                             using (var reader = await command.ExecuteReaderAsync())
@@ -106,7 +109,7 @@ namespace DeFRaG_Helper
                         bool exists = false;
                         using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapWeapon WHERE MapID = @MapId AND WeaponID = @WeaponId", connection))
                         {
-                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@MapId", newMapId);
                             checkCommand.Parameters.AddWithValue("@WeaponId", weaponId);
                             exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
                         }
@@ -116,7 +119,7 @@ namespace DeFRaG_Helper
                         {
                             using (var insertCommand = new SqliteCommand(@"INSERT INTO MapWeapon (MapID, WeaponID) VALUES (@MapId, @WeaponId)", connection))
                             {
-                                insertCommand.Parameters.AddWithValue("@MapId", map.Id);
+                                insertCommand.Parameters.AddWithValue("@MapId", newMapId);
                                 insertCommand.Parameters.AddWithValue("@WeaponId", weaponId);
                                 await insertCommand.ExecuteNonQueryAsync();
                             }
@@ -150,7 +153,7 @@ namespace DeFRaG_Helper
                         bool exists = false;
                         using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapItem WHERE MapID = @MapId AND ItemID = @ItemId", connection))
                         {
-                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@MapId", newMapId);
                             checkCommand.Parameters.AddWithValue("@ItemId", itemId);
                             exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
                         }
@@ -160,7 +163,7 @@ namespace DeFRaG_Helper
                         {
                             using (var insertCommand = new SqliteCommand(@"INSERT INTO MapItem (MapID, ItemID) VALUES (@MapId, @ItemId)", connection))
                             {
-                                insertCommand.Parameters.AddWithValue("@MapId", map.Id); // Ensure you have the map's ID available
+                                insertCommand.Parameters.AddWithValue("@MapId", newMapId); // Ensure you have the map's ID available
                                 insertCommand.Parameters.AddWithValue("@ItemId", itemId);
                                 await insertCommand.ExecuteNonQueryAsync();
                             }
@@ -193,7 +196,7 @@ namespace DeFRaG_Helper
                         bool exists = false;
                         using (var checkCommand = new SqliteCommand("SELECT COUNT(1) FROM MapFunction WHERE MapID = @MapId AND FunctionID = @FunctionId", connection))
                         {
-                            checkCommand.Parameters.AddWithValue("@MapId", map.Id);
+                            checkCommand.Parameters.AddWithValue("@MapId", newMapId);
                             checkCommand.Parameters.AddWithValue("@FunctionId", functionId);
                             exists = Convert.ToInt32(await checkCommand.ExecuteScalarAsync()) > 0;
                         }
@@ -203,7 +206,7 @@ namespace DeFRaG_Helper
                         {
                             using (var insertCommand = new SqliteCommand(@"INSERT INTO MapFunction (MapID, FunctionID) VALUES (@MapId, @FunctionId)", connection))
                             {
-                                insertCommand.Parameters.AddWithValue("@MapId", map.Id);
+                                insertCommand.Parameters.AddWithValue("@MapId", newMapId);
                                 insertCommand.Parameters.AddWithValue("@FunctionId", functionId);
                                 await insertCommand.ExecuteNonQueryAsync();
                             }

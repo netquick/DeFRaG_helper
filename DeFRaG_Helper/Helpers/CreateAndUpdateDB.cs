@@ -632,7 +632,7 @@ namespace DeFRaG_Helper
 
                     await DownloadImageAsync(imageUrl, "https://ws.q3df.org");
                 }
-                ShowMessage($"Details updated and {imageUrls.Count - 1} images downloaded for {map.Name}, {mapCount} maps left");
+                ShowMessage($"Details updated and {imageUrls.Count - 1} images downloaded for {map.Name}, \r\nFile: {map.Filename}, Mapname: {map.Mapname}, {mapCount} maps left");
 
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
