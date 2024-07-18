@@ -47,7 +47,7 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Mapname" Text="{Binding Name}" FontSize="14" Foreground="White" Margin="10, 0, 10, 0" FontFamily="Segoe UI"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Mapname" Text="{Binding Mapname}" FontSize="14" Foreground="White" Margin="10, 0, 10, 0" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="1" Grid.Column="0" x:Name="Filename" Text="{Binding Filename}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="0" Grid.Column="1" x:Name="Author" Text="{Binding Author}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
             <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Date" Text="{Binding Releasedate}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>

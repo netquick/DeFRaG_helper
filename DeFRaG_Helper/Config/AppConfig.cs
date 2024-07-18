@@ -18,6 +18,9 @@ namespace DeFRaG_Helper
         public static string? DatabasePath { get; set; } 
         public static string? DatabaseUrl { get; set; } 
         public static string? ConnectionString { get; set; }
+        public static bool ? UseUnsecureConnection { get; set; }
+        public static bool ? DownloadImagesOnUpdate { get; set; }
+
 
         public delegate Task<string> RequestGameDirectoryDelegate();
         public static event RequestGameDirectoryDelegate? OnRequestGameDirectory;
@@ -56,6 +59,8 @@ namespace DeFRaG_Helper
                     DatabaseUrl = config?.DatabaseUrl ?? DatabaseUrl;
                     MenuState = config?.MenuState ?? MenuState; // Use default if not set
                     ConnectionString = config?.ConnectionString ?? ConnectionString; // Use default if not set
+                    UseUnsecureConnection = config?.UseUnsecureConnection ?? false;
+                    DownloadImagesOnUpdate = config?.DownloadImagesOnUpdate ?? false;
                     await MessageHelper.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
                     await MessageHelper.LogAsync($"SelectedColor: {SelectedColor}");
                     await MessageHelper.LogAsync($"ButtonState: {ButtonState}");
@@ -130,7 +135,9 @@ namespace DeFRaG_Helper
                 DatabasePath = DatabasePath,
                 DatabaseUrl = DatabaseUrl,
                 MenuState = MenuState,
-                ConnectionString = ConnectionString
+                ConnectionString = ConnectionString,
+                UseUnsecureConnection = UseUnsecureConnection,
+                DownloadImagesOnUpdate = DownloadImagesOnUpdate
 
             };
             MessageHelper.Log($"GameDirectoryPath: {GameDirectoryPath}");

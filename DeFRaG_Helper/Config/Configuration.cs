@@ -16,5 +16,7 @@ namespace DeFRaG_Helper
         public string? DatabaseUrl { get; set; }
         public string? MenuState { get; set; }
         public string? ConnectionString { get; set; }
+        public bool? UseUnsecureConnection { get; set; }
+        public bool? DownloadImagesOnUpdate { get; set; }
     }
 }

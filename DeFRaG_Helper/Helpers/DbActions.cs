@@ -70,7 +70,7 @@ namespace DeFRaG_Helper
 
 
                     newMapId = Convert.ToInt32(await command.ExecuteScalarAsync());
-                    await command.ExecuteNonQueryAsync();
+                    //await command.ExecuteNonQueryAsync();
                 }
             });
             await Task.CompletedTask;
@@ -411,7 +411,11 @@ namespace DeFRaG_Helper
                             {
                                 insertCommand.Parameters.AddWithValue("@MapId", map.Id); // Ensure you have the map's ID available
                                 insertCommand.Parameters.AddWithValue("@FunctionId", functionId);
-                                await insertCommand.ExecuteNonQueryAsync();
+                                try
+                                {
+                                    await insertCommand.ExecuteNonQueryAsync();
+                                }
+                                catch (Exception e) { MessageHelper.Log(e.Message); }
                             }
                         }
                     });

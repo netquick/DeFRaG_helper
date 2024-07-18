@@ -109,7 +109,7 @@
             <Thumb Height="5" Cursor="SizeNS" DragDelta="OnTopDragDelta" Opacity="0" VerticalAlignment="Top" Style="{StaticResource ResizeGripStyle}"/>
             <Thumb Height="5" Cursor="SizeNS" DragDelta="OnBottomDragDelta" Opacity="0" VerticalAlignment="Bottom" Style="{StaticResource ResizeGripStyle}"/>
             <Thumb Width="10" Height="10" Cursor="SizeNWSE" DragDelta="OnBottomRightDragDelta" Opacity="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource ResizeGripStyle}"/>
-            <StackPanel x:Name="MessageHost" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" MaxHeight="200"/>
+            <StackPanel x:Name="MessageHost" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" MaxHeight="180"/>
 
         </Grid>
         

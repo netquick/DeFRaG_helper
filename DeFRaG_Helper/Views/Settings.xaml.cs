@@ -120,8 +120,30 @@ namespace DeFRaG_Helper
                 ColorComboBox.SelectedItem = selectedItem;
             }
             txtGamePath.Text = AppConfig.GameDirectoryPath;
+
+            chkDlImages.IsChecked = AppConfig.DownloadImagesOnUpdate;
+            chkUnsecure.IsChecked = AppConfig.UseUnsecureConnection;
+
+
         }
 
+        private async void DownloadImg_Changed(object sender, RoutedEventArgs e)
+        {
+            // Update the DownloadImagesOnUpdate setting in AppConfig
+            AppConfig.DownloadImagesOnUpdate = chkDlImages.IsChecked;
+
+            // Optionally, save the configuration to persist the change
+            await AppConfig.SaveConfigurationAsync();
+        }
+
+        private async void DlUnsecure_Changed(object sender, RoutedEventArgs e)
+        {
+            // Update the UseUnsecureConnection setting in AppConfig
+            AppConfig.UseUnsecureConnection = chkUnsecure.IsChecked;
+
+            // Optionally, save the configuration to persist the change
+            await AppConfig.SaveConfigurationAsync();
+        }
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {

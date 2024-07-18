@@ -44,6 +44,8 @@ namespace DeFRaG_Helper
 
         private async Task ProcessQueue(string callerMemberName)
         {
+            List<Exception> exceptions = new List<Exception>();
+
             while (_operations.TryDequeue(out var operation))
             {
                 try
@@ -59,8 +61,7 @@ namespace DeFRaG_Helper
                 {
                     Console.WriteLine($"DbQueue operation failed: {ex.Message} - Called by {callerMemberName}");
                     MessageHelper.Log($"DbQueue operation failed: {ex.Message}, {ex.StackTrace}- Called by {callerMemberName}");
-                    _tcs.SetException(ex); // Consider setting the exception to signal failure
-                    return; // Exit on failure
+                    exceptions.Add(ex); // Accumulate exceptions instead of stopping
                 }
             }
 
@@ -74,8 +75,17 @@ namespace DeFRaG_Helper
                 }
                 _isProcessing = false;
             }
-            _tcs.SetResult(true); // Signal completion
+
+            if (exceptions.Any())
+            {
+                _tcs.SetException(new AggregateException(exceptions)); // Set all accumulated exceptions
+            }
+            else
+            {
+                _tcs.SetResult(true); // Signal completion only if there were no exceptions
+            }
         }
+
 
 
 

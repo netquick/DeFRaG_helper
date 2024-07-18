@@ -12,44 +12,57 @@ namespace DeFRaG_Helper
 {
     public static class Downloader
     {
+
+        private static readonly HttpClient httpClient = CreateHttpClient();
+
+        private static HttpClient CreateHttpClient()
+        {
+            var handler = new HttpClientHandler();
+
+            if (AppConfig.UseUnsecureConnection.HasValue && AppConfig.UseUnsecureConnection.Value)
+            {
+                handler.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true; // Bypass SSL certificate validation for unsecure connections
+            }
+
+            return new HttpClient(handler);
+        }
+
+
+
         public static async Task DownloadFileAsync(string url, string destinationPath, IProgress<double> progress)
         {
-            using (var httpClient = new HttpClient())
+            var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using (var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-                using (var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var downloadStream = await response.Content.ReadAsStreamAsync())
                 {
-                    using (var downloadStream = await response.Content.ReadAsStreamAsync())
+                    var totalRead = 0L;
+                    var buffer = new byte[8192];
+                    var isMoreToRead = true;
+
+                    do
                     {
-                        var totalRead = 0L;
-                        var buffer = new byte[8192];
-                        var isMoreToRead = true;
-
-                        do
+                        var read = await downloadStream.ReadAsync(buffer, 0, buffer.Length);
+                        if (read == 0)
                         {
-                            var read = await downloadStream.ReadAsync(buffer, 0, buffer.Length);
-                            if (read == 0)
-                            {
-                                isMoreToRead = false;
-                            }
-                            else
-                            {
-                                await fileStream.WriteAsync(buffer, 0, read);
+                            isMoreToRead = false;
+                        }
+                        else
+                        {
+                            await fileStream.WriteAsync(buffer, 0, read);
 
-                                totalRead += read;
-                                var totalReadInPercent = (double)totalRead / (double)response.Content.Headers.ContentLength.Value * 100;
-                                if (progress != null)
-                                {
-                                    MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
-
-                                }
-                                //MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
+                            totalRead += read;
+                            var totalReadInPercent = (double)totalRead / (double)response.Content.Headers.ContentLength.Value * 100;
+                            if (progress != null)
+                            {
+                                MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
                             }
-                        } while (isMoreToRead);
-                    }
+                        }
+                    } while (isMoreToRead);
                 }
             }
         }
+
 
 
 

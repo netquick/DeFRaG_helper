@@ -32,11 +32,15 @@ namespace DeFRaG_Helper
         private static HttpClient CreateHttpClient()
         {
             var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback =
-                (sender, certificate, chain, sslPolicyErrors) => true; // Bypass SSL certificate validation
+
+            if (AppConfig.UseUnsecureConnection.HasValue && AppConfig.UseUnsecureConnection.Value)
+            {
+                handler.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true; // Bypass SSL certificate validation for unsecure connections
+            }
 
             return new HttpClient(handler);
         }
+
         private static void CreateDB()
         { 
             if (!System.IO.Directory.Exists(AppDataFolder))
@@ -356,6 +360,7 @@ namespace DeFRaG_Helper
                                     // If there's no <span> tag, use the original propertyValue and append the .bsp extension
                                     map.Mapname = propertyValue + ".bsp";
                                 }
+                                SimpleLogger.Log("Mapname: " + map.Mapname);
                                 break;
 
                             case "Pk3 file":
@@ -623,6 +628,14 @@ namespace DeFRaG_Helper
                     }
                 }
 
+
+                if (map.Name == null || map.Name == "")
+                {
+                    map.Name = tempMap.Name;
+                }
+
+
+
                 //get list of image urls
                 var imageUrls = ExtractImageUrls(html);
                 for (int i = 0; i < imageUrls.Count; i++)
@@ -638,7 +651,7 @@ namespace DeFRaG_Helper
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
 
                 //if (map.Name == null || map.Name == "")
-                //    {
+                //{
                 //    map.Name = Path.GetFileNameWithoutExtension(tempMap.Name);
                 //}
 
