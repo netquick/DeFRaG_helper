@@ -39,7 +39,7 @@ namespace DeFRaG_Helper.UserControls
                 //now we have to check if the map is installed. We check "IsInstalled" property of the map
                 var viewModel = MapViewModel.GetInstanceAsync().Result;
                 MessageHelper.Log($"Checking for Mapname: {mapName}");
-                var map = viewModel.Maps.FirstOrDefault(m => m.Mapname == (mapName + ".bsp"));
+                var map = viewModel.Maps.FirstOrDefault(m => string.Equals(m.Mapname, mapName + ".bsp", StringComparison.OrdinalIgnoreCase));
                 if (map != null)
                 {
                     if (map.IsInstalled == 0)
