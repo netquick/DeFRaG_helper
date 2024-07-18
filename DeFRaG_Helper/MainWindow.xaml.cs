@@ -47,7 +47,8 @@ namespace DeFRaG_Helper
             {
                 if (_instance == null)
                     _instance = Application.Current.MainWindow as MainWindow;
-                MessageHelper.Log("MainWindow Instance");
+                if (_instance == null)                     
+                    throw new Exception("Main window not found");
 
                 return _instance;
             }

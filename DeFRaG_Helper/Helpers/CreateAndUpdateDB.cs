@@ -18,7 +18,7 @@ namespace DeFRaG_Helper
     {
 
         // Define a static HttpClient instance at the class level
-        private static readonly HttpClient httpClient = new HttpClient();
+        private static readonly HttpClient httpClient = CreateHttpClient();
         //method to create the database in the Appdata folder. DO ONLY USE TO CREATE A NEW DB!!!
         private static readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static readonly string AppDataFolder = Path.Combine(AppDataPath, "DeFRaG_Helper");
@@ -29,7 +29,14 @@ namespace DeFRaG_Helper
             App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.ShowMessage(message); });
 
         }
+        private static HttpClient CreateHttpClient()
+        {
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback =
+                (sender, certificate, chain, sslPolicyErrors) => true; // Bypass SSL certificate validation
 
+            return new HttpClient(handler);
+        }
         private static void CreateDB()
         { 
             if (!System.IO.Directory.Exists(AppDataFolder))
@@ -630,10 +637,10 @@ namespace DeFRaG_Helper
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
 
-                if (map.Name == null || map.Name == "")
-                    {
-                    map.Name = Path.GetFileNameWithoutExtension(tempMap.Name);
-                }
+                //if (map.Name == null || map.Name == "")
+                //    {
+                //    map.Name = Path.GetFileNameWithoutExtension(tempMap.Name);
+                //}
 
                 //Update or add map to the database
                 await mapViewModel.UpdateOrAddMap(map);
@@ -698,6 +705,43 @@ WHERE LinkDetailpage = @LinkDetailpage", connection))
         }
 
 
+        //public static async Task DownloadImageAsync(string imageUrl, string baseUrl)
+        //{
+        //    // Construct the full URL for the image
+        //    string fullUrl = new Uri(new Uri(baseUrl), imageUrl).ToString();
+        //    // Extract the original file name from the image URL
+        //    string fileName = Path.GetFileName(new Uri(fullUrl).AbsolutePath);
+        //    // Determine the local path for saving the image
+        //    string folderPath = GetImagePath(imageUrl);
+        //    string filePath = Path.Combine(folderPath, fileName);
+
+        //    using (var client = httpClient)
+        //    {
+        //        var response = await client.GetAsync(fullUrl);
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var imageBytes = await response.Content.ReadAsByteArrayAsync();
+        //            await File.WriteAllBytesAsync(filePath, imageBytes);
+        //        }
+        //    }
+        //}
+        //public static async Task DownloadImageAsync(string imageUrl, string baseUrl)
+        //{
+        //    // Construct the full URL for the image
+        //    string fullUrl = new Uri(new Uri(baseUrl), imageUrl).ToString();
+        //    // Extract the original file name from the image URL
+        //    string fileName = Path.GetFileName(new Uri(fullUrl).AbsolutePath);
+        //    // Determine the local path for saving the image
+        //    string folderPath = GetImagePath(imageUrl);
+        //    string filePath = Path.Combine(folderPath, fileName);
+
+        //    var response = await httpClient.GetAsync(fullUrl);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var imageBytes = await response.Content.ReadAsByteArrayAsync();
+        //        await File.WriteAllBytesAsync(filePath, imageBytes);
+        //    }
+        //}
         public static async Task DownloadImageAsync(string imageUrl, string baseUrl)
         {
             // Construct the full URL for the image
@@ -708,14 +752,27 @@ WHERE LinkDetailpage = @LinkDetailpage", connection))
             string folderPath = GetImagePath(imageUrl);
             string filePath = Path.Combine(folderPath, fileName);
 
-            using (var client = new HttpClient())
+            // Ensure the directory exists
+            Directory.CreateDirectory(folderPath);
+
+            try
             {
-                var response = await client.GetAsync(fullUrl);
+                var response = await httpClient.GetAsync(fullUrl);
                 if (response.IsSuccessStatusCode)
                 {
                     var imageBytes = await response.Content.ReadAsByteArrayAsync();
                     await File.WriteAllBytesAsync(filePath, imageBytes);
                 }
+                else
+                {
+                    // Log or handle the unsuccessful response
+                    SimpleLogger.Log($"Failed to download {fullUrl}. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception
+                SimpleLogger.Log($"Exception occurred while downloading {fullUrl}: {ex.Message}");
             }
         }
 

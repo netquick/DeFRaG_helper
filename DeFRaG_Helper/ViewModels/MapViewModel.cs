@@ -428,7 +428,10 @@ namespace DeFRaG_Helper.ViewModels
         private void UpdateMapProperties(Map existingMap, Map newMap)
         {
             // Update the properties of existingMap with those from newMap
-            existingMap.Name = newMap.Name;
+            if (newMap.Name != null && newMap.Name != "")
+            {
+                existingMap.Name = newMap.Name;
+            }
             existingMap.Mapname = newMap.Mapname;
             existingMap.Filename = newMap.Filename;
             existingMap.Releasedate = newMap.Releasedate;
@@ -450,7 +453,7 @@ namespace DeFRaG_Helper.ViewModels
             existingMap.Items = newMap.Items;
             existingMap.Functions = newMap.Functions;
 
-
+         
 
             // Notify UI of property changes
             OnPropertyChanged(nameof(Maps));
