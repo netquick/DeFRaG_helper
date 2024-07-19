@@ -1,6 +1,6 @@
 Simple Map browser for Quake 3 Mod "DeFRaG" using list of map from ws.q3df.org. Can find existing defrag installations and installed maps or pull the required files from internet. 
 oDFe.x64.exe and the defrag package will be pulled along with some data for this tool like preview Images. 
-Launches maps on doubleclick of by a Random Map feature, storing the last 10 played random maps. Favorite function and easy to filter browser to check installed maps. 
+Launches maps on doubleclick with Random Map feature, storing the last played maps. Favorite function and easy to filter browser to check installed maps. 
 Installed maps will be synched on launch. Background tasks update newest maps and add them to the database. 
 
 Avoiding libraries where possible this still uses following NuGet Packages: 
