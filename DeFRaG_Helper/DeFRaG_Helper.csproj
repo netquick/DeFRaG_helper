@@ -160,7 +160,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0-preview.5.24306.3" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
-    <PackageReference Include="WPFFolderBrowser" Version="1.0.2" />
   </ItemGroup>
 
 </Project>

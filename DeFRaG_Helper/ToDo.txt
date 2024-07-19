@@ -1,5 +1,4 @@
-﻿- Images from 3 folders
-- Demo: Collection for miniview
+﻿- Demo: Collection for miniview
 - Settings: Include Image setting
 - Search
 - Language
@@ -7,3 +6,6 @@
 - Config editor
 - Records
 - Versioning
+
+- Own File Browser
+

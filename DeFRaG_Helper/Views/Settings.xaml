@@ -48,7 +48,6 @@
             <TextBox Name="txtGamePath" HorizontalAlignment="Left" FontFamily="Segoe UI" FontSize="20" Height="32" Margin="10,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="433" LostFocus="txtGamePath_LostFocus"/>
             <Label Content="Theme Color" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" VerticalAlignment="Top" Width="180"/>
             <Label Content="Game Path" FontFamily="Segoe UI" FontSize="14" Foreground="White" HorizontalAlignment="Left" Height="29" Margin="10,84,0,0" VerticalAlignment="Top" Width="180"/>
-            <Button Content="set" Name="btnSet" HorizontalAlignment="Left" Height="32" Margin="448,118,0,0" VerticalAlignment="Top" Width="56" RenderTransformOrigin="4.143,-2.414" Click="btnSet_Click"/>
             <CheckBox Name="chkDlImages" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Checked="DownloadImg_Changed" Unchecked="DownloadImg_Changed"/>
             <Label Content="Download Images on Map update" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,164,0,0" VerticalAlignment="Top" Width="208"/>
             <CheckBox Name="chkUnsecure" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" Checked="DlUnsecure_Changed" Unchecked="DlUnsecure_Changed"/>
@@ -57,6 +56,7 @@
             <Label Content="Max. saved map history" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="32" Margin="100,246,0,0" VerticalAlignment="Top" Width="208"/>
             <CheckBox Name="chkImgQuali" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,296,0,0" VerticalAlignment="Top" Checked="chkImgQuali_Changed" Unchecked="chkImgQuali_Changed"/>
             <Label Content="Use high quality Images" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,296,0,0" VerticalAlignment="Top" Width="208"/>
+            <Button Name="btnSelect" Content="Select" HorizontalAlignment="Left" Height="32" Margin="448,118,0,0" VerticalAlignment="Top" Width="73" Click="btnSelect_Click"/>
 
 
 

@@ -9,6 +9,8 @@
     <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
     <converters:SidebarWidthConverter x:Key="SidebarWidthConverter"/>
     <converters:ProgressBarWidthConverter x:Key="ProgressBarWidthConverter"/>
+    <converters:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
+
     <!-- Define DataTemplate for DemoItem -->
     <DataTemplate x:Key="DemoItemTemplate">
         <StackPanel Orientation="Horizontal" Margin="5">
@@ -1269,6 +1271,79 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- TreeView Style -->
+    <Style TargetType="TreeView">
+        <Setter Property="Background" Value="#2d2d2d"/>
+        <Setter Property="Foreground" Value="#D3D3D3"/>
+        <Setter Property="BorderBrush" Value="#FF3F3F46"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <!-- TreeViewItem Style -->
+    <!-- TreeViewItem Style with Expand/Collapse functionality -->
+    <Style TargetType="TreeViewItem">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Padding" Value="5,2"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, Converter={StaticResource LevelToIndentConverter}}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TreeViewItem">
+                    <StackPanel>
+                        <Border x:Name="Bd"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- ToggleButton for expand/collapse -->
+                                <ToggleButton x:Name="Expander" Width="16" Height="16" 
+                              Content="+" Foreground="White" Background="Transparent"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
+                                <!-- Adjust ContentPresenter to be in the second column -->
+                                <ContentPresenter ContentSource="Header" Margin="4,0,0,0" Grid.Column="1"/>
+                            </Grid>
+                        </Border>
+                        <ItemsPresenter x:Name="ItemsHost" Visibility="Collapsed"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <!-- Customizing the appearance for selected item -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF3F3F46" TargetName="Bd"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <!-- Customizing the appearance when the mouse is over the item -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#1F1F1F" TargetName="Bd"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <!-- DataTrigger to change the content of the ToggleButton -->
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="Expander" Property="Content" Value="-"/>
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="False">
+                            <Setter TargetName="Expander" Property="Content" Value="+"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 
 

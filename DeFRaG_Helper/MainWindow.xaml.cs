@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Navigation;
-using WPFFolderBrowser;
 
 
 /// <summary>
@@ -92,18 +91,16 @@ namespace DeFRaG_Helper
             string folderPath = string.Empty;
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                var dialog = new WPFFolderBrowserDialog
-                {
-                    Title = "Select a folder" // You can customize the dialog title here
-                };
-                var result = dialog.ShowDialog();
+                var dialog = new DeFRaG_Helper.Windows.CustomFolderBrowser(); // Use your CustomFolderBrowser
+                var result = dialog.ShowDialog(); // Show dialog modally
                 if (result == true) // Check if the dialog was accepted
                 {
-                    folderPath = dialog.FileName; // Get the selected folder path
+                    folderPath = dialog.SelectedFolderPath; // Get the selected folder path from your custom dialog
                 }
             });
             return folderPath;
         }
+
 
 
         //Method to apply filters based on the page navigated to in the MainFrame

@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DeFRaG_Helper"
-             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters">
+             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
+             xmlns:windows="clr-namespace:DeFRaG_Helper.Windows">
     <!--StartupUri="MainWindow.xaml">-->
              
     <Application.Resources>
@@ -28,6 +29,7 @@
             <local:ServerViewModel x:Key="ServerViewModel" />
             <converters:ServerNameToTextBlockConverter x:Key="ServerNameToTextBlockConverter"/>
             <converters:PlayerCountConverter x:Key="PlayerCountConverter"/>
+            <converters:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
 
         </ResourceDictionary>
         
