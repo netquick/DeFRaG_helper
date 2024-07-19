@@ -53,6 +53,10 @@
             <Label Content="Download Images on Map update" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,164,0,0" VerticalAlignment="Top" Width="208"/>
             <CheckBox Name="chkUnsecure" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" Checked="DlUnsecure_Changed" Unchecked="DlUnsecure_Changed"/>
             <Label Content="Allow unsecure connection" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,200,0,0" VerticalAlignment="Top" Width="208"/>
+            <TextBox Name="txtCountHistory" HorizontalAlignment="Left" Height="32" Margin="10,246,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="83" FontSize="20" LostFocus="txtCountHistory_LostFocus"/>
+            <Label Content="Max. saved map history" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="32" Margin="100,246,0,0" VerticalAlignment="Top" Width="208"/>
+            <CheckBox Name="chkImgQuali" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,296,0,0" VerticalAlignment="Top" Checked="chkImgQuali_Changed" Unchecked="chkImgQuali_Changed"/>
+            <Label Content="Use high quality Images" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,296,0,0" VerticalAlignment="Top" Width="208"/>
 
 
 

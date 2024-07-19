@@ -1,19 +1,7 @@
 ﻿using DeFRaG_Helper.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DeFRaG_Helper
 {
@@ -94,7 +82,7 @@ namespace DeFRaG_Helper
             menu.IsOpen = true;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Cast the sender back to a MenuItem
             MenuItem clickedItem = sender as MenuItem;
@@ -103,7 +91,7 @@ namespace DeFRaG_Helper
             {
                 lblAction.Content = clickedItem.Header.ToString();
                 AppConfig.ButtonState = clickedItem.Header.ToString(); // Update AppConfig with the new state
-                AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+                await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
             }
         }
 
@@ -134,7 +122,7 @@ namespace DeFRaG_Helper
                     await MapInstaller.InstallMap(randomMap);
                     mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
 
-                    await mapHistoryManager.UpdateLastPlayedMapsAsync(randomMap.Id);
+                    await mapHistoryManager.AddLastPlayedMapAsync(randomMap.Id, "Random");
 
 
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.Mapname)}"); 

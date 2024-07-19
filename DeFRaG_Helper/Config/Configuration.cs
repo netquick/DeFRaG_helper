@@ -18,5 +18,7 @@ namespace DeFRaG_Helper
         public string? ConnectionString { get; set; }
         public bool? UseUnsecureConnection { get; set; }
         public bool? DownloadImagesOnUpdate { get; set; }
+        public int? CountHistory { get; set; }
+        public bool? UseHighQualityImages { get; set; }
     }
 }

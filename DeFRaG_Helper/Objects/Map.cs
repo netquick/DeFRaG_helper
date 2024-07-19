@@ -1,7 +1,7 @@
 ﻿using DeFRaG_Helper.Objects;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-
+using System.IO;
 namespace DeFRaG_Helper
 {
     public class Map : INotifyPropertyChanged
@@ -17,6 +17,24 @@ namespace DeFRaG_Helper
 
 
         public string ImagePath
+        {
+            get
+            {
+                // Check the UseHighQualityImages setting from AppConfig
+                if (AppConfig.UseHighQualityImages.HasValue && AppConfig.UseHighQualityImages.Value)
+                {
+                    // If UseHighQualityImages is true, use the high-quality image path
+                    return GetImagePath(Mapname);
+                }
+                else
+                {
+                    // Otherwise, use the small image path
+                    // Assuming SmallImagePath is already implemented and returns a path
+                    return SmallImagePath;
+                }
+            }
+        }
+        public string SmallImagePath
         {
             get
             {
@@ -48,9 +66,45 @@ namespace DeFRaG_Helper
                 return null;
             }
         }
+        public string ScreenshotPath
+        {
+            get
+            {
+                return GetImagePath(Mapname);
+            }
+        }
 
+        public string GetImagePath(string mapName)
+        {
+            if (!string.IsNullOrEmpty(mapName))
+            {
+                // Replace .bsp extension with .jpg
+                string imageName = mapName.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                    ? mapName.Substring(0, mapName.Length - 4) + ".jpg"
+                    : mapName + ".jpg";
 
+                // Get the AppData directory and append your application's folder
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string basePath = Path.Combine(appDataPath, "DeFRaG_Helper");
 
+                // List of folders to check for the image
+                string[] folders = { "Screenshots", "Levelshots", "Topviews" };
+
+                foreach (var folder in folders)
+                {
+                    string imagePath = Path.Combine(basePath, $"PreviewImages/{folder}/{imageName}");
+                    if (File.Exists(imagePath))
+                    {
+                        return $"file:///{imagePath}";
+                    }
+                }
+
+                // If the image is not found in any folder, return the placeholder image path
+                string placeholderPath = Path.Combine(basePath, "PreviewImages/placeholder.png");
+                return $"file:///{placeholderPath}";
+            }
+            return null;
+        }
 
 
         private int id;

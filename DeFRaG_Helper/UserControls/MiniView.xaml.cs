@@ -24,5 +24,24 @@ namespace DeFRaG_Helper.UserControls
         {
             InitializeComponent();
         }
+
+        public static readonly DependencyProperty MapProperty = DependencyProperty.Register(
+       "Map", typeof(Map), typeof(MiniView), new PropertyMetadata(null, OnMapPropertyChanged));
+
+        public Map Map
+        {
+            get { return (Map)GetValue(MapProperty); }
+            set { SetValue(MapProperty, value); }
+        }
+        private static void OnMapPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as HighLightCard;
+            if (control != null)
+            {
+                control.DataContext = e.NewValue;
+            }
+        }
+
+
     }
 }

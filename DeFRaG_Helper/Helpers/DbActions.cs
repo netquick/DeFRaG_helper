@@ -57,7 +57,7 @@ namespace DeFRaG_Helper
                     command.Parameters.AddWithValue("@Mod", map.GameType ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Size", map.Size != -1 ? (object)map.Size : DBNull.Value);
                     command.Parameters.AddWithValue("@Physics", map.Physics != -1 ? (object)map.Physics : DBNull.Value);
-                    command.Parameters.AddWithValue("@Hits", map.Hits != -1 ? (object)map.Size : DBNull.Value);
+                    command.Parameters.AddWithValue("@Hits", map.Hits != -1 ? (object)map.Hits : DBNull.Value);
                     command.Parameters.AddWithValue("@LinkDetailpage", map.LinkDetailpage ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@Style", map.Style ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@LinksOnlineRecordsQ3DFVQ3", map.LinksOnlineRecordsQ3DFVQ3 ?? (object)DBNull.Value);

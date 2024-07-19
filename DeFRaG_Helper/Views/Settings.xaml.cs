@@ -70,6 +70,19 @@ namespace DeFRaG_Helper
             await AppConfig.SaveConfigurationAsync();
         }
 
+        private async void txtCountHistory_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Update the CountHistory in AppConfig
+            if (int.TryParse(txtCountHistory.Text, out int count))
+            {
+                AppConfig.CountHistory = count;
+                await AppConfig.SaveConfigurationAsync();
+            }
+        }
+
+        
+
+
         private async void btnSync_Click(object sender, RoutedEventArgs e)
         {
             // Get the singleton instance of MapViewModel
@@ -124,6 +137,8 @@ namespace DeFRaG_Helper
             chkDlImages.IsChecked = AppConfig.DownloadImagesOnUpdate;
             chkUnsecure.IsChecked = AppConfig.UseUnsecureConnection;
 
+            txtCountHistory.Text = AppConfig.CountHistory.ToString();
+            chkImgQuali.IsChecked = AppConfig.UseHighQualityImages;
 
         }
 
@@ -140,6 +155,15 @@ namespace DeFRaG_Helper
         {
             // Update the UseUnsecureConnection setting in AppConfig
             AppConfig.UseUnsecureConnection = chkUnsecure.IsChecked;
+
+            // Optionally, save the configuration to persist the change
+            await AppConfig.SaveConfigurationAsync();
+        }
+
+        private async void chkImgQuali_Changed(object sender, RoutedEventArgs e)
+        {
+            // Update the UseHighQualityImages setting in AppConfig
+            AppConfig.UseHighQualityImages = chkImgQuali.IsChecked;
 
             // Optionally, save the configuration to persist the change
             await AppConfig.SaveConfigurationAsync();
