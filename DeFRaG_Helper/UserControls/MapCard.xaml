@@ -13,61 +13,62 @@
         <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
-
+        <converters:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
     </UserControl.Resources>
+
     <Border CornerRadius="10" Background="#2c2c2c" MouseUp="Border_MouseUp">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*"/>
-            <!-- Left half -->
-            <ColumnDefinition Width="4*"/>
-            <!-- Right half (empty in this example) -->
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Row for the Name -->
-            <RowDefinition Height="Auto"/>
-            <!-- Row for Mapname, Filename, etc. -->
-            <RowDefinition Height="Auto"/>
-            <!-- Additional row if needed -->
-        </Grid.RowDefinitions>
-
-        <!-- Name TextBlock, now correctly spanning only the left half -->
-        <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Name" Text="{Binding Name}" FontFamily="Segoe UI" FontSize="20" Foreground="{DynamicResource ThemeColor}" Margin="10, 5, 0, 5"/>
-
-        <!-- Nested Grid for detailed information, placed in the second row of the main grid -->
-        <Grid Grid.Row="1" Grid.Column="0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"/>
+                <!-- Left half -->
+                <ColumnDefinition Width="4*"/>
+                <!-- Right half (empty in this example) -->
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <!-- Row for the Name -->
                 <RowDefinition Height="Auto"/>
+                <!-- Row for Mapname, Filename, etc. -->
+                <RowDefinition Height="Auto"/>
+                <!-- Additional row if needed -->
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Mapname" Text="{Binding Mapname}" FontSize="14" Foreground="White" Margin="10, 0, 10, 0" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" x:Name="Filename" Text="{Binding Filename}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="Author" Text="{Binding Author}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Date" Text="{Binding Releasedate}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" x:Name="Hits" Text="{Binding Hits}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="Size" Text="{Binding Size, Converter={StaticResource SizeFormatConverter}}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="0" Grid.Column="3" x:Name="Type" Text="{Binding GameType}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
-            <TextBlock Grid.Row="1" Grid.Column="3" x:Name="Style" Text="{Binding Style}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
-        </Grid>
 
-        <!-- The right half of the grid remains empty or can be used for other content -->
-        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <!-- add right content  -->
+            <!-- Name TextBlock, now correctly spanning only the left half -->
+            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Name" Text="{Binding Name}" FontFamily="Segoe UI" FontSize="20" Foreground="{DynamicResource ThemeColor}" Margin="10, 5, 0, 5"/>
+
+            <!-- Nested Grid for detailed information, placed in the second row of the main grid -->
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" x:Name="Mapname" Text="{Binding Mapname}" FontSize="14" Foreground="White" Margin="10, 0, 10, 0" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" x:Name="Filename" Text="{Binding Filename}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="Author" Text="{Binding Author}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Date" Text="{Binding Releasedate}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" x:Name="Hits" Text="{Binding Hits}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" x:Name="Size" Text="{Binding Size, Converter={StaticResource SizeFormatConverter}}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" x:Name="Type" Text="{Binding GameType}" FontSize="14" Foreground="White" Margin="10, 0, 0, 0" FontFamily="Segoe UI"/>
+                <TextBlock Grid.Row="1" Grid.Column="3" x:Name="Style" Text="{Binding Style}" FontSize="14" Foreground="White" Margin="10, 0, 0, 10" FontFamily="Segoe UI"/>
+            </Grid>
+
+            <!-- The right half of the grid remains empty or can be used for other content -->
+            <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!-- add right content  -->
                 <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
@@ -141,63 +142,66 @@
 
                 <Button Name="btnPlay" Grid.Column="3" Width="40" Margin="5, 10, 5, 10" 
                     Command="{Binding ElementName=MapsList, Path=DataContext.PlayMapCommand}" CommandParameter="{Binding}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <Image.Source>
-                            <Binding>
-                                <Binding.Converter>
-                                    <converters:DynamicSvgConverter/>
-                                </Binding.Converter>
-                                <Binding.Source>
-                                    <sys:String>Icons/esports.svg</sys:String>
-                                </Binding.Source>
-                            </Binding>
-                        </Image.Source>
-                    </Image>
-                    <TextBlock Text="" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="btnDownload" Grid.Column="4" Width="40"  Margin="5, 10, 5, 10"
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <Image.Source>
+                                <Binding>
+                                    <Binding.Converter>
+                                        <converters:DynamicSvgConverter/>
+                                    </Binding.Converter>
+                                    <Binding.Source>
+                                        <sys:String>Icons/esports.svg</sys:String>
+                                    </Binding.Source>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="btnDownload" Grid.Column="4" Width="40"  Margin="5, 10, 5, 10"
                 Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
                 CommandParameter="{Binding}"
                 IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <Image.Source>
-                            <Binding>
-                                <Binding.Converter>
-                                    <converters:DynamicSvgConverter/>
-                                </Binding.Converter>
-                                <Binding.Source>
-                                    <sys:String>Icons/download.svg</sys:String>
-                                </Binding.Source>
-                            </Binding>
-                        </Image.Source>
-                    </Image>
-                    <TextBlock Text="" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="btnEdit" Grid.Column="5" Width="40" Margin="5, 10, 10, 10"
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <Image.Source>
+                                <Binding>
+                                    <Binding.Converter>
+                                        <converters:DynamicSvgConverter/>
+                                    </Binding.Converter>
+                                    <Binding.Source>
+                                        <sys:String>Icons/download.svg</sys:String>
+                                    </Binding.Source>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="btnEdit" Grid.Column="5" Width="40" Margin="5, 10, 10, 10"
                 Command="{Binding ElementName=MapsList, Path=DataContext.DownloadMapCommand}" 
                 CommandParameter="{Binding}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
-                        <Image.Source>
-                            <Binding>
-                                <Binding.Converter>
-                                    <converters:DynamicSvgConverter/>
-                                </Binding.Converter>
-                                <Binding.Source>
-                                    <sys:String>Icons/edit.svg</sys:String>
-                                </Binding.Source>
-                            </Binding>
-                        </Image.Source>
-                    </Image>
-                    <TextBlock Text="" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                            <Image.Source>
+                                <Binding>
+                                    <Binding.Converter>
+                                        <converters:DynamicSvgConverter/>
+                                    </Binding.Converter>
+                                    <Binding.Source>
+                                        <sys:String>Icons/edit.svg</sys:String>
+                                    </Binding.Source>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock Foreground="{StaticResource ThemeColor}" HorizontalAlignment="Left" Height="31" Margin="-68,10,0,0" TextWrapping="Wrap" 
+           Text="{Binding Physics, Converter={StaticResource PhysicsModeConverter}}" 
+           VerticalAlignment="Top" Width="57"/>
 
+            </Grid>
         </Grid>
-    </Grid>
     </Border>
 </UserControl>
