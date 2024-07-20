@@ -27,22 +27,22 @@
                     <TextBox Name="txtMapSearch" Width="340" Margin="10, 0, 10, 0" FontFamily="Segoe UI" FontSize="20" VerticalAlignment="Center" Grid.Column="0" Foreground="White" KeyDown="TxtMapSearch_KeyDown"/>
                 </Grid>
             </Border>
-            <Border Grid.Row="1" Height="120" Background="#2c2c2c" Margin="10" CornerRadius="10" >
-                <ScrollViewer Grid.Row="1" Margin="0, 0, 0, 0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                    <ItemsControl x:Name="ItemsControlMaps" >
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <uc:MiniView Map="{Binding}"/>
-                            </DataTemplate>
+            <Border Grid.Row="1" Height="150" Background="#222" Margin="10" CornerRadius="10" >
+                <ListView x:Name="lvDemos" ItemsSource="{Binding DemoItems}" Background="Transparent" BorderBrush="Transparent">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Your item template here -->
+                            <uc:MiniView Width="120" Height="120" DataContext="{Binding}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+
             </Border>
             <Border Grid.Row="2" Margin="0" Background="#222222" CornerRadius="10">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

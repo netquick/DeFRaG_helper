@@ -90,7 +90,7 @@ namespace DeFRaG_Helper
             lastPlayedMapsView.Refresh(); // Refresh the view
 
             // Ensure the UI is bound to the updated lastPlayedMapsView
-            ItemsControlMaps.ItemsSource = lastPlayedMapsView;
+            lvDemos.ItemsSource = lastPlayedMapsView;
         }
         private void RefreshLocalView()
         {
@@ -175,7 +175,7 @@ namespace DeFRaG_Helper
 
                 this.DataContext = this; // Now 'this' includes both map and server data contexts
 
-                ItemsControlMaps.ItemsSource = lastPlayedMapsView;
+                lvDemos.ItemsSource = lastPlayedMapsView;
             }
             catch (Exception ex)
             {
