@@ -74,7 +74,8 @@ namespace DeFRaG_Helper
         //Method to apply filters based on the page navigated to in the MainFrame
         private void MainFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            ApplyFilterBasedOnPageAsync(e.Content);
+            ApplyFilterBasedOnPageAsync(e.Content);            //AppConfig.OnRequestGameDirectory += RequestGameDirectoryAsync;
+
         }
 
         //Method to request game directory

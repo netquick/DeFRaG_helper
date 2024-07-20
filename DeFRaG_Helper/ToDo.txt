@@ -1,5 +1,4 @@
-﻿- Demo: Collection for miniview
-- Settings: Include Image setting
+﻿- Settings: Include Image setting
 - Search
 - Language
 - Edit maps
@@ -7,5 +6,6 @@
 - Records
 - Versioning
 
-- Own File Browser
+- Own File Browser remove old..
+
 

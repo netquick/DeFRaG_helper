@@ -182,26 +182,22 @@ namespace DeFRaG_Helper
 
         public static string BrowseFolder()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.ValidateNames = false;
-            openFileDialog.CheckFileExists = false;
-            openFileDialog.CheckPathExists = true;
-            // Set the title of the dialog window
-            openFileDialog.Title = "Select existing oDFe(.x64).exe location or chose an empty folder";
-            // Set the filter to only show directories
-            openFileDialog.Filter = "Folder|*.none";
-            openFileDialog.FileName = "Select Folder";
-            MessageHelper.Log("Opening folder browser dialog");
-            if (openFileDialog.ShowDialog() == true)
+            // Create an instance of the CustomFolderBrowser window
+            var folderBrowser = new DeFRaG_Helper.Windows.CustomFolderBrowser();
+            // Show the CustomFolderBrowser dialog
+            var result = folderBrowser.ShowDialog();
+            if (result == true)
             {
-                // Return the directory path
-                return System.IO.Path.GetDirectoryName(openFileDialog.FileName);
+                // If the user selected a folder, return the selected folder path
+                return folderBrowser.SelectedFolderPath;
             }
             else
             {
+                // If the user canceled the dialog, return null
                 return null;
             }
         }
+
 
 
     }
