@@ -1,12 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using DeFRaG_Helper;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Windows.Data;
-using System.IO;
 
 namespace DeFRaG_Helper.ViewModels
 {

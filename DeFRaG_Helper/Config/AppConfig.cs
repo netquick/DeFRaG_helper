@@ -1,10 +1,8 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using System.Windows;
-using System.Diagnostics;
+using System.Windows.Media;
 namespace DeFRaG_Helper
 {
     public static class AppConfig

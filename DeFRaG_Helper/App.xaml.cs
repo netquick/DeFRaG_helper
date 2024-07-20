@@ -1,8 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using DeFRaG_Helper.Converters;
 namespace DeFRaG_Helper
 {
     /// <summary>

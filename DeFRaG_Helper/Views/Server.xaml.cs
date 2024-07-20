@@ -1,6 +1,4 @@
-﻿using DeFRaG_Helper.ViewModels;
-using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 

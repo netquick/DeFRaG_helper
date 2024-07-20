@@ -1,10 +1,6 @@
-﻿using DeFRaG_Helper.ViewModels;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 

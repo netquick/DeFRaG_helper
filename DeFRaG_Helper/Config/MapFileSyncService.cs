@@ -1,12 +1,4 @@
-﻿using DeFRaG_Helper.ViewModels;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 
 namespace DeFRaG_Helper
