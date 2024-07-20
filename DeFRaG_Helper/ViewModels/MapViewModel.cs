@@ -69,10 +69,36 @@ namespace DeFRaG_Helper.ViewModels
             {
                 _selectedMap = value;
                 OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
+
+                if (value != null)
+                {
+                    SimpleLogger.Log($"Selected map: {value.Name}");
+                }
+                else
+                {
+                    SimpleLogger.Log("Selected map is null.");
+                }
             }
         }
 
-
+        private async void SaveAppConfigChangesAsync()
+        {
+            try
+            {
+                await AppConfig.SaveConfigurationAsync();
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, possibly logging them or notifying the user
+                Debug.WriteLine($"Failed to save AppConfig changes: {ex.Message}");
+            }
+        }
+        public async Task UpdateConfigurationAsync(Map selectedMap)
+        {
+            // Assuming AppConfig has a method to update the selected map and save the configuration
+            AppConfig.SelectedMap = selectedMap.Id; // Or any other relevant property of Map
+            await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+        }
 
 
         private MapViewModel()

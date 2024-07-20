@@ -15,7 +15,7 @@
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
 
     </UserControl.Resources>
-    <Border CornerRadius="10" Background="#2c2c2c">
+    <Border CornerRadius="10" Background="#2c2c2c" MouseUp="Border_MouseUp">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>

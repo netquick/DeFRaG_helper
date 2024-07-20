@@ -32,7 +32,7 @@ namespace DeFRaG_Helper
         private ObservableCollection<Map> localMaps = new ObservableCollection<Map>();
 
         private MapHistoryManager mapHistoryManager;
-
+        private MapViewModel mapViewModel = MapViewModel.GetInstanceAsync().Result;
 
         private static Demos? instance;
 
@@ -49,12 +49,17 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             LoadViewModelAsync();
+
             this.Loaded += async (sender, e) =>
             {
                 await InitializeAsync();
+                LoadDataAsync();
+
             };
             var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
+            mapViewModel.PropertyChanged += MapViewModel_PropertyChanged;
+
         }
         private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
         {
@@ -64,9 +69,15 @@ namespace DeFRaG_Helper
                 RefreshLocalView();
             });
         }
+        private void MapViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MapViewModel.SelectedMap))
+            {
+                LoadDataAsync(); // Call your method to load the demos based on the new selected map.
+            }
+        }
         private async Task SynchronizeLocalMapsAsync()
         {
-            var mapViewModel = await MapViewModel.GetInstanceAsync();
             localMaps.Clear();
             foreach (var map in mapViewModel.Maps)
             {
@@ -172,12 +183,6 @@ namespace DeFRaG_Helper
             }
         }
 
-        //method when demo loaded
-        private void DemoLoaded(object sender, RoutedEventArgs e)
-        {
-            LoadDataAsync();
-
-        }
 
         //Method to load the data for the selected map
         private async void LoadDataAsync()

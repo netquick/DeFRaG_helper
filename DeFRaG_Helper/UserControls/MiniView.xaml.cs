@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeFRaG_Helper.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +42,20 @@ namespace DeFRaG_Helper.UserControls
                 control.DataContext = e.NewValue;
             }
         }
+        private async void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // Cast the DataContext to a Map object
+            var map = this.DataContext as Map;
+            if (map != null)
+            {
+                // Assuming you have a way to access the MapViewModel instance
+                var viewModel = MapViewModel.GetInstanceAsync().Result; // Note: Using .Result for simplicity; consider using async/await.
+                viewModel.SelectedMap = map;
+                await viewModel.UpdateConfigurationAsync(map);
 
+
+            }
+        }
 
     }
 }

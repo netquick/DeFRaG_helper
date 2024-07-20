@@ -95,7 +95,29 @@ namespace DeFRaG_Helper.UserControls
                 await mapViewModel.UpdateFavoriteStateAsync(map);
             }
         }
+
+
+        private async void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // Cast the DataContext to a Map object
+            var map = this.DataContext as Map;
+            if (map != null)
+            {
+                // Assuming you have a way to access the MapViewModel instance
+                var viewModel = MapViewModel.GetInstanceAsync().Result; // Note: Using .Result for simplicity; consider using async/await.
+                viewModel.SelectedMap = map;
+                await viewModel.UpdateConfigurationAsync(map);
+
+
+            }
+        }
+
+
+
+
+
+
     }
 
- 
+
 }

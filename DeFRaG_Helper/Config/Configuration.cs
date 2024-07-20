@@ -20,5 +20,6 @@ namespace DeFRaG_Helper
         public bool? DownloadImagesOnUpdate { get; set; }
         public int? CountHistory { get; set; }
         public bool? UseHighQualityImages { get; set; }
+        public int? SelectedMap { get; set; }
     }
 }
