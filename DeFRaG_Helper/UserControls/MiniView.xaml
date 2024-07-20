@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DeFRaG_Helper.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="120">
-    <Border CornerRadius="10" Background="#2c2c2c" MouseUp="Border_MouseUp">
+    <Border CornerRadius="10" Background="#2c2c2c" MouseUp="Border_MouseUp" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid>
             <Image Margin="5,5,5,45" Source="{Binding ImagePath}"/>
             <Border Margin="0,75,0,0" Background="#333" CornerRadius="0,0,10,10">

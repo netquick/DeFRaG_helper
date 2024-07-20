@@ -54,7 +54,11 @@ namespace DeFRaG_Helper
             {
                 await InitializeAsync();
                 LoadDataAsync();
-
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.customDropDownButton.MapPlayed += (s, e) => RefreshMapListAsync();
+                }
             };
             var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();

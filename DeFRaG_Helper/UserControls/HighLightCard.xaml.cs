@@ -52,7 +52,9 @@ namespace DeFRaG_Helper
                 e.Handled = true;
 
                 // Call your connection logic here
+                MapViewModel.GetInstanceAsync().Result.SelectedMap = Map;
                 PlayMap();
+
             }
 
         }
