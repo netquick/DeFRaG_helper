@@ -122,7 +122,7 @@ namespace DeFRaG_Helper
             mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
 
             lastPlayedMapIds = await mapHistoryManager.GetLastPlayedMapsFromDbAsync();
-            lastPlayedMapIds.Reverse(); // Ensure the list is reversed
+            //lastPlayedMapIds.Reverse(); // Ensure the list is reversed
 
             ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sort
             RefreshFilter(); // Refresh the view
@@ -156,7 +156,7 @@ namespace DeFRaG_Helper
                 {
                     //lastPlayedMapIds = mapHistoryManagerLazy.Value.GetLastPlayedMaps();
                     lastPlayedMapIds = await mapHistoryManager.GetLastPlayedMapsFromDbAsync();
-                    lastPlayedMapIds.Reverse();
+                    //lastPlayedMapIds.Reverse();
                 }
                 catch (Exception ex)
                 {
