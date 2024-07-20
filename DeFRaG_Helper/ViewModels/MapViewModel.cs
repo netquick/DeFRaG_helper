@@ -23,7 +23,7 @@ namespace DeFRaG_Helper.ViewModels
         private static readonly string DbPath = Path.Combine(AppDataFolder, "MapData.db");
 
         private bool dataLoaded = false; // Flag to indicate if data has been loaded
-
+        private MapHistoryManager mapHistoryManager;
         private static MapViewModel instance;
         private static bool isInitialized = false;
         // Step 2: Declare the PropertyChanged event
@@ -110,6 +110,8 @@ namespace DeFRaG_Helper.ViewModels
 
             PlayMapCommand = new RelayCommand(PlayMap);
             DownloadMapCommand = new RelayCommand(DownloadMap);
+            var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+
         }
         public static async Task<MapViewModel> GetInstanceAsync()
         {
@@ -170,7 +172,9 @@ namespace DeFRaG_Helper.ViewModels
             {
                 await MapInstaller.InstallMap(map);
 
+                mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
 
+                await mapHistoryManager.AddLastPlayedMapAsync(map.Id, "Normal");
 
                 int physicsSetting = mainWindow.GetPhysicsSetting();
                 System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(map.Mapname)}");

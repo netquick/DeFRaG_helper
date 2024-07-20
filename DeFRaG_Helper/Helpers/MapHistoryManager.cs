@@ -82,7 +82,40 @@ namespace DeFRaG_Helper
 
             return lastPlayedMaps;
         }
-    
+        public async Task<List<int>> GetLastPlayedRandomFromDbAsync()
+        {
+            List<int> lastPlayedMaps = new List<int>();
+
+            // SQL command to select the MapId column from the LastPlayedMaps table.
+            string selectCommandText = @"
+                SELECT MapId
+                FROM LastPlayedMaps
+                WHERE Mode = 'Random'
+                ORDER BY PlayedDateTime DESC
+                LIMIT 10;
+            ";
+
+            // Enqueue the command to be executed on the database connection.
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                using (var command = new SqliteCommand(selectCommandText, connection))
+                {
+                    // Execute the command and read the results.
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            lastPlayedMaps.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+            });
+
+            // Wait for all enqueued database operations to complete.
+            await DbQueue.Instance.WhenAllCompleted();
+
+            return lastPlayedMaps;
+        }
         public async Task UpdateLastPlayedMapsAsync(int mapId)
         {
             lastPlayedMapsInMemory.Add(mapId);

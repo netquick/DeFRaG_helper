@@ -35,6 +35,7 @@ namespace DeFRaG_Helper
             {
                 case "Play Game":
                     //start the oDFe.x64.exe in GameDirectoryPath from App.config
+        
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag +df_promode " + mainWindow.GetPhysicsSetting());
                     break;
                 case "Random Map":
@@ -56,6 +57,8 @@ namespace DeFRaG_Helper
 
 
         }
+
+
 
         private void DropdownButton_Click(object sender, RoutedEventArgs e)
         {
