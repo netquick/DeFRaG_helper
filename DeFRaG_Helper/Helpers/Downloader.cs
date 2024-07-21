@@ -7,7 +7,6 @@ namespace DeFRaG_Helper
 {
     public static class Downloader
     {
-
         private static readonly HttpClient httpClient = CreateHttpClient();
 
         private static HttpClient CreateHttpClient()

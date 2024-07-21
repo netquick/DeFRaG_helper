@@ -1,5 +1,6 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -69,6 +70,9 @@ namespace DeFRaG_Helper
             hideProgressBarTimer = new System.Timers.Timer(2000);
             hideProgressBarTimer.Elapsed += HideProgressBarTimer_Elapsed;
             hideProgressBarTimer.AutoReset = false; // Ensure the timer runs only once per start
+
+            this.DataContext = this;
+
         }
 
         //Method to apply filters based on the page navigated to in the MainFrame
@@ -77,7 +81,14 @@ namespace DeFRaG_Helper
             ApplyFilterBasedOnPageAsync(e.Content);            //AppConfig.OnRequestGameDirectory += RequestGameDirectoryAsync;
 
         }
-
+        public string AppTitleAndVersion
+        {
+            get
+            {
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                return $"DeFRaG_Helper v{version.Major}.{version.Minor}.{version.Build}";
+            }
+        }
         //Method to request game directory
         private async Task<string> RequestGameDirectoryAsync()
         {

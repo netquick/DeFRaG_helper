@@ -4,10 +4,7 @@
 - Edit maps
 - Config editor
 - Records
-- Versioning
-
-- Own File Browser remove old..
-- Refactor appConfig logic to ask gamepath
+- Versioning and AutoUpdate
 
 
 

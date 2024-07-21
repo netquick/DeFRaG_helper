@@ -13,20 +13,30 @@ namespace DeFRaG_Helper
             base.OnStartup(e);
             // Initialize logging
             MessageHelper.Log("Application starting");
-            LoadConfigurationAndStartAsync().ContinueWith(_ =>
+            LoadConfigurationAndStartAsync().ContinueWith(task =>
             {
-                // This ensures the continuation runs on the UI thread
-                Dispatcher.Invoke(() =>
+                if (task.IsFaulted)
                 {
-                    // Now that configuration and resources are loaded, show the main window
-                    MessageHelper.Log("Main window created");
-                    MainWindow mainWindow = new MainWindow();
-                    mainWindow.Show();
-                });
-            }); 
+                    // Log the error or show an error message to the user
+                    MessageHelper.Log($"Error during startup: {task.Exception}");
+                    // Optionally, close the application if critical startup tasks fail
+                    Dispatcher.Invoke(() => Current.Shutdown());
+                }
+                else
+                {
+                    // This ensures the continuation runs on the UI thread
+                    Dispatcher.Invoke(() =>
+                    {
+                        // Now that configuration and resources are loaded, show the main window
+                        MessageHelper.Log("Main window created");
+                        MainWindow mainWindow = new MainWindow();
+                        mainWindow.Show();
+                    });
+                }
+            });
             StartDelayedTasks();
-
         }
+
         private async void StartDelayedTasks()
         {
             // Wait for 1 minute after the application starts
@@ -51,12 +61,16 @@ namespace DeFRaG_Helper
 
             ApplyThemeColor();
             // Create an instance of MapHistoryManager
+   
+
+            await AppConfig.EnsureDatabaseExistsAsync();
+            MessageHelper.Log("Database exists");
+
             MessageHelper.Log("Creating MapHistoryManager");
             var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
             MessageHelper.Log("MapHistoryManager created");
 
-            await AppConfig.EnsureDatabaseExistsAsync();
-            MessageHelper.Log("Database exists");
+
             // The main window creation and showing is moved to the continuation of this method in OnStartup
         }
         private void ApplyThemeColor()
