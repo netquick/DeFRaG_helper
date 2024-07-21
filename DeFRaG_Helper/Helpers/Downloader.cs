@@ -46,7 +46,7 @@ namespace DeFRaG_Helper
                             await fileStream.WriteAsync(buffer, 0, read);
 
                             totalRead += read;
-                            var totalReadInPercent = (double)totalRead / (double)response.Content.Headers.ContentLength.Value * 100;
+                            var totalReadInPercent = (double)totalRead / (response.Content.Headers.ContentLength ?? 1) * 100;
                             if (progress != null)
                             {
                                 MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
@@ -57,7 +57,39 @@ namespace DeFRaG_Helper
             }
         }
 
+        public static async Task DownloadFileAsyncWithConnection(string url, string destinationPath, IProgress<double> progress, HttpClient _httpClient)
+        {
+            var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using (var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (var downloadStream = await response.Content.ReadAsStreamAsync())
+                {
+                    var totalRead = 0L;
+                    var buffer = new byte[8192];
+                    var isMoreToRead = true;
 
+                    do
+                    {
+                        var read = await downloadStream.ReadAsync(buffer, 0, buffer.Length);
+                        if (read == 0)
+                        {
+                            isMoreToRead = false;
+                        }
+                        else
+                        {
+                            await fileStream.WriteAsync(buffer, 0, read);
+
+                            totalRead += read;
+                            var totalReadInPercent = (double)totalRead / (response.Content.Headers.ContentLength ?? 1) * 100;
+                            if (progress != null)
+                            {
+                                MainWindow.Instance.Dispatcher.Invoke(() => MainWindow.Instance.UpdateProgressBar(totalReadInPercent));
+                            }
+                        }
+                    } while (isMoreToRead);
+                }
+            }
+        }
 
 
         public static async Task UnpackFile(string filename, string destinationFolder, IProgress<double> progress)
