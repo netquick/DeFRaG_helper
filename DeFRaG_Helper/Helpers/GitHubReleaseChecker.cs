@@ -9,20 +9,17 @@ namespace DeFRaG_Helper.Helpers
     public class GitHubReleaseChecker
     {
         private readonly HttpClient _httpClient;
-        string token = "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";
+
 
         public GitHubReleaseChecker()
         {
             _httpClient = new HttpClient();
-            // Uncomment and set your token here for authenticated requests
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
         public async Task CheckForNewReleaseAsync(string owner, string repo)
         {
-            await TestGitHubTokenAsync(owner, repo, token);
             string latestReleaseUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
             MessageHelper.ShowMessage($"Checking for new release: {latestReleaseUrl}");
             try
@@ -38,7 +35,6 @@ namespace DeFRaG_Helper.Helpers
                         string releaseName = root.GetProperty("name").GetString();
                         string downloadUrl = root.GetProperty("assets")[0].GetProperty("browser_download_url").GetString();
 
-                        // Assuming tagName is in the format "v1.0.0"
                         Version latestVersion = new Version(tagName.TrimStart('v'));
                         Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
@@ -46,7 +42,6 @@ namespace DeFRaG_Helper.Helpers
                         {
                             MessageHelper.ShowMessage($"Newer version available: {releaseName} (Tag: {tagName})");
                             MessageHelper.Log($"Download URL: {downloadUrl}");
-                            // Consider calling DownloadReleaseAssetAsync here
                             await DownloadAndUpdateLatestRelease(owner, repo);
                         }
                         else
@@ -58,9 +53,7 @@ namespace DeFRaG_Helper.Helpers
                 else
                 {
                     MessageHelper.Log($"Failed to fetch latest release. Status Code: {response.StatusCode}");
-                    // Handle error or retry logic
                 }
-
             }
             catch (Exception ex)
             {
