@@ -1,4 +1,5 @@
-﻿using DeFRaG_Helper.ViewModels;
+﻿using DeFRaG_Helper.Helpers;
+using DeFRaG_Helper.ViewModels;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -72,6 +73,7 @@ namespace DeFRaG_Helper
             hideProgressBarTimer.AutoReset = false; // Ensure the timer runs only once per start
 
             this.DataContext = this;
+            
 
         }
 
