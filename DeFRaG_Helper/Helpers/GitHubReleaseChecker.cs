@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 
 namespace DeFRaG_Helper.Helpers
@@ -31,34 +33,70 @@ namespace DeFRaG_Helper.Helpers
                     string releaseName = root.GetProperty("name").GetString();
                     string downloadUrl = root.GetProperty("assets")[0].GetProperty("browser_download_url").GetString();
 
-                    MessageHelper.Log($"Latest Release: {releaseName} (Tag: {tagName})");
-                    MessageHelper.Log($"Download URL: {downloadUrl}");
+                    // Assuming tagName is in the format "v1.0.0"
+                    Version latestVersion = new Version(tagName.TrimStart('v'));
+                    Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
-                    // Example: Download the asset
-                    //await DownloadReleaseAssetAsync(downloadUrl, "path_to_save_asset");
+                    if (latestVersion > currentVersion)
+                    {
+                        MessageHelper.Log($"Newer version available: {releaseName} (Tag: {tagName})");
+                        MessageHelper.Log($"Download URL: {downloadUrl}");
+                        // Consider calling DownloadReleaseAssetAsync here
+                        await DownloadAndUpdateLatestRelease(owner, repo);
+                    }
+                    else
+                    {
+                        MessageHelper.Log("Your application is up to date.");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error checking for release: {ex.Message}");
+                MessageHelper.Log($"Error checking for release: {ex.Message}");
             }
         }
 
 
-        private async Task DownloadReleaseAssetAsync(string downloadUrl, string filePath)
+
+        public async Task DownloadAndUpdateLatestRelease(string owner, string repo)
         {
-            var response = await _httpClient.GetAsync(downloadUrl);
-            using (var fs = new FileStream(filePath, FileMode.CreateNew))
+            try
             {
-                await response.Content.CopyToAsync(fs);
+                var response = await _httpClient.GetStringAsync($"https://api.github.com/repos/{owner}/{repo}/releases/latest");
+                using (JsonDocument doc = JsonDocument.Parse(response))
+                {
+                    JsonElement root = doc.RootElement;
+                    string downloadUrl = root.GetProperty("assets")[0].GetProperty("browser_download_url").GetString();
+                    string tempPath = Path.GetTempFileName();
+
+                    // Use Downloader to download the file
+                    await Downloader.DownloadFileAsync(downloadUrl, tempPath, null);
+
+                    // Verify the downloaded file exists and optionally check its integrity
+                    if (File.Exists(tempPath))
+                    {
+                        // Optional: Verify file integrity (e.g., by checking file size, computing and comparing file hash, etc.)
+
+                        // Schedule the update (simple example: rename on next launch)
+                        File.WriteAllText("update.bat", $"timeout /t 5 /nobreak > NUL & move /y \"{tempPath}\" \"{AppDomain.CurrentDomain.FriendlyName}\" & start \"\" \"{AppDomain.CurrentDomain.FriendlyName}\" & del \"%~f0\"");
+                        Process.Start("update.bat");
+
+                        // Exit the application to allow the update to proceed
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        MessageHelper.Log("Download failed or file does not exist.");
+                    }
+                }
             }
-            Console.WriteLine("Download completed.");
+            catch (Exception ex)
+            {
+                MessageHelper.Log($"Error downloading or updating release: {ex.Message}");
+            }
         }
 
-        private async Task DownloadAndUpdateLatestRelease()
-        {
 
-        }
 
 
 
