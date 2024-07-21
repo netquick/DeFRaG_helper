@@ -192,7 +192,9 @@ namespace DeFRaG_Helper
                 {
                     item.DecodeName();
                 }
-                icDemos.ItemsSource = demoItems;
+                var sortedDemoItems = demoItems.OrderBy(item => item.TotalMilliseconds).ToList();
+                icDemos.ItemsSource = sortedDemoItems; // Use the sorted list
+
                 txtMapSearch.Text = System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname);
 
             }
@@ -305,15 +307,6 @@ namespace DeFRaG_Helper
 
 
                 }
-
-
-
-
-                // Implement your double-click logic here
-                // For example, navigate to a detail page or display a dialog
-                ///MessageBox.Show($"Double-clicked on item: {item.Name}");
-
-
             }
         }
 

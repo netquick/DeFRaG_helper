@@ -36,17 +36,20 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Name: " FontFamily="Segoe UI" FontSize="16" Foreground="White" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
-            <TextBlock Grid.Row="0"  Grid.Column="1" Text="{Binding PlayerName}" FontSize="16" Foreground="White" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Mapname: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 0"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Mapname}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 0"/>
+            <TextBlock Grid.Row="0"  Grid.Column="1" Text="{Binding PlayerName}" FontSize="16" Foreground="{StaticResource ThemeColor}" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Country: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 0"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PlayerCountry}" FontSize="12"  VerticalAlignment="Bottom" Foreground="White" Margin="10, 0, 0, 0"/>
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Physics: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Physics}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Country: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
-            <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding PlayerCountry}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Time: " FontSize="16" Foreground="White" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
+            <TextBlock Grid.Row="0" Grid.Column="3" Text="{Binding Time}" FontSize="16" Foreground="{StaticResource ThemeColor}" VerticalAlignment="Bottom" Margin="10, 5, 0, 0"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Type: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 0"/>
             <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding Type}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 0"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="Time: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
-            <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Time}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="Mapname: " FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
+            <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Mapname}" FontSize="12" Foreground="White" VerticalAlignment="Bottom" Margin="10, 0, 0, 5"/>
+
+
         </Grid>
     </Border>
 </UserControl>
