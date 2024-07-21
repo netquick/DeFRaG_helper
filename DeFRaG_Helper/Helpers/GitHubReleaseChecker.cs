@@ -20,7 +20,7 @@ namespace DeFRaG_Helper.Helpers
         public async Task CheckForNewReleaseAsync(string owner, string repo)
         {
             string latestReleaseUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
-
+            MessageHelper.ShowMessage($"Checking for new release: {latestReleaseUrl}");
             try
             {
                 _httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request"); // GitHub API requires a user-agent
@@ -39,14 +39,14 @@ namespace DeFRaG_Helper.Helpers
 
                     if (latestVersion > currentVersion)
                     {
-                        MessageHelper.Log($"Newer version available: {releaseName} (Tag: {tagName})");
+                        MessageHelper.ShowMessage($"Newer version available: {releaseName} (Tag: {tagName})");
                         MessageHelper.Log($"Download URL: {downloadUrl}");
                         // Consider calling DownloadReleaseAssetAsync here
                         await DownloadAndUpdateLatestRelease(owner, repo);
                     }
                     else
                     {
-                        MessageHelper.Log("Your application is up to date.");
+                        MessageHelper.ShowMessage("Your application is up to date.");
                     }
                 }
             }
