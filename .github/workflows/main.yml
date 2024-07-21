@@ -28,12 +28,9 @@ jobs:
 
     - name: Run Tests
       run: dotnet test
-      
-
 
     - name: Publish Application
       run: dotnet publish --configuration Release -o ./publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --self-contained=false
-
 
     - name: Upload Published App as Artifact
       uses: actions/upload-artifact@v2
@@ -41,20 +38,25 @@ jobs:
         name: published-app
         path: ./publish/**
 
+    # Extract Version Information from .csproj
+    - name: Extract version
+      id: extract_version
+      run: |
+        $version = [xml](Get-Content ./DeFRaG_Helper/DeFRaG_Helper.csproj)
+        $assemblyVersion = $version.Project.PropertyGroup.AssemblyVersion
+        echo "Extracted version is $assemblyVersion"
+        echo "::set-output name=ASSEMBLY_VERSION::$assemblyVersion"
+      shell: pwsh
+
     - name: Delete Existing Release 'Release' if it Exists
       run: |
         RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          https://api.github.com/repos/${{ github.repository }}/releases/tags/Release \
+          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.extract_version.outputs.ASSEMBLY_VERSION }} \
           | jq '.id')
         if [ "$RELEASE_ID" != "null" ]; then
           curl -X DELETE -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID
         fi
-      shell: bash
-
-    - name: Get Current Date
-      id: current_date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       shell: bash
 
     - name: Create Release
@@ -63,8 +65,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: Release
-        release_name: Release
+        tag_name: ${{ steps.extract_version.outputs.ASSEMBLY_VERSION }}
+        release_name: Release ${{ steps.extract_version.outputs.ASSEMBLY_VERSION }}
         draft: false
         prerelease: false
 
@@ -73,7 +75,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # Correctly references the output of the Create Release step
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./publish/DeFRaG_Helper.exe
-        asset_name: DeFRaG_Helper.exe
+        asset_name: DeFRaG_Helper_${{ steps.extract_version.outputs.ASSEMBLY_VERSION }}.exe
         asset_content_type: application/octet-stream
