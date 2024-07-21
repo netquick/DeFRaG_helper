@@ -61,36 +61,6 @@ namespace DeFRaG_Helper.Helpers
             }
         }
 
-        public static async Task TestGitHubTokenAsync(string owner, string repo, string token)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request"); // GitHub API requires a user-agent
-
-                string latestReleaseUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
-
-                try
-                {
-                    var response = await httpClient.GetAsync(latestReleaseUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        MessageHelper.Log("Success! Response Body:");
-                        MessageHelper.Log(responseBody);
-                    }
-                    else
-                    {
-                        MessageHelper.Log($"Failed to fetch latest release. Status Code: {response.StatusCode}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.Log($"Error: {ex.Message}");
-                }
-            }
-        }
-
         public async Task DownloadAndUpdateLatestRelease(string owner, string repo)
         {
             try
