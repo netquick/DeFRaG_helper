@@ -91,50 +91,126 @@
     <Resource Include="Icons\esports.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Icons\Functions\break.svg" />
-    <Resource Include="Icons\Functions\button.svg" />
-    <Resource Include="Icons\Functions\door.svg" />
-    <Resource Include="Icons\Functions\fog.svg" />
-    <Resource Include="Icons\Functions\lava.svg" />
-    <Resource Include="Icons\Functions\moving.svg" />
-    <Resource Include="Icons\Functions\push.svg" />
-    <Resource Include="Icons\Functions\shootergl.svg" />
-    <Resource Include="Icons\Functions\shooterpg.svg" />
-    <Resource Include="Icons\Functions\shooterrl.svg" />
-    <Resource Include="Icons\Functions\slick.svg" />
-    <Resource Include="Icons\Functions\slime.svg" />
-    <Resource Include="Icons\Functions\Speaker_Icon.svg" />
-    <Resource Include="Icons\Functions\tele.svg" />
-    <Resource Include="Icons\Functions\timer.svg" />
-    <Resource Include="Icons\Functions\water.svg" />
+    <Resource Include="Icons\Functions\break.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\button.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\door.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\fog.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\lava.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\moving.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\push.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\shootergl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\shooterpg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\shooterrl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\slick.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\slime.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\Speaker_Icon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\tele.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\timer.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\water.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\globe.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\home.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Icons\Items\ammo_regen.svg" />
-    <Resource Include="Icons\Items\doubler.svg" />
-    <Resource Include="Icons\Items\envirosuit.svg" />
-    <Resource Include="Icons\Items\flight.svg" />
-    <Resource Include="Icons\Items\guard.svg" />
-    <Resource Include="Icons\Items\haste.svg" />
-    <Resource Include="Icons\Items\iconh_green.svg" />
-    <Resource Include="Icons\Items\iconh_mega.svg" />
-    <Resource Include="Icons\Items\iconh_red.svg" />
-    <Resource Include="Icons\Items\iconh_yellow.svg" />
-    <Resource Include="Icons\Items\iconr_green.svg" />
-    <Resource Include="Icons\Items\iconr_red.svg" />
-    <Resource Include="Icons\Items\iconr_shard.svg" />
-    <Resource Include="Icons\Items\iconr_yellow.svg" />
-    <Resource Include="Icons\Items\invis.svg" />
-    <Resource Include="Icons\Items\invulnerability.svg" />
-    <Resource Include="Icons\Items\kamikaze.svg" />
-    <Resource Include="Icons\Items\medkit.svg" />
-    <Resource Include="Icons\Items\quad.svg" />
-    <Resource Include="Icons\Items\regen.svg" />
-    <Resource Include="Icons\Items\scout.svg" />
-    <Resource Include="Icons\Items\teleporter.svg" />
+    <Resource Include="Icons\Items\ammo_regen.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\doubler.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\envirosuit.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\flight.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\guard.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\haste.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconh_green.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconh_mega.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconh_red.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconh_yellow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconr_green.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconr_red.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconr_shard.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\iconr_yellow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\invis.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\invulnerability.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\kamikaze.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\medkit.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\quad.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\regen.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\scout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Items\teleporter.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\map.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -144,19 +220,45 @@
     <Resource Include="Icons\slideshow.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Icons\Weapons\chaingun.svg" />
-    <Resource Include="Icons\Weapons\iconw_bfg.svg" />
-    <Resource Include="Icons\Weapons\iconw_gauntlet.svg" />
-    <Resource Include="Icons\Weapons\iconw_grapple.svg" />
-    <Resource Include="Icons\Weapons\iconw_grenade.svg" />
-    <Resource Include="Icons\Weapons\iconw_lightning.svg" />
-    <Resource Include="Icons\Weapons\iconw_machinegun.svg" />
-    <Resource Include="Icons\Weapons\iconw_plasma.svg" />
-    <Resource Include="Icons\Weapons\iconw_railgun.svg" />
-    <Resource Include="Icons\Weapons\iconw_rocket.svg" />
-    <Resource Include="Icons\Weapons\iconw_shotgun.svg" />
-    <Resource Include="Icons\Weapons\nailgun.svg" />
-    <Resource Include="Icons\Weapons\proxmine.svg" />
+    <Resource Include="Icons\Weapons\chaingun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_bfg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_gauntlet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_grapple.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_grenade.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_lightning.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_machinegun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_plasma.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_railgun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_rocket.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\iconw_shotgun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\nailgun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Weapons\proxmine.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
