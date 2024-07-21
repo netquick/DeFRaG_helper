@@ -1,5 +1,4 @@
-﻿- Settings: Include Image setting
-- Search
+﻿- Search
 - Language
 - Edit maps
 - Config editor
