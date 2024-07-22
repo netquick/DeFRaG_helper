@@ -1,10 +1,14 @@
-﻿using DeFRaG_Helper.ViewModels;
+﻿using DeFRaG_Helper.Helpers;
+using DeFRaG_Helper.ViewModels;
 
 namespace DeFRaG_Helper
 {
     public class BackgroundTaskRunner
     {
 
+        private TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
+        public Task BackgroundTask => _tcs.Task;
+        private bool _isInitialized = false;
 
         public BackgroundTaskRunner()
         {
@@ -13,37 +17,41 @@ namespace DeFRaG_Helper
 
         private async void Initialize()
         {
+            if (_isInitialized) return;
+
             var viewModel = await MapViewModel.GetInstanceAsync();
-            // Subscribe to the DataLoaded event
-            viewModel.DataLoaded += ViewModel_DataLoaded;
+           // viewModel.DataLoaded += ViewModel_DataLoaded;
+            _isInitialized = true;
         }
 
         private async void ViewModel_DataLoaded(object sender, EventArgs e)
         {
-            // Optionally, unsubscribe if you only need to run this once
-            // ((MapViewModel)sender).DataLoaded -= ViewModel_DataLoaded;
+            // Unsubscribe to prevent multiple executions
+            ((MapViewModel)sender).DataLoaded -= ViewModel_DataLoaded;
 
-            // Maps are loaded, now start the background task
+            // Start the background task
             await RunTaskAsync();
+
+            // Signal that the task is completed
+            _tcs.SetResult(true);
         }
 
         public async Task RunTaskAsync()
         {
             //ShowMessage("Starting background task");
-            await CheckInstallState();       
-            //implement sync with files and update db tasks here
 
-        }
+            GitHubReleaseChecker checkGit = new GitHubReleaseChecker();
+            await checkGit.CheckForNewReleaseAsync("netquick", "DeFRaG_Helper").ConfigureAwait(false);
 
-        private void ShowMessage(string message)
-        {
-            App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.ShowMessage(message); });
+            await CheckInstallState();
+
+            
 
         }
 
         private async Task CheckInstallState()
         {
-            ShowMessage($"Checking install state for maps in Game directory");
+            MessageHelper.ShowMessage($"Checking install state for maps in Game directory");
             var viewModel = await MapViewModel.GetInstanceAsync();
             int totalMaps = viewModel.Maps.Count;
             int processedMaps = 0;
@@ -96,7 +104,7 @@ namespace DeFRaG_Helper
                     App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.UpdateProgressBar(progress); });
                 }
             }
-            ShowMessage($"Checked {processedMaps} maps, {countChanged} maps changed");
+            MessageHelper.ShowMessage($"Checked {processedMaps} maps, {countChanged} maps changed");
         }
 
 

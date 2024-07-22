@@ -194,9 +194,9 @@ namespace DeFRaG_Helper
                     UpdateProgressBar(value);
                 });
                 IProgress<double> progress = progressHandler;
-                ShowMessage("Downloading images");
+                MessageHelper.ShowMessage("Downloading images");
                 await Downloader.DownloadFileAsync(url, zipPath, progress);
-                ShowMessage("Images downloaded, unpacking");
+                MessageHelper.ShowMessage("Images downloaded, unpacking");
                 await Downloader.UnpackFile(zipPath, appDataFolder, progress);
                 MessageHelper.Log("Images downloaded and extracted");
 
@@ -328,7 +328,7 @@ namespace DeFRaG_Helper
                 };
                 timer.Start();
             });
-            MessageHelper.Log(message);
+            //MessageHelper.Log(message);
         }
 
 

@@ -69,7 +69,7 @@ namespace DeFRaG_Helper
                     AppConfig.GameDirectoryPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     //save the game directory path in the app.config file
                     await AppConfig.SaveConfigurationAsync();
-                    App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game found"));
+                    MessageHelper.ShowMessage("Game found");
 
 
                 }
@@ -95,7 +95,7 @@ namespace DeFRaG_Helper
                         {
                             MessageHelper.Log($"Game found in {path}");
                             AppConfig.GameDirectoryPath = path;
-                            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game found"));
+                            MessageHelper.ShowMessage("Game found");
                             await AppConfig.SaveConfigurationAsync();
                         }
                         else
@@ -110,7 +110,7 @@ namespace DeFRaG_Helper
                     }
                     else
                     {
-                        App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game not found"));
+                        MessageHelper.ShowMessage("Game not found");
                     }
 
 
@@ -125,7 +125,7 @@ namespace DeFRaG_Helper
         //method to install the game
         private async static Task InstallGame()
         {
-            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game data will be downloaded"));
+            MessageHelper.ShowMessage("Game data will be downloaded");
             MessageHelper.Log("Game data will be downloaded");
             // Create a folder called "defrag" in the GameDirectoryPath
             string path = AppConfig.GameDirectoryPath;
@@ -164,7 +164,7 @@ namespace DeFRaG_Helper
 
             }
 
-            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Game download completed"));
+            MessageHelper.ShowMessage("Game download completed");
             //App.Current.Dispatcher.Invoke(() => MainWindow.Instance.HideProgressBar());
 
         }

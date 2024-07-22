@@ -8,31 +8,83 @@ using System.Windows.Input;
 
 namespace DeFRaG_Helper.ViewModels
 {
+    /// <summary>
+    /// MapViewModel class to handle map data and operations for all the maps used in the application.
+    /// </summary>
     public class MapViewModel : INotifyPropertyChanged
     {
-        public bool IsDataLoaded { get; private set; }
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
         public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
-        // Centralized DbQueue instance
-        private static readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        private static readonly string AppDataFolder = Path.Combine(AppDataPath, "DeFRaG_Helper");
-        private static readonly string DbPath = Path.Combine(AppDataFolder, "MapData.db");
 
-        private bool dataLoaded = false; // Flag to indicate if data has been loaded
+        private bool dataLoaded = false;
         private MapHistoryManager mapHistoryManager;
         private static MapViewModel instance;
         private static bool isInitialized = false;
-        // Step 2: Declare the PropertyChanged event
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Step 3: Create the OnPropertyChanged method
+     
+
+        private MapViewModel()
+        {
+            Maps = new ObservableCollection<Map>();
+
+
+            //dbQueue = new DbQueue($"Data Source={AppConfig.DatabasePath};");
+
+            PlayMapCommand = new RelayCommand(PlayMap);
+            DownloadMapCommand = new RelayCommand(DownloadMap);
+            var mapHistoryManager = MapHistoryManager.Instance;;
+
+        }
+        public static async Task<MapViewModel> GetInstanceAsync()
+        {
+            if (instance == null)
+            {
+                instance = new MapViewModel();
+                await instance.InitializeAsync().ConfigureAwait(false);
+                isInitialized = true;
+            }
+            return instance;
+        }
+
+        private async Task InitializeAsync()
+        {
+            if (!isInitialized)
+            {
+                MapFileSyncService syncService = MapFileSyncService.Instance;
+                syncService.MapFlagsChanged += SyncService_MapFlagsChanged;
+                mapHistoryManager = MapHistoryManager.Instance;
+
+                await LoadMapsIntelligent();
+
+                isInitialized = true;
+            }
+        }
+        private Map _selectedMap;
+        public Map SelectedMap
+        {
+            get => _selectedMap;
+            set
+            {
+                _selectedMap = value;
+                OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
+
+                if (value != null)
+                {
+                    SimpleLogger.Log($"Selected map: {value.Name}");
+                }
+                else
+                {
+                    SimpleLogger.Log("Selected map is null.");
+                }
+            }
+        }
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
         public IEnumerable<Map> FilterMaps(string filterText)
         {
@@ -58,26 +110,7 @@ namespace DeFRaG_Helper.ViewModels
             }
         }
 
-        // In MapViewModel or a shared ViewModel
-        private Map _selectedMap;
-        public Map SelectedMap
-        {
-            get => _selectedMap;
-            set
-            {
-                _selectedMap = value;
-                OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
 
-                if (value != null)
-                {
-                    SimpleLogger.Log($"Selected map: {value.Name}");
-                }
-                else
-                {
-                    SimpleLogger.Log("Selected map is null.");
-                }
-            }
-        }
 
         private async void SaveAppConfigChangesAsync()
         {
@@ -99,51 +132,6 @@ namespace DeFRaG_Helper.ViewModels
         }
 
 
-        private MapViewModel()
-        {
-            Maps = new ObservableCollection<Map>();
-
-
-            //dbQueue = new DbQueue($"Data Source={AppConfig.DatabasePath};");
-
-            PlayMapCommand = new RelayCommand(PlayMap);
-            DownloadMapCommand = new RelayCommand(DownloadMap);
-            var mapHistoryManager = MapHistoryManager.Instance;;
-
-        }
-        public static async Task<MapViewModel> GetInstanceAsync()
-        {
-            if (instance == null)
-            {
-                instance = new MapViewModel();
-                await instance.InitializeAsync().ConfigureAwait(false);
-                isInitialized = true;
-            }
-            return instance;
-        }
-
-
-
-        private async Task InitializeAsync()
-        {
-            if (!isInitialized)
-            {
-
-                
-
-                // Assuming MapFileSyncService is a singleton or accessible instance
-                MapFileSyncService syncService = MapFileSyncService.Instance;
-                syncService.MapFlagsChanged += SyncService_MapFlagsChanged;
-                mapHistoryManager = MapHistoryManager.Instance;
-
-                //await LoadMapsFromDatabase();
-                await LoadMapsIntelligent();
-
-
-
-                isInitialized = true;
-            }
-        }
         private async void SyncService_MapFlagsChanged(object sender, MapFlagChangedEventArgs e)
         {
             await UpdateMapFlagsAsync(e.UpdatedMap);
@@ -164,7 +152,6 @@ namespace DeFRaG_Helper.ViewModels
 
         private async void PlayMap(object mapParameter)
         {
-           //MessageBox.Show("Play Map");
             var mainWindow = Application.Current.MainWindow as MainWindow;
 
             var map = mapParameter as Map;
@@ -178,8 +165,6 @@ namespace DeFRaG_Helper.ViewModels
 
                 int physicsSetting = mainWindow.GetPhysicsSetting();
                 System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(map.Mapname)}");
-
-
             }
         }
 
@@ -189,158 +174,8 @@ namespace DeFRaG_Helper.ViewModels
             if (map != null)
             {
                 await MapInstaller.InstallMap(map);
-
             }
         }
-
-        private async Task LoadMapsFromDatabase()
-        {
-            var totalMaps = 0;
-            if (dataLoaded) return;
-
-            DbQueue.Instance.Enqueue(async connection =>
-            {
-                // First, determine the total number of maps
-                using (var countCommand = new SqliteCommand("SELECT COUNT(*) FROM Maps", connection))
-                {
-                    totalMaps = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
-                }
-
-                int loadedMaps = 0;
-                int refreshThreshold = 10; // Number of maps after which the UI is refreshed
-
-                // Existing database loading logic...
-                using (var command = new SqliteCommand(@"SELECT 
-                    Maps.ID, 
-                    Maps.Name, 
-                    Maps.Mapname, 
-                    Maps.Filename, 
-                    Maps.Releasedate, 
-                    Maps.Author, 
-                    Maps.Mod, 
-                    Maps.Size, 
-                    Maps.Physics, 
-                    Maps.Hits, 
-                    Maps.LinkDetailpage, 
-                    Maps.Style, 
-                    Maps.isDownloaded, 
-                    Maps.isInstalled, 
-                    Maps.isFavorite, 
-                    GROUP_CONCAT(DISTINCT Weapon.Weapon) AS Weapons, 
-                    GROUP_CONCAT(DISTINCT Item.Item) AS Items, 
-                    GROUP_CONCAT(DISTINCT Function.Function) AS Functions
-                FROM 
-                    Maps 
-                LEFT JOIN 
-                    MapWeapon ON Maps.ID = MapWeapon.MapID 
-                LEFT JOIN 
-                    Weapon ON MapWeapon.WeaponID = Weapon.WeaponID
-                LEFT JOIN 
-                    MapItem ON Maps.ID = MapItem.MapID 
-                LEFT JOIN 
-                    Item ON MapItem.ItemID = Item.ItemID
-                LEFT JOIN 
-                    MapFunction ON Maps.ID = MapFunction.MapID 
-                LEFT JOIN 
-                    Function ON MapFunction.FunctionID = Function.FunctionID
-                GROUP BY 
-                    Maps.ID, 
-                    Maps.Name, 
-                    Maps.Mapname, 
-                    Maps.Filename, 
-                    Maps.Releasedate, 
-                    Maps.Author, 
-                    Maps.Mod, 
-                    Maps.Size, 
-                    Maps.Physics, 
-                    Maps.Hits, 
-                    Maps.LinkDetailpage, 
-                    Maps.Style, 
-                    Maps.isDownloaded, 
-                    Maps.isInstalled, 
-                    Maps.isFavorite
-                ", connection))
-                {
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var map = new Map
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("ID")),
-                                Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString(reader.GetOrdinal("Name")),
-                                Mapname = reader.IsDBNull(reader.GetOrdinal("Mapname")) ? null : reader.GetString(reader.GetOrdinal("Mapname")),
-                                Filename = reader.IsDBNull(reader.GetOrdinal("Filename")) ? null : reader.GetString(reader.GetOrdinal("Filename")),
-                                Releasedate = reader.IsDBNull(reader.GetOrdinal("Releasedate")) ? null : reader.GetString(reader.GetOrdinal("Releasedate")),
-                                Author = reader.IsDBNull(reader.GetOrdinal("Author")) ? null : reader.GetString(reader.GetOrdinal("Author")),
-                                GameType = reader.IsDBNull(reader.GetOrdinal("Mod")) ? null : reader.GetString(reader.GetOrdinal("Mod")),
-                                Size = reader.IsDBNull(reader.GetOrdinal("Size")) ? 0 : reader.GetInt64(reader.GetOrdinal("Size")),
-                                Physics = reader.IsDBNull(reader.GetOrdinal("Physics")) ? 0 : reader.GetInt32(reader.GetOrdinal("Physics")),
-                                Hits = reader.IsDBNull(reader.GetOrdinal("Hits")) ? 0 : reader.GetInt32(reader.GetOrdinal("Hits")),
-                                LinkDetailpage = reader.IsDBNull(reader.GetOrdinal("LinkDetailpage")) ? null : reader.GetString(reader.GetOrdinal("LinkDetailpage")),
-                                Style = reader.IsDBNull(reader.GetOrdinal("Style")) ? null : reader.GetString(reader.GetOrdinal("Style")),
-                                IsDownloaded = reader.IsDBNull(reader.GetOrdinal("isDownloaded")) ? 0 : reader.GetInt32(reader.GetOrdinal("isDownloaded")),
-                                IsInstalled = reader.IsDBNull(reader.GetOrdinal("isInstalled")) ? 0 : reader.GetInt32(reader.GetOrdinal("isInstalled")),
-                                IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite")),
-                                Weapons = reader.IsDBNull(reader.GetOrdinal("Weapons")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Weapons")).Split(',').ToList(),
-                                Items = reader.IsDBNull(reader.GetOrdinal("Items")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Items")).Split(',').ToList(),
-                                Functions = reader.IsDBNull(reader.GetOrdinal("Functions")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Functions")).Split(',').ToList(),
-
-
-                            };
-
-
-
-                            // Since we're on a background thread, ensure UI updates are dispatched on the UI thread
-                            App.Current.Dispatcher.Invoke(() => Maps.Add(map));
-
-                            loadedMaps++;
-                            if (loadedMaps % refreshThreshold == 0 || loadedMaps == totalMaps)
-                            {
-                                double progress = (double)loadedMaps / totalMaps * 100;
-                                // Update progress bar and potentially refresh the UI here
-                                App.Current.Dispatcher.Invoke(() =>
-                                {
-                                    map.GenerateWeaponIcons();
-                                    map.GenerateItemIcons();
-                                    map.GenerateFunctionIcons();
-
-                                    MainWindow.Instance.UpdateProgressBar(progress);
-                                    MapsBatchLoaded?.Invoke(this, EventArgs.Empty);
-
-                                    // Optionally, refresh the UI to show the newly loaded maps
-                                });
-                                OnPropertyChanged(nameof(Maps));
-
-                            }
-                        }
-                    }
-                }
-
-                await App.Current.Dispatcher.InvokeAsync(async () =>
-                {
-                    dataLoaded = true; // Set the flag to true after loading data
-                    DataLoaded?.Invoke(this, EventArgs.Empty); // Raise the event
-                                                               //MainWindow.Instance.HideProgressBar();
-                    await PerformPostDataLoadActions();
-                    FilteredMapsCount = Maps.Count;
-
-                    // Optionally, do a final UI refresh here if needed
-                });
-
-
-            });
-            await Task.CompletedTask;
-
-        }
-
-
-
-
-
-
-
-        //NEW load method
 
         private async Task LoadMapsIntelligent()
         {
@@ -389,11 +224,8 @@ namespace DeFRaG_Helper.ViewModels
                         {
                             MainWindow.Instance.UpdateProgressBar(progress);
                         });
-
                     }
                 }
- 
-
             }
 
             // Ensure UI is refreshed one last time in case the last batch didn't reach the threshold
@@ -401,7 +233,11 @@ namespace DeFRaG_Helper.ViewModels
             {
                 CheckAndRefreshUI(loadedMaps, totalMaps, refreshThreshold);
             }
-
+            await App.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await PerformPostDataLoadActions();
+                FilteredMapsCount = Maps.Count;
+            });
             dataLoaded = true;
             DataLoaded?.Invoke(this, EventArgs.Empty);
         }
@@ -441,8 +277,6 @@ namespace DeFRaG_Helper.ViewModels
                 OnPropertyChanged(nameof(Maps));
             }
         }
-
-
 
         private async Task<int> GetTotalMapCountAsync()
         {
@@ -572,21 +406,12 @@ namespace DeFRaG_Helper.ViewModels
             return map;
         }
 
-
-
-
-
-
-
-
         private async Task PerformPostDataLoadActions()
         {
-            // Ensure that BackgroundTaskRunner and CreateAndUpdateDB methods are awaited
             BackgroundTaskRunner backgroundTaskRunner = new BackgroundTaskRunner();
             await backgroundTaskRunner.RunTaskAsync();
             await CreateAndUpdateDB.UpdateDB();
 
-            // Any other actions that need to be performed after data is loaded
         }
 
         public async Task UpdateMapFlagsAsync(Map map)
@@ -644,8 +469,6 @@ namespace DeFRaG_Helper.ViewModels
             }
         }
 
-        // Assuming map is an instance of your Map object filled with the necessary data
-        // Change the method to be an instance method instead of a static method
         public async Task UpdateOrAddMap(Map map)
         {
             try
@@ -675,7 +498,6 @@ namespace DeFRaG_Helper.ViewModels
                     // Enqueue database insert operation
                     DbQueue.Instance.Enqueue(async connection =>
                     {
-                        // Assuming you have a method to create and execute the SQL command for inserting
                         await DbActions.Instance.AddMap(map);
                     });
                     await Task.CompletedTask;
@@ -716,21 +538,8 @@ namespace DeFRaG_Helper.ViewModels
             existingMap.Items = newMap.Items;
             existingMap.Functions = newMap.Functions;
 
-         
-
             // Notify UI of property changes
             OnPropertyChanged(nameof(Maps));
-        }
-
-        // Example placeholder methods for database operations
-   
-
-
-
-
-
-
-
-
+        }   
     }
 }

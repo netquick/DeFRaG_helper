@@ -75,7 +75,7 @@ namespace DeFRaG_Helper
         {
             // Get the singleton instance of MapViewModel
             var mapViewModel = await MapViewModel.GetInstanceAsync();
-            App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Syncing maps..."));
+            MessageHelper.ShowMessage("Syncing maps...");
 
             // Access the Maps collection
             var maps = mapViewModel.Maps;

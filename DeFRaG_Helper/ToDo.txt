@@ -3,16 +3,7 @@
 - Edit maps -> v1.>0
 - Config editor -> v1.>0
 - Records -> v1.>0
-- Versioning and AutoUpdate
 
-- Data logic: 
-	- first count all maps to have a number
-	- load the history list
-	- load the maps from history first
-	- load a certain amount from the database, maybe load newest maps first, then show the views and count as "loaded"
-	- update the maplist and parse new released maps (caution: need save back to db)
-	- load the rest from the database
-	- 
 
 
 

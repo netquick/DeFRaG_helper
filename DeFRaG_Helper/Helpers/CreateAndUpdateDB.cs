@@ -17,11 +17,7 @@ namespace DeFRaG_Helper
         private static readonly string AppDataFolder = Path.Combine(AppDataPath, "DeFRaG_Helper");
         private static readonly string DbPath = Path.Combine(AppDataFolder, "MapData.db");
 
-        private static void ShowMessage(string message)
-        {
-            App.Current.Dispatcher.Invoke(() => { MainWindow.Instance.ShowMessage(message); });
 
-        }
         private static HttpClient CreateHttpClient()
         {
             var handler = new HttpClientHandler();
@@ -53,7 +49,7 @@ namespace DeFRaG_Helper
         {
             try
             {
-                ShowMessage("Checking for Database Updates");
+                MessageHelper.ShowMessage("Checking for Database Updates");
                 // Create an instance of CreateAndUpdateDB
 
                 // Step 1: Check the amount of pages
@@ -65,8 +61,8 @@ namespace DeFRaG_Helper
                 await UpdateMapDetails();
                 //Update map details
                 //TODO: Implement the map details update logic here
-                
-                ShowMessage("Database update completed successfully");
+
+                MessageHelper.ShowMessage("Database update completed successfully");
             }
             catch (Exception ex)
             {
@@ -346,7 +342,7 @@ namespace DeFRaG_Helper
 
                 await DownloadImages(map, html);
 
-                ShowMessage($"Details updated and images downloaded for {map.Name}, \r\nFile: {map.Filename}, Mapname: {map.Mapname}, {mapCount} maps left");
+                MessageHelper.ShowMessage($"Details updated and images downloaded for {map.Name}, \r\nFile: {map.Filename}, Mapname: {map.Mapname}, {mapCount} maps left");
 
                 //update the map in the database with method UpdateOrAddMap in MapViewModel
                 var mapViewModel = await MapViewModel.GetInstanceAsync();

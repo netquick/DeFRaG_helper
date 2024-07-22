@@ -119,7 +119,7 @@ namespace DeFRaG_Helper
                     var random = new Random();
                     var randomMap = matchingMaps[random.Next(matchingMaps.Count)];
 
-                    App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage($"Random map: {randomMap.Mapname} out of {matchingMaps.Count}"));
+                    MessageHelper.ShowMessage($"Random map: {randomMap.Mapname} out of {matchingMaps.Count}");
 
                     //we need check if the map is downloaded and installed, if not, we will install it
                     await MapInstaller.InstallMap(randomMap);
