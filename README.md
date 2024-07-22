@@ -1,4 +1,4 @@
-Simple Map browser for Quake 3 Mod "DeFRaG" using list of map from ws.q3df.org. Can find existing defrag installations and installed maps or pull the required files from internet. 
+Simple Map browser for Quake 3 Mod "DeFRaG" using list of map from ws.q3df.org. Can find existing DeFRaG installations and installed maps or pull the required files from internet. 
 oDFe.x64.exe and the defrag package will be pulled along with some data for this tool like preview Images. 
 Launches maps on doubleclick with Random Map feature, storing the last played maps. Favorite function and easy to filter browser to check installed maps. 
 Installed maps will be synched on launch. Background tasks update newest maps and add them to the database. 
@@ -6,8 +6,7 @@ Installed maps will be synched on launch. Background tasks update newest maps an
 Avoiding libraries where possible this still uses following NuGet Packages: 
 - Microsoft.Data.SQlite
 - SevenZipExtractor
-- WPFFolderBrowser
-
+  
 Custom styles are selfmade as packages like mahApp.metro blew my app to 110MB (this is about 1.1MB actually without libraries, 5.7MB packed ). WPF Application in pure C#. Source is free to use, credits for the parser classes are welcome. 
 
 No commercial interest - Aimed to get more people into DeFRaG and let the ones that already play it have it easier to try out maps. Enjoy.
