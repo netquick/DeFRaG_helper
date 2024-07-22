@@ -33,8 +33,8 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Height="140" MaxWidth="200">
-                <Image Margin="10,10,10,0" Source="{Binding ImagePath}" MaxWidth="160"/>
-                <TextBlock Text="{Binding Name}" FontSize="20" Foreground="White" Margin="20,10,20,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="160" HorizontalAlignment="Center"/>
+                <Image Margin="0,0,0,0" Source="{Binding ImagePath}" MaxWidth="160"/>
+                <TextBlock Text="{Binding Name}" FontSize="18" Foreground="White" Margin="20,10,20,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap" MaxWidth="160" HorizontalAlignment="Center"/>
             </Grid>
             <!-- Adjusted inner Border with straight upper corners and rounded bottom corners -->
             <Border Grid.Row="1" Height="60" Background="#2a2a2a" CornerRadius="0,0,10,10" x:Name="MainBorder">
