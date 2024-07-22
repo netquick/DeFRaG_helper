@@ -35,6 +35,7 @@ Features:
 
 - Auto Update
 - Map Browser with local sqlite db
+- Installs and plays maps with one click
 - Updating maps from internet
 - Server Browser refreshing state every 30 seconds
 - Demo browser to fetch demos for maps and one-click play
@@ -42,6 +43,7 @@ Features:
 - Map History for random and all played maps
 - Favorites
 - Autoinstallation of DeFRaG if not yet installed
+- Sync of local installed maps
 
   ... more to come
 
