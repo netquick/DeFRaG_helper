@@ -9,7 +9,7 @@ namespace DeFRaG_Helper
     public class ServerViewModel : INotifyPropertyChanged
     {
 
-
+        public event EventHandler ServerListUpdated;
         public bool IsDataLoaded { get; private set; }
         private static bool isInitialized = false;
 
@@ -134,6 +134,8 @@ namespace DeFRaG_Helper
             {
                 ServersView.Refresh(); // Explicitly refresh the view
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Servers)));
+                ServerListUpdated?.Invoke(this, EventArgs.Empty);
+
             });
         }
 

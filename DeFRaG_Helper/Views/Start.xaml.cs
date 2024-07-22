@@ -93,12 +93,21 @@ namespace DeFRaG_Helper
                                            // Apply any sorting or additional transformations here
             localView.Refresh();
         }
-
+        private void OnServerListUpdated(object sender, EventArgs e)
+        {
+            // Code to refresh the server view
+            RefreshServerView();
+        }
+        private void RefreshServerView()
+        {
+            ActiveServersView?.Refresh();
+        }
         private async Task InitializeAsync()
         {
             try
             {
                 var serverViewModel = await ServerViewModel.GetInstanceAsync();
+                serverViewModel.ServerListUpdated += OnServerListUpdated;
                 ActiveServersView = CollectionViewSource.GetDefaultView(serverViewModel.Servers);
 
                 var mapViewModel = await MapViewModel.GetInstanceAsync();

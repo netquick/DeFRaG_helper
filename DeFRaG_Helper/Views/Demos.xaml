@@ -45,7 +45,7 @@
 
             </Border>
             <Border Grid.Row="2" Margin="0" Background="#222222" CornerRadius="10">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,5,0">
                     <ItemsControl Name="icDemos" ItemsSource="{Binding DemoItems}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
