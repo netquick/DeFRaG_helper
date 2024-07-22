@@ -30,7 +30,20 @@ Demo Browser to play demos by doubleclick. Required map will be installed as wel
 
 ![image](https://github.com/user-attachments/assets/61ab3470-bdb6-4717-ab5e-fe20d031889d)
 
+****************************
+Features:
 
+- Auto Update
+- Map Browser with local sqlite db
+- Updating maps from internet
+- Server Browser refreshing state every 30 seconds
+- Demo browser to fetch demos for maps and one-click play
+- Radom Map feature
+- Map History for random and all played maps
+- Favorites
+- Autoinstallation of DeFRaG if not yet installed
+
+  ... more to come
 
 ****************************
 Release Notes:
