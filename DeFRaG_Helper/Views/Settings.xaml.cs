@@ -1,4 +1,5 @@
-﻿using DeFRaG_Helper.ViewModels;
+﻿using DeFRaG_Helper.Helpers;
+using DeFRaG_Helper.ViewModels;
 using DeFRaG_Helper.Windows;
 using System.Windows;
 using System.Windows.Controls;
@@ -189,6 +190,11 @@ namespace DeFRaG_Helper
                 Task.Run(async () => await AppConfig.SaveConfigurationAsync());
 
             }
+        }
+
+        private async void btnRadiant_Click(object sender, RoutedEventArgs e)
+        {
+            await CheckEditorInstallation.Instance.CheckEditor();
         }
 
     }

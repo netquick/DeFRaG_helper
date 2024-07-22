@@ -15,5 +15,6 @@
         public int? CountHistory { get; set; }
         public bool? UseHighQualityImages { get; set; }
         public int? SelectedMap { get; set; }
+        public string? EditorPath { get; set; }
     }
 }

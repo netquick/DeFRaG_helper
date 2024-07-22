@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace DeFRaG_Helper
 {
@@ -165,7 +166,7 @@ namespace DeFRaG_Helper
             Directory.Delete(sourceDirectory, true);
         }
 
-
+       
     }
 }
 

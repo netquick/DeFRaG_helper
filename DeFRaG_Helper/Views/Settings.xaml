@@ -57,6 +57,7 @@
             <CheckBox Name="chkImgQuali" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,296,0,0" VerticalAlignment="Top" Checked="chkImgQuali_Changed" Unchecked="chkImgQuali_Changed"/>
             <Label Content="Use high quality Images" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,296,0,0" VerticalAlignment="Top" Width="208"/>
             <Button Name="btnSelect" Content="Select" HorizontalAlignment="Left" Height="32" Margin="448,118,0,0" VerticalAlignment="Top" Width="73" Click="btnSelect_Click"/>
+            <Button Content="Install Radiant" HorizontalAlignment="Left" Margin="10,399,0,0" VerticalAlignment="Top" Height="41" Width="159" Name="btnRadiant" Click="btnRadiant_Click"/>
 
 
 

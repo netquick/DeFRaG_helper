@@ -1,0 +1,25 @@
+﻿<Window x:Class="DeFRaG_Helper.Windows.CustomMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeFRaG_Helper.Windows"
+        mc:Ignorable="d"
+        Title="CustomMessageBox" Height="250" Width="250"
+        WindowStyle="None"
+        Background="Transparent">
+    <Border CornerRadius="10" Background="#2c2c2c">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Name="txtTitle" Grid.Row="0" Margin="10,10,10,167" TextWrapping="Wrap" Text="TextBlock" Foreground="{StaticResource ThemeColor}" FontSize="16" TextAlignment="Center"/>
+
+            <TextBlock Name="txtMessage" Grid.Row="0" Margin="10,46,10,10" TextWrapping="Wrap" Text="TextBlock" Foreground="White" FontSize="14" TextAlignment="Center"/>
+            <Button Name="btnOne" Content="Button" Height="32" HorizontalAlignment="Left" Margin="10,5,0,5" Grid.Row="1" Width="100" Click="btnOne_Click"/>
+            <Button Name="btnTwo" Content="Button" Height="32" Margin="140,5,10,5" Grid.Row="1" Click="btnTwo_Click"/>
+
+        </Grid>
+    </Border>
+</Window>

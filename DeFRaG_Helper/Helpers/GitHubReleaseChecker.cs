@@ -102,6 +102,75 @@ namespace DeFRaG_Helper.Helpers
             }
         }
 
+        public async Task<string> DownloadLatestReleaseAssetAsync(string owner, string repo, string destinationPath)
+        {
+            string downloadedFilePath = null; // This will hold the path of the downloaded file
+
+            try
+            {
+                string latestReleaseUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
+                var response = await _httpClient.GetAsync(latestReleaseUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    using (JsonDocument doc = JsonDocument.Parse(responseContent))
+                    {
+                        JsonElement root = doc.RootElement;
+                        JsonElement assets = root.GetProperty("assets");
+
+                        string downloadUrl = null;
+                        foreach (JsonElement asset in assets.EnumerateArray())
+                        {
+                            string assetName = asset.GetProperty("name").GetString();
+                            // Check if the asset's name contains the specific pattern for Windows
+                            if (assetName.Contains("windows-x86_64.zip"))
+                            {
+                                downloadUrl = asset.GetProperty("browser_download_url").GetString();
+                                break; // Stop searching once we find the correct asset
+                            }
+                        }
+
+                        if (downloadUrl != null)
+                        {
+                            // Extract the filename from the download URL
+                            string filename = downloadUrl.Split('/').Last();
+                            downloadedFilePath = Path.Combine(destinationPath, filename);
+
+                            // Use Downloader to download the file
+                            await Downloader.DownloadFileAsyncWithConnection(downloadUrl, downloadedFilePath, null, _httpClient);
+
+                            // Optionally, verify the downloaded file exists and check its integrity
+                            if (File.Exists(downloadedFilePath))
+                            {
+                                MessageHelper.Log("Latest release asset downloaded successfully.");
+                            }
+                            else
+                            {
+                                MessageHelper.Log("Download failed or file does not exist.");
+                                downloadedFilePath = null; // Reset to null as the download was not successful
+                            }
+                        }
+                        else
+                        {
+                            MessageHelper.Log("No matching asset found for Windows.");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageHelper.Log($"Failed to fetch latest release. Status Code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.Log($"Error downloading latest release asset: {ex.Message}");
+                downloadedFilePath = null; // Reset to null due to an exception
+            }
+
+            return downloadedFilePath; // Return the path of the downloaded file or null
+        }
+
+
 
 
 

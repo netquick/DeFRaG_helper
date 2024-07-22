@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using DeFRaG_Helper.Helpers;
+using Microsoft.Data.Sqlite;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ namespace DeFRaG_Helper.ViewModels
     {
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
+        public ICommand EditMapCommand { get; private set; }
         public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
 
@@ -35,6 +37,8 @@ namespace DeFRaG_Helper.ViewModels
 
             PlayMapCommand = new RelayCommand(PlayMap);
             DownloadMapCommand = new RelayCommand(DownloadMap);
+            EditMapCommand = new RelayCommand(EditMapCommandAction);
+
             var mapHistoryManager = MapHistoryManager.Instance;;
 
         }
@@ -176,6 +180,15 @@ namespace DeFRaG_Helper.ViewModels
                 await MapInstaller.InstallMap(map);
             }
         }
+        private async void EditMapCommandAction(object mapParameter)
+        {
+            var map = mapParameter as Map;
+            if (map != null)
+            {
+                await EditMap.Instance.ConvertMap(map);
+            }
+        }
+
 
         private async Task LoadMapsIntelligent()
         {

@@ -21,6 +21,7 @@ namespace DeFRaG_Helper
         public static int? CountHistory { get; set; }
         public static bool ? UseHighQualityImages { get; set; }
         public static int? SelectedMap { get; set; }
+        public static string? EditorPath { get; set; }
 
 
         public delegate Task<string> RequestGameDirectoryDelegate();
@@ -65,6 +66,7 @@ namespace DeFRaG_Helper
                     CountHistory = config?.CountHistory ?? 100;
                     UseHighQualityImages = config?.UseHighQualityImages ?? false;
                     SelectedMap = config?.SelectedMap ?? 0;
+                    EditorPath = config?.EditorPath ?? string.Empty;
                     await MessageHelper.LogAsync($"GameDirectoryPath: {GameDirectoryPath}");
                     await MessageHelper.LogAsync($"SelectedColor: {SelectedColor}");
                     await MessageHelper.LogAsync($"ButtonState: {ButtonState}");
@@ -147,8 +149,9 @@ namespace DeFRaG_Helper
                 DownloadImagesOnUpdate = DownloadImagesOnUpdate,
                 CountHistory = CountHistory,
                 UseHighQualityImages = UseHighQualityImages,
-                SelectedMap = SelectedMap
-
+                SelectedMap = SelectedMap,
+                EditorPath = EditorPath
+                
             };
             MessageHelper.Log($"GameDirectoryPath: {GameDirectoryPath}");
             MessageHelper.Log($"SelectedColor: {SelectedColor}");
