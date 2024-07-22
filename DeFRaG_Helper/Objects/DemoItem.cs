@@ -30,7 +30,8 @@ namespace DeFRaG_Helper
 
         public void DecodeName()
         {
-            var pattern = @"^(?<Mapname>[^\[]+)\[(?<Type>[^\.]+)\.(?<Physics>[^\]]+)\](?<Time>\d{2}\.\d{2}\.\d{3})\((?<PlayerName>[^\.]+)\.(?<PlayerCountry>[^\)]+)\)";
+            // Modified pattern with an optional country group
+            var pattern = @"^(?<Mapname>[^\[]+)\[(?<Type>[^\.]+)\.(?<Physics>[^\]]+)\](?<Time>\d{2}\.\d{2}\.\d{3})\((?<PlayerName>[^\.]+)(\.(?<PlayerCountry>[^\)]+))?\)";
             var match = Regex.Match(Name, pattern);
             if (match.Success)
             {
@@ -40,13 +41,15 @@ namespace DeFRaG_Helper
                 Time = match.Groups["Time"].Value;
                 TotalMilliseconds = ConvertTimeToMilliseconds(Time);
                 PlayerName = match.Groups["PlayerName"].Value;
-                PlayerCountry = match.Groups["PlayerCountry"].Value;
+                // Use a conditional to check if the PlayerCountry group was matched
+                PlayerCountry = match.Groups["PlayerCountry"].Success ? match.Groups["PlayerCountry"].Value : string.Empty;
             }
             else
             {
                 Console.WriteLine("No match found.");
             }
         }
+
 
 
         private long ConvertTimeToMilliseconds(string timeString)

@@ -137,7 +137,7 @@ namespace DeFRaG_Helper
                     };
 
                     // Load last played map IDs from MapHistoryManager and apply filter for maps
-                    var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+                    var mapHistoryManager = MapHistoryManager.Instance;;
                     List<int> lastPlayedMapIds = await mapHistoryManager.GetLastPlayedMapsFromDbAsync(); // This method is now synchronous
                     // Show only maps with IDs in the lastPlayedMapIds list, show in reversed order
 

@@ -22,7 +22,7 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             lblAction.Content = AppConfig.ButtonState;
-            var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+            var mapHistoryManager = MapHistoryManager.Instance;;
 
         }
 
@@ -123,7 +123,7 @@ namespace DeFRaG_Helper
 
                     //we need check if the map is downloaded and installed, if not, we will install it
                     await MapInstaller.InstallMap(randomMap);
-                    mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+                    mapHistoryManager = MapHistoryManager.Instance;;
 
                     await mapHistoryManager.AddLastPlayedMapAsync(randomMap.Id, "Random");
 

@@ -9,34 +9,27 @@ namespace DeFRaG_Helper
     public partial class App : Application
     {
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            // Initialize logging
             MessageHelper.Log("Application starting");
-            LoadConfigurationAndStartAsync().ContinueWith(task =>
+
+            try
             {
-                if (task.IsFaulted)
-                {
-                    // Log the error or show an error message to the user
-                    MessageHelper.Log($"Error during startup: {task.Exception}");
-                    // Optionally, close the application if critical startup tasks fail
-                    Dispatcher.Invoke(() => Current.Shutdown());
-                }
-                else
-                {
-                    // This ensures the continuation runs on the UI thread
-                    Dispatcher.Invoke(() =>
-                    {
-                        // Now that configuration and resources are loaded, show the main window
-                        MessageHelper.Log("Main window created");
-                        MainWindow mainWindow = new MainWindow();
-                        mainWindow.Show();
-                    });
-                }
-            });
+                await LoadConfigurationAndStartAsync();
+                MessageHelper.Log("Main window created");
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.Log($"Error during startup: {ex}");
+                Current.Shutdown();
+            }
+
             StartDelayedTasks();
         }
+
 
         private async void StartDelayedTasks()
         {
@@ -71,7 +64,7 @@ namespace DeFRaG_Helper
             MessageHelper.Log("Database exists");
 
             MessageHelper.Log("Creating MapHistoryManager");
-            var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+            var mapHistoryManager = MapHistoryManager.Instance;;
             MessageHelper.Log("MapHistoryManager created");
 
 

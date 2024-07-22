@@ -31,8 +31,8 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             var _ = InitializeDataContextAsync(); // Discard the task since we can't await in the constructor
-            RefreshView();
-            this.Loaded += Maps_Loaded;
+                                                  //RefreshView();
+            this.Loaded += async (sender, e) => await InitializeDataContextAsync();
 
         }
         private async Task InitializeDataContextAsync()
@@ -58,13 +58,18 @@ namespace DeFRaG_Helper
             chkDownloaded.Checked += (s, e) => RefreshView();
             chkDownloaded.Unchecked += (s, e) => RefreshView();
             searchBar.TextChanged += (s, e) => RefreshView();
+
+            RefreshView();
         }
 
 
         private void RefreshView()
         {
-            mapsView.Refresh();
-            UpdateLblCount();
+            if (mapsView != null)
+            {
+                mapsView.Refresh();
+                UpdateLblCount();
+            }
         }
         private void UpdateLblCount()
         {
@@ -74,9 +79,12 @@ namespace DeFRaG_Helper
         //when maps is fully loaded
         private void Maps_Loaded(object sender, RoutedEventArgs e)
         {
-            lblCount.Content = mapsView.Cast<object>().Count().ToString();
-
+            if (mapsView != null)
+            {
+                lblCount.Content = mapsView.Cast<object>().Count().ToString();
+            }
         }
+
 
         private bool FilterMaps(object item)
         {

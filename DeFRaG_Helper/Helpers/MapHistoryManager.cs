@@ -5,32 +5,32 @@ namespace DeFRaG_Helper
 {
     public class MapHistoryManager
     {
-        private static MapHistoryManager instance;
-        private readonly string filePath;
+        private readonly string filePath = string.Empty; // Solution to Problem 1 & 7
+        private bool initialized = false;
         private List<int> lastPlayedMapsInMemory = new List<int>(); // In-memory list
-        public static event Action MapHistoryUpdated;
-        private Lazy<MapHistoryManager> mapHistoryManagerLazy = new Lazy<MapHistoryManager>(() => new MapHistoryManager("DeFRaG_Helper"));
+        public static event Action? MapHistoryUpdated; // Solution to Problem 6
+
+        // Correctly initialized Lazy instance of MapHistoryManager
+        private static readonly Lazy<MapHistoryManager> instance = new Lazy<MapHistoryManager>(() => new MapHistoryManager("DeFRaG_Helper"));
+
+        // Public property to access the instance
+        public static MapHistoryManager Instance => instance.Value;
+
 
         private MapHistoryManager(string appName)
         {
             //check if the db file exists
+            filePath = Path.Combine(AppConfig.DatabasePath ?? "DefaultPath", $"{appName}.db"); // Use of filePath
 
 
             // Load the last played maps into memory at initialization
             MessageHelper.Log($"Loading last played maps from dB");
-            LoadLastPlayedMapsFromFile();
+            LoadLastPlayedMapsFromFile().ConfigureAwait(false); // Solution to Problem 4
 
         }
         // Provide a static method to get the instance
-        public static MapHistoryManager GetInstance(string appName)
-        {
-            if (instance == null)
-            {
-                instance = new MapHistoryManager(appName);
-            }
-            return instance;
-        }
-        private async void LoadLastPlayedMapsFromFile()
+
+        private async Task LoadLastPlayedMapsFromFile()
         {
             string dbFilePath = Path.Combine(AppConfig.DatabasePath, $"MapData.db");
 
@@ -43,6 +43,15 @@ namespace DeFRaG_Helper
             await GetLastPlayedMapsFromDbAsync();
 
 
+        }
+
+        public async Task InitializeAsync()
+        {
+            if (!initialized)
+            {
+                await LoadLastPlayedMapsFromFile();
+                initialized = true;
+            }
         }
         //method to get the last played maps from the database
         public async Task<List<int>> GetLastPlayedMapsFromDbAsync()

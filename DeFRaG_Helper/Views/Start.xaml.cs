@@ -50,7 +50,7 @@ namespace DeFRaG_Helper
                     mainWindow.customDropDownButton.MapPlayed += (s, e) => RefreshMapListAsync();
                 }
             };
-            var mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+            var mapHistoryManager = MapHistoryManager.Instance;;
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
             // Set DataContext to MapViewModel instance
             //this.DataContext = MapViewModel.GetInstanceAsync().Result;
@@ -106,7 +106,7 @@ namespace DeFRaG_Helper
                 // Create a new CollectionView for this page
                 lastPlayedMapsView = new ListCollectionView(mapViewModel.Maps.ToList());
                 //lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
-                mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+                mapHistoryManager = MapHistoryManager.Instance;;
 
                 // Load last played map IDs and reverse for sorting
                 try
@@ -184,7 +184,7 @@ namespace DeFRaG_Helper
         }
         public async Task RefreshMapListAsync()
         {
-            mapHistoryManager = MapHistoryManager.GetInstance("DeFRaG_Helper");
+            mapHistoryManager = MapHistoryManager.Instance;;
 
             lastPlayedMapIds = await mapHistoryManager.GetLastPlayedRandomFromDbAsync();
             //lastPlayedMapIds.Reverse(); // Ensure the list is reversed
