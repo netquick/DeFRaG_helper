@@ -34,5 +34,6 @@ Demo Browser to play demos by doubleclick. Required map will be installed as wel
 
 ****************************
 Release Notes:
+
 v0.9.3  Implemented Edit function. Converts a bsp from the pk3 file to map and opens it in Netradiant_Custom. Editor will be installed if not available. 
 ****************************
