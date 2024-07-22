@@ -348,7 +348,7 @@ namespace DeFRaG_Helper.ViewModels
 
             var totalMaps = await GetTotalMapCountAsync();
             var loadedMaps = 0;
-            var refreshThreshold = 20; // Adjust this value based on performance testing
+            var refreshThreshold = 100; // Adjust this value based on performance testing
 
             // Load last played maps first
             var lastPlayedMapIds = await mapHistoryManager.GetLastPlayedMapsFromDbAsync();
@@ -381,16 +381,18 @@ namespace DeFRaG_Helper.ViewModels
                     if (loadedMaps % refreshThreshold == 0 || loadedMaps == totalMaps)
                     {
                         CheckAndRefreshUI(loadedMaps, totalMaps, refreshThreshold);
+                        // Calculate progress
+                        int progress = (int)((double)loadedMaps / totalMaps * 100);
+
+                        // Ensure the call is made on the UI thread
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow.Instance.UpdateProgressBar(progress);
+                        });
+
                     }
                 }
-                // Calculate progress
-                int progress = (int)((double)loadedMaps / totalMaps * 100);
-
-                // Ensure the call is made on the UI thread
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MainWindow.Instance.UpdateProgressBar(progress);
-                });
+ 
 
             }
 
