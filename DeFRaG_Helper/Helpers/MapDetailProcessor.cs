@@ -9,7 +9,7 @@ namespace DeFRaG_Helper.Helpers
             switch (propertyName)
             {
                 case "Mapname":
-                    map.Name = propertyValue;
+                    map.Name = DecodeHtmlString(propertyValue);
                     break;
                 case "Filename":
                     // Use Regex to remove <span> tag and its content from the filename

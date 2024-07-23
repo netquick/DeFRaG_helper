@@ -137,7 +137,9 @@ namespace DeFRaG_Helper.Helpers
             XDocument doc = new XDocument(
                 new XDeclaration("1.0", "utf-16", null),
                 new XElement("qpref", new XAttribute("version", "1.0"),
-                    new XElement("epair", new XAttribute("name", "EnginePath"), "E:/Q3DeFRaG/")
+                    new XElement("epair", new XAttribute("name", "EnginePath"), "E:/Q3DeFRaG/"),
+                    new XElement("epair", new XAttribute("name", "GameName"), "defrag"),
+                    new XElement("epair", new XAttribute("name", "InstalledDevFilesPath"), "E:/Q3DeFRaG/")
                 )
             );
 

@@ -59,9 +59,6 @@ namespace DeFRaG_Helper.Helpers
             //extract the map file
             await Downloader.UnpackFile(tempFolder + "\\" + pureFileName + ".zip", tempFolder, null);
 
-
-
-
             var outFile = AppConfig.GameDirectoryPath + "\\defrag\\maps\\" + map.Mapname;
             //if directory does not exist, create it
             if (!System.IO.Directory.Exists(AppConfig.GameDirectoryPath + "\\defrag\\maps"))
@@ -91,30 +88,21 @@ namespace DeFRaG_Helper.Helpers
 
             // After the map conversion process
             string tempFolderBase = tempFolder; // Assuming tempFolder is the root of your temporary directory structure
-            string destinationBase = Path.Combine(AppConfig.GameDirectoryPath, "baseq3");
+            string destinationBase = Path.Combine(AppConfig.GameDirectoryPath, "defrag");
 
             await CopyDirectoryAsync(tempFolderBase, destinationBase);
-
-
-
-
-
-
 
             //delete the temporary folder
             System.IO.Directory.Delete(tempFolder, true);
 
-
-            var mapFile = AppConfig.GameDirectoryPath + "\\baseq3\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + ".map";
-            var convertedMapFile = AppConfig.GameDirectoryPath + "\\baseq3\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + "_converted.map";
+            var mapFile = AppConfig.GameDirectoryPath + "\\defrag\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + ".map";
+            var convertedMapFile = AppConfig.GameDirectoryPath + "\\defrag\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + "_converted.map";
 
             //rename the converted file from convertedMapFile to mapFile
             System.IO.File.Move(convertedMapFile, mapFile);
             MessageHelper.ShowMessage($"Map {map.Mapname} is converted and will be opened in the editor.");
             //open the map in the editor
             System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\Netradiant_Custom\\radiant.exe", $"-map {mapFile}");
-
-
         }
 
         private async Task CopyDirectoryAsync(string sourceDir, string destinationDir)
