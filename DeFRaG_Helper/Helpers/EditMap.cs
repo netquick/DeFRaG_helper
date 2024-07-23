@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 
 namespace DeFRaG_Helper.Helpers
 {
@@ -81,41 +82,60 @@ namespace DeFRaG_Helper.Helpers
                     CreateNoWindow = true,
                 }
             };
-
+            MessageHelper.ShowMessage("Converting map, please wait...");
             process.Start();
 
             // Await the process to exit
             await Task.Run(() => process.WaitForExit());
-            var copyFile = tempFolder + "\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + "_converted.map";
+
+
+            // After the map conversion process
+            string tempFolderBase = tempFolder; // Assuming tempFolder is the root of your temporary directory structure
+            string destinationBase = Path.Combine(AppConfig.GameDirectoryPath, "baseq3");
+
+            await CopyDirectoryAsync(tempFolderBase, destinationBase);
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-            //copy the compiled map to the defrag folder
-            System.IO.File.Copy(copyFile, AppConfig.GameDirectoryPath + "\\defrag\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + ".map", true);
 
             //delete the temporary folder
             System.IO.Directory.Delete(tempFolder, true);
 
-            var mapFile = AppConfig.GameDirectoryPath + "\\defrag\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + ".map";
 
+            var mapFile = AppConfig.GameDirectoryPath + "\\baseq3\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + ".map";
+            var convertedMapFile = AppConfig.GameDirectoryPath + "\\baseq3\\maps\\" + System.IO.Path.GetFileNameWithoutExtension(map.Mapname) + "_converted.map";
+
+            //rename the converted file from convertedMapFile to mapFile
+            System.IO.File.Move(convertedMapFile, mapFile);
+            MessageHelper.ShowMessage($"Map {map.Mapname} is converted and will be opened in the editor.");
             //open the map in the editor
             System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\Netradiant_Custom\\radiant.exe", $"-map {mapFile}");
 
 
         }
 
+        private async Task CopyDirectoryAsync(string sourceDir, string destinationDir)
+        {
+            // Ensure the destination directory exists
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy them to the destination directory
+            foreach (var file in Directory.GetFiles(sourceDir))
+            {
+                string destFile = Path.Combine(destinationDir, Path.GetFileName(file));
+                File.Copy(file, destFile, true); // true allows overwriting of existing files
+            }
+
+            // Recursively copy subdirectories
+            foreach (var directory in Directory.GetDirectories(sourceDir))
+            {
+                string destDirectory = Path.Combine(destinationDir, Path.GetFileName(directory));
+                await CopyDirectoryAsync(directory, destDirectory);
+            }
+        }
 
 
     }
