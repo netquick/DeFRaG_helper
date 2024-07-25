@@ -32,6 +32,7 @@ namespace DeFRaG_Helper.ViewModels
         private MapViewModel()
         {
             Maps = new ObservableCollection<Map>();
+            FilteredMapsCount = Maps.Count; // Initialize with the total count
 
 
             //dbQueue = new DbQueue($"Data Source={AppConfig.DatabasePath};");
@@ -142,9 +143,11 @@ namespace DeFRaG_Helper.ViewModels
                 {
                     DisplayedMaps.Clear();
                     LoadDisplayedMapsSubset(filteredMaps, 0, 100);
+                    FilteredMapsCount = filteredMaps.Count; // Update the count with the total filtered maps count
                 });
             });
         }
+
 
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
         {
@@ -204,6 +207,17 @@ namespace DeFRaG_Helper.ViewModels
             }
         }
 
+        private void UpdateFilteredMapsCount()
+        {
+            if (string.IsNullOrEmpty(SearchText) && !ShowFavorites && !ShowInstalled && !ShowDownloaded)
+            {
+                FilteredMapsCount = Maps.Count; // Show total count when no filter is applied
+            }
+            else
+            {
+                FilteredMapsCount = DisplayedMaps.Count; // Show filtered count
+            }
+        }
 
 
         private async void SaveAppConfigChangesAsync()

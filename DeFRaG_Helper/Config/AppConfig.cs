@@ -62,7 +62,7 @@ namespace DeFRaG_Helper
                     MenuState = config?.MenuState ?? MenuState; // Use default if not set
                     ConnectionString = config?.ConnectionString ?? ConnectionString; // Use default if not set
                     UseUnsecureConnection = config?.UseUnsecureConnection ?? false;
-                    DownloadImagesOnUpdate = config?.DownloadImagesOnUpdate ?? false;
+                    DownloadImagesOnUpdate = config?.DownloadImagesOnUpdate ?? true;
                     CountHistory = config?.CountHistory ?? 100;
                     UseHighQualityImages = config?.UseHighQualityImages ?? false;
                     SelectedMap = config?.SelectedMap ?? 0;

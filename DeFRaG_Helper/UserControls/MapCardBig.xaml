@@ -20,7 +20,7 @@
 
         <helpers:BindingProxy x:Key="ProxyElement" Data="{Binding}"/>
     </UserControl.Resources>
-    <Border CornerRadius="10" Background="#111" Margin="5" HorizontalAlignment="Left">
+    <Border CornerRadius="10" Background="#111" Margin="5" HorizontalAlignment="Left" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

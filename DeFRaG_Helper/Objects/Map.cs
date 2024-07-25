@@ -608,7 +608,7 @@ namespace DeFRaG_Helper
                 {"Lava", ("Icons/Functions/lava.svg", "Red") },
                 {"breakable", ("Icons/Functions/break.svg", "Gray") },
                 {"Ambient sounds", ("Icons/Functions/Speaker_Icon.svg", "Gray") },
-                {"Timer", ("Icons/Functions/timer.svg", "Gray") }
+                {"Timer", ("Icons/Functions/timer2.svg", "Gray") }
 
 
         };

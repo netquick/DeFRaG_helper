@@ -35,6 +35,18 @@ namespace DeFRaG_Helper.UserControls
             get { return (IEnumerable)GetValue(IconsProperty); }
             set { SetValue(IconsProperty, value); }
         }
+        private async void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                var mapViewModel = await MapViewModel.GetInstanceAsync();
+                CurrentMap = (sender as Border).DataContext as Map;
+                if (mapViewModel != null && mapViewModel.PlayMapCommand.CanExecute(CurrentMap))
+                {
+                    mapViewModel.PlayMapCommand.Execute(CurrentMap);
+                }
+            }
+        }
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;

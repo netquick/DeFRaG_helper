@@ -31,6 +31,7 @@
     <None Remove="Icons\Functions\Speaker_Icon.svg" />
     <None Remove="Icons\Functions\tele.svg" />
     <None Remove="Icons\Functions\timer.svg" />
+    <None Remove="Icons\Functions\timer2.svg" />
     <None Remove="Icons\Functions\water.svg" />
     <None Remove="Icons\globe.svg" />
     <None Remove="Icons\home.svg" />
@@ -135,6 +136,9 @@
     </Resource>
     <Resource Include="Icons\Functions\timer.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\timer2.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\Functions\water.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
