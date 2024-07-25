@@ -7,6 +7,8 @@
              xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
              xmlns:helpers="clr-namespace:DeFRaG_Helper.Helpers"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             MouseEnter="UserControl_MouseEnter"
+             MouseLeave="UserControl_MouseLeave"
              mc:Ignorable="d" 
              d:DesignHeight="180" d:DesignWidth="200"
              Width="200"

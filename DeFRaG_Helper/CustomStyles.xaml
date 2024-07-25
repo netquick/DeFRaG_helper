@@ -125,6 +125,43 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!-- Global Style for Buttons -->
+    <Style x:Key="CloseButton" TargetType="Button">
+        <Setter Property="Foreground" Value="#D3D3D3"/>
+        <Setter Property="Background" Value="#FF222222"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="0,10,0,0">
+                        <!-- Upper-right corner radius set to 10 -->
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF444444"/>
+                        </Trigger>
+                        <!-- Trigger for Disabled State -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <!-- Adjust the background color for disabled state -->
+                            <Setter Property="Foreground" Value="#FFAAAAAA"/>
+                            <!-- Adjust the foreground color for disabled state -->
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <!-- Adjust the border color for disabled state if needed -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 
     <!-- Context Menu-->
@@ -172,7 +209,33 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    <!-- Button Hover Style -->
+    <Style x:Key="TitleBarIconStyleCorner" TargetType="Button">
+        <Setter Property="Foreground" Value="#D3D3D3"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="0,10,0,0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#3C3C3C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <!-- Global Style for TextBox -->

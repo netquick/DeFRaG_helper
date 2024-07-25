@@ -42,7 +42,7 @@
                             <!-- Maximize Button -->
                             <Button Content="&#xE922;" Width="40" Click="Maximize_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets"/>
                             <!-- Close Button -->
-                            <Button Content="&#xE8BB;" Width="40" Click="Close_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyle}" FontFamily="Segoe MDL2 Assets"/>
+                            <Button Content="&#xE8BB;" Width="40" Click="Close_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyleCorner}" FontFamily="Segoe MDL2 Assets"/>
                         </StackPanel>
                     </Grid>
                 </Border>

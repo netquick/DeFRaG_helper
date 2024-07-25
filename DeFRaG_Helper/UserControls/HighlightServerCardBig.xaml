@@ -8,6 +8,8 @@
              xmlns:helpers="clr-namespace:DeFRaG_Helper.Helpers"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
+             MouseEnter="UserControl_MouseEnter"
+             MouseLeave="UserControl_MouseLeave"
              d:DesignHeight="180" d:DesignWidth="200"
              Width="200"
              Height="180">
