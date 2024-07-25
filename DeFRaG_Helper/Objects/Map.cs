@@ -526,7 +526,7 @@ namespace DeFRaG_Helper
                 {"Gauntlet", ("Icons/Wepons/iconw_gauntlet.svg", "Cyan") },
                 {"Grappling hook", ("Icons/Weapons/iconw_grapple.svg", "Green") },
                 {"Grenade Launcher", ("Icons/Weapons/iconw_grenade.svg", "Green") },
-                {"Machinegun", ("Icons/Weapons/iconsw_machinegun", "yellow") },
+                {"Machinegun", ("Icons/Weapons/iconw_machinegun", "yellow") },
                 {"Proximity Mine Launcher (Team Arena)", ("Icons/Weapons/proxmine.svg", "Red") },
                 {"Chaingun (Team Arena)", ("Icons/Weapons/chaingun.svg", "Black") },
                 {"Nailgun (Team Arena)", ("Icons/Weapons/nailgun.svg", "Green") }
