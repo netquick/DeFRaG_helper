@@ -19,6 +19,7 @@ namespace DeFRaG_Helper.ViewModels
         public ICommand EditMapCommand { get; private set; }
         public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
+        private static readonly object _lock = new object();
 
         private bool dataLoaded = false;
         private MapHistoryManager mapHistoryManager;
@@ -46,7 +47,13 @@ namespace DeFRaG_Helper.ViewModels
         {
             if (instance == null)
             {
-                instance = new MapViewModel();
+                lock (_lock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new MapViewModel();
+                    }
+                }
                 await instance.InitializeAsync().ConfigureAwait(false);
                 isInitialized = true;
             }
@@ -66,6 +73,89 @@ namespace DeFRaG_Helper.ViewModels
                 isInitialized = true;
             }
         }
+
+
+
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                ApplyFilters();
+            }
+        }
+
+        private bool _showFavorites;
+        public bool ShowFavorites
+        {
+            get => _showFavorites;
+            set
+            {
+                _showFavorites = value;
+                OnPropertyChanged(nameof(ShowFavorites));
+                ApplyFilters();
+            }
+        }
+
+        private bool _showInstalled;
+        public bool ShowInstalled
+        {
+            get => _showInstalled;
+            set
+            {
+                _showInstalled = value;
+                OnPropertyChanged(nameof(ShowInstalled));
+                ApplyFilters();
+            }
+        }
+
+        private bool _showDownloaded;
+        public bool ShowDownloaded
+        {
+            get => _showDownloaded;
+            set
+            {
+                _showDownloaded = value;
+                OnPropertyChanged(nameof(ShowDownloaded));
+                ApplyFilters();
+            }
+        }
+
+        public ObservableCollection<Map> DisplayedMaps { get; set; } = new ObservableCollection<Map>();
+
+        private async void ApplyFilters()
+        {
+            await Task.Run(() =>
+            {
+                var filteredMaps = Maps.Where(map =>
+                    (string.IsNullOrEmpty(SearchText) || map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+                    (!ShowFavorites || map.IsFavorite == 1) &&
+                    (!ShowInstalled || map.IsInstalled == 1) &&
+                    (!ShowDownloaded || map.IsDownloaded == 1))
+                    .OrderByDescending(map => map.Releasedate)
+                    .ToList();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    DisplayedMaps.Clear();
+                    LoadDisplayedMapsSubset(filteredMaps, 0, 100);
+                });
+            });
+        }
+
+        public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
+        {
+            for (int i = startIndex; i < Math.Min(startIndex + count, sourceMaps.Count); i++)
+            {
+                DisplayedMaps.Add(sourceMaps[i]);
+            }
+        }
+
+
+
         private Map _selectedMap;
         public Map SelectedMap
         {
@@ -139,7 +229,9 @@ namespace DeFRaG_Helper.ViewModels
         private async void SyncService_MapFlagsChanged(object sender, MapFlagChangedEventArgs e)
         {
             await UpdateMapFlagsAsync(e.UpdatedMap);
+            ApplyFilters(); // Call ApplyFilters to update the displayed maps
         }
+
         public event EventHandler DataLoaded;
 
         // Public method to allow external subscription to the DataLoaded event
@@ -253,6 +345,8 @@ namespace DeFRaG_Helper.ViewModels
             });
             dataLoaded = true;
             DataLoaded?.Invoke(this, EventArgs.Empty);
+            ApplyFilters(); // Call ApplyFilters to update the displayed maps
+
         }
 
 
@@ -486,7 +580,6 @@ namespace DeFRaG_Helper.ViewModels
         {
             try
             {
-                // Adjust the existence check to consider both Mapname and Filename
                 var existingMap = Maps.FirstOrDefault(m => m.Mapname == map.Mapname && m.Filename == map.Filename);
 
                 if (existingMap != null)
@@ -497,11 +590,8 @@ namespace DeFRaG_Helper.ViewModels
                     // Enqueue database update operation
                     DbQueue.Instance.Enqueue(async connection =>
                     {
-                        // Assuming you have a method to create and execute the SQL command for updating
                         await DbActions.Instance.UpdateMap(existingMap);
                     });
-                    await Task.CompletedTask;
-
                 }
                 else
                 {
@@ -513,15 +603,17 @@ namespace DeFRaG_Helper.ViewModels
                     {
                         await DbActions.Instance.AddMap(map);
                     });
-                    await Task.CompletedTask;
-
                 }
+
+                // Call ApplyFilters to update the displayed maps
+                ApplyFilters();
             }
             catch (Exception ex)
             {
                 MessageHelper.Log($"Error updating or adding map: {ex.Message}");
             }
         }
+
 
         private void UpdateMapProperties(Map existingMap, Map newMap)
         {

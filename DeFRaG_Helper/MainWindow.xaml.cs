@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using DeFRaG_Helper.Views;
 
 
 /// <summary>
@@ -334,7 +335,7 @@ namespace DeFRaG_Helper
 
         // Define the pages to navigate to
         private Start startPage = new Start();
-        private Maps mapsPage = new Maps();
+        private Maps2 mapsPage = new Maps2();
         private Settings settingsPage = new Settings();
         private Demos demosPage = new Demos();
         private Server serverPage = new Server();

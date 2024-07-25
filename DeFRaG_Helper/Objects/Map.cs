@@ -550,12 +550,12 @@ namespace DeFRaG_Helper
             Dictionary<string, (string path, string color)> iconMapping = new Dictionary<string, (string, string)>
             {
                 {"Body Armor (Red Armor)", ("Icons/Items/iconr_red.svg", "Red") },
-                {"Combat Armor (Yellow Armor)", ("Icons(Items/iconr_yellow.svg", "Yellow") },
+                {"Combat Armor (Yellow Armor)", ("Icons/Items/iconr_yellow.svg", "Yellow") },
                 {"Battle Suit", ("Icons/Items/envirosuit.svg", "Orange") },
                 {"Shard Armor", ("Icons/Items/iconr_shard.svg", "Green") },
                 {"Flight", ("Icons/Items/flight.svg", "Purple") },
                 {"Haste", ("Icons/Items/haste.svg", "Yellow") },
-                {"Health", ("Icons/Items/iconh_red", "Red") },
+                {"Health", ("Icons/Items/iconh_red.svg", "Red") },
                 {"Large health", ("Icons/Items/iconh_yellow.svg", "Yellow") },
                 {"Mega health", ("Icons/Items/iconh_mega.svg", "Blue") },
                 {"Small health", ("Icons/Items/iconh_green.svg", "Green") },

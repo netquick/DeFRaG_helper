@@ -1,5 +1,6 @@
 ﻿using DeFRaG_Helper.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,11 +22,19 @@ namespace DeFRaG_Helper.UserControls
     /// </summary>
     public partial class MapCardBig : UserControl
     {
+        public Map CurrentMap { get; set; }
+        public static readonly DependencyProperty IconsProperty = DependencyProperty.Register(
+            "Icons", typeof(IEnumerable), typeof(MapCardBig), new PropertyMetadata(null));
         public MapCardBig()
         {
             InitializeComponent();
+            //DataContext = MapViewModel.GetInstanceAsync().Result;
         }
-
+        public IEnumerable Icons
+        {
+            get { return (IEnumerable)GetValue(IconsProperty); }
+            set { SetValue(IconsProperty, value); }
+        }
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;

@@ -910,7 +910,7 @@
                                     </Grid.LayoutTransform>
                                     <Path x:Name="OutlineStar"
                                           Data="M 10,1 L 12,7 L 18,7 L 13,11 L 15,17 L 10,13 L 5,17 L 7,11 L 2,7 L 8,7 Z" 
-                                          Stroke="Black" 
+                                          Stroke="#DDDDDD" 
                                           Fill="Transparent"/>
                                                                 <Path x:Name="FilledStar" 
                                           Data="M 10,1 L 12,7 L 18,7 L 13,11 L 15,17 L 10,13 L 5,17 L 7,11 L 2,7 L 8,7 Z" 

@@ -30,6 +30,8 @@
             <converters:ServerNameToTextBlockConverter x:Key="ServerNameToTextBlockConverter"/>
             <converters:PlayerCountConverter x:Key="PlayerCountConverter"/>
             <converters:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
+            <converters:CombinedDataContextConverter x:Key="CombinedDataContextConverter"/>
+            <converters:GreaterThanOrEqualConverter x:Key="GreaterThanOrEqualConverter"/>
 
         </ResourceDictionary>
         

@@ -4,40 +4,243 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DeFRaG_Helper.UserControls"
+             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
+             xmlns:helpers="clr-namespace:DeFRaG_Helper.Helpers"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="280" d:DesignWidth="300">
-    <Border CornerRadius="10" Background="#222222" >
+             d:DesignHeight="280" d:DesignWidth="300"
+             Width="300"
+             Height="280">
+    <UserControl.Resources>
+        <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+        <converters:PhysicsModeConverter x:Key="PhysicsModeConverter"/>
+        <converters:GreaterThanOrEqualConverter x:Key="GreaterThanOrEqualConverter"/>
+
+        <helpers:BindingProxy x:Key="ProxyElement" Data="{Binding}"/>
+    </UserControl.Resources>
+    <Border CornerRadius="10" Background="#111" Margin="5" HorizontalAlignment="Left">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image Source="{Binding ImagePath}" Height="180" Margin="0,0,0,0" VerticalAlignment="Top"/>
+            <Grid>
+                <Border Background="#2c2c2c" CornerRadius="10,10,0,0"/>
+
+                <Border CornerRadius="10,10,0,0" Height="180" VerticalAlignment="Top">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Stretch="UniformToFill"/>
+                    </Border.Background>
+                    <Border.OpacityMask>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                            <GradientStop Color="#FFFFFFFF" Offset="0.99"/>
+                            <GradientStop Color="#00FFFFFF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.OpacityMask>
+                    <Grid HorizontalAlignment="Left" Margin="3,0,0,5" Height="24" VerticalAlignment="Bottom">
+                        <Border CornerRadius="5" Background="#C01c1c1c">
+                            <TextBlock Text="{Binding Physics, Converter={StaticResource PhysicsModeConverter}}" Foreground="{StaticResource ThemeColor}" FontSize="14" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="{Binding Name}" Foreground="White" FontSize="16" Margin="0"/>
-                <TextBlock Grid.Row="1" Text="{Binding Mapname}" Foreground="White" FontSize="12" Margin="0"/>
-                <TextBlock Grid.Row="2" Text="{Binding Filename}" Foreground="White" FontSize="12" Margin="0"/>
+                <TextBlock Grid.Row="0" Text="{Binding Name}" Foreground="{DynamicResource ThemeColor}" FontSize="18" Margin="10, 0, 0, 0"/>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="{Binding Mapname}" Foreground="White" FontSize="12" Margin="10,0,0,0"/>
+                    <TextBlock Grid.Row="1" Text="{Binding Author}" Foreground="White" FontSize="10" Margin="10,0,0,0"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Size, Converter={StaticResource SizeFormatConverter}, StringFormat='Size: {0}'}" Foreground="White" FontSize="10" Margin="10,0,0,0" />
+                    <TextBlock Grid.Row="3" Text="{Binding Releasedate}" Foreground="White" FontSize="10" Margin="10,-15,0,0"/>
+
+                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                        <Button Name="btnPlay" Width="30" Height="30" HorizontalAlignment="Right" 
+                            Command="{Binding DataContext.PlayMapCommand, RelativeSource={RelativeSource AncestorType=ListView}}" 
+                            CommandParameter="{Binding}">
+                            <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <Image.Source>
+                                    <Binding>
+                                        <Binding.Converter>
+                                            <converters:DynamicSvgConverter/>
+                                        </Binding.Converter>
+                                        <Binding.Source>
+                                            <sys:String>Icons/esports.svg</sys:String>
+                                        </Binding.Source>
+                                    </Binding>
+                                </Image.Source>
+                            </Image>
+                        </Button>
+
+                        <Button Name="btnDownload" Width="30" Height="30" HorizontalAlignment="Right"
+                                Command="{Binding DataContext.DownloadMapCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                CommandParameter="{Binding}"
+                                IsEnabled="{Binding IsDownloaded, Converter={StaticResource IntToInverseBooleanConverter}}">
+                            <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <Image.Source>
+                                    <Binding>
+                                        <Binding.Converter>
+                                            <converters:DynamicSvgConverter/>
+                                        </Binding.Converter>
+                                        <Binding.Source>
+                                            <sys:String>Icons/download.svg</sys:String>
+                                        </Binding.Source>
+                                    </Binding>
+                                </Image.Source>
+                            </Image>
+                        </Button>
+
+                        <Button Name="btnEdit" Width="30" Height="30" HorizontalAlignment="Right"
+                                Command="{Binding DataContext.EditMapCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                CommandParameter="{Binding}">
+                            <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <Image.Source>
+                                    <Binding>
+                                        <Binding.Converter>
+                                            <converters:DynamicSvgConverter/>
+                                        </Binding.Converter>
+                                        <Binding.Source>
+                                            <sys:String>Icons/edit.svg</sys:String>
+                                        </Binding.Source>
+                                    </Binding>
+                                </Image.Source>
+                            </Image>
+                        </Button>
+
+                    </StackPanel>
+                </Grid>
+
             </Grid>
-            <Grid Margin="180,113,0,0">
+            <Grid Margin="180,113,0,2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" CornerRadius="5" Background="#111" Margin="1" Height="20"/>
-                <Border Grid.Row="1" CornerRadius="5" Background="#111" Margin="1" Height="20"/>
-                <Border Grid.Row="2" CornerRadius="5" Background="#111" Margin="1" Height="20"/>
+
+                <!-- Weapon Icons -->
+                <Border Grid.Row="0" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding WeaponIcons.Count, Converter={StaticResource GreaterThanOrEqualConverter}, ConverterParameter=1}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <ItemsControl ItemsSource="{Binding WeaponIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="14" Height="14" Margin="0, 2, 2, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                <!-- Item Icons -->
+                <Border Grid.Row="1" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ItemIcons.Count, Converter={StaticResource GreaterThanOrEqualConverter}, ConverterParameter=1}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <ItemsControl ItemsSource="{Binding ItemIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="14" Height="14" Margin="0, 2, 2, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <!-- Function Icons -->
+                <Border Grid.Row="2" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding FunctionIcons.Count, Converter={StaticResource GreaterThanOrEqualConverter}, ConverterParameter=1}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <ItemsControl ItemsSource="{Binding FunctionIcons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Width="14" Height="14" Margin="0, 2, 2, 0">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                            <Binding Path="SvgPath"/>
+                                            <Binding Path="Color"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
 
 
             </Grid>
+
+
             <CheckBox x:Name="chkFav" IsChecked="{Binding IsFavorite, Converter={StaticResource IntToBoolConverter}, Mode=TwoWay}"  
-                Width="60" Height="60" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Top" Margin="0,0,240,0" 
-                Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
+                      Width="60" Height="60" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Top" Margin="0,0,240,0" 
+                      Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
+
         </Grid>
     </Border>
 </UserControl>
