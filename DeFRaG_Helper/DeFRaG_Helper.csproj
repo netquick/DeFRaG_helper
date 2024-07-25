@@ -22,6 +22,7 @@
     <None Remove="Icons\Functions\fog.svg" />
     <None Remove="Icons\Functions\lava.svg" />
     <None Remove="Icons\Functions\moving.svg" />
+    <None Remove="Icons\Functions\moving2.svg" />
     <None Remove="Icons\Functions\push.svg" />
     <None Remove="Icons\Functions\shootergl.svg" />
     <None Remove="Icons\Functions\shooterpg.svg" />
@@ -109,6 +110,9 @@
     </Resource>
     <Resource Include="Icons\Functions\moving.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\Functions\moving2.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\Functions\push.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

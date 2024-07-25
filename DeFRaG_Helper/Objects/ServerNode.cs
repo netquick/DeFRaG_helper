@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
-
+﻿using DeFRaG_Helper.Objects;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 namespace DeFRaG_Helper
 {
     public class ServerNode : INotifyPropertyChanged
@@ -139,36 +141,81 @@ namespace DeFRaG_Helper
         {
             get
             {
-                // Get the AppData directory and append your application's specific folder
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var basePath = System.IO.Path.Combine(appDataPath, "DeFRaG_Helper"); // Adjusted to use the AppData directory
-
-                if (map == null)
-                {
-                    string placeholderPath = System.IO.Path.Combine(basePath, "PreviewImages/placeholder.png");
-                    return $"file:///{placeholderPath}";
-                }
+                return GetImagePath(map);
+            }
+        }
+        public string GetImagePath(string mapName)
+        {
+            if (!string.IsNullOrEmpty(mapName))
+            {
                 // Replace .bsp extension with .jpg
-                string imageName = map.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
-                    ? map.Substring(0, map.Length - 4) + ".jpg"
-                    : map + ".jpg";
+                string imageName = mapName.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                    ? mapName.Substring(0, mapName.Length - 4) + ".jpg"
+                    : mapName + ".jpg";
 
-                string imagePath = System.IO.Path.Combine(basePath, $"PreviewImages/{imageName}");
+                // Get the AppData directory and append your application's folder
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string basePath = Path.Combine(appDataPath, "DeFRaG_Helper");
 
-                // Check if the image file exists
-                if (System.IO.File.Exists(imagePath))
+                // List of folders to check for the image
+                string[] folders = { "Screenshots", "Levelshots", "Topviews" };
+
+                foreach (var folder in folders)
                 {
-                    return $"file:///{imagePath}";
+                    string imagePath = Path.Combine(basePath, $"PreviewImages/{folder}/{imageName}");
+                    if (File.Exists(imagePath))
+                    {
+                        return $"file:///{imagePath}";
+                    }
                 }
-                else
-                {
-                    // Return the placeholder image path if the specific map image does not exist
-                    string placeholderPath = System.IO.Path.Combine(basePath, "PreviewImages/placeholder.png");
-                    return $"file:///{placeholderPath}";
-                }
+
+                // If the image is not found in any folder, return the placeholder image path
+                string placeholderPath = Path.Combine(basePath, "PreviewImages/placeholder.png");
+                return $"file:///{placeholderPath}";
+            }
+            return null;
+        }
+
+        private ObservableCollection<MapIcon> weaponIcons;
+        public ObservableCollection<MapIcon> WeaponIcons
+        {
+            get => weaponIcons;
+            set
+            {
+                weaponIcons = value;
+                OnPropertyChanged(nameof(WeaponIcons));
             }
         }
 
+        private ObservableCollection<MapIcon> itemIcons;
+        public ObservableCollection<MapIcon> ItemIcons
+        {
+            get => itemIcons;
+            set
+            {
+                itemIcons = value;
+                OnPropertyChanged(nameof(ItemIcons));
+            }
+        }
+
+        private ObservableCollection<MapIcon> functionIcons;
+        public ObservableCollection<MapIcon> FunctionIcons
+        {
+            get => functionIcons;
+            set
+            {
+                functionIcons = value;
+                OnPropertyChanged(nameof(FunctionIcons));
+            }
+        }
+
+        // Method to load icons from the map
+        public void LoadMapIcons(Map map)
+        {
+            WeaponIcons = map.GenerateWeaponIcons();
+            ItemIcons = map.GenerateItemIcons();
+            FunctionIcons = map.GenerateFunctionIcons();
+        }
 
     }
 }

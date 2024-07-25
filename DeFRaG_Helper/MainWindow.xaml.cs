@@ -148,7 +148,7 @@ namespace DeFRaG_Helper
                     // Remove the filter to show all servers
                     serverViewModel.ServersView.Filter = null;
                 }
-                else if (navigatedContent is Maps)
+                else if (navigatedContent is Views.Maps)
                 {
                     // Clear filters when navigating to Maps page
                     //Maps.Instance.ClearFilters();
@@ -335,7 +335,7 @@ namespace DeFRaG_Helper
 
         // Define the pages to navigate to
         private Start startPage = new Start();
-        private Maps2 mapsPage = new Maps2();
+        private Maps mapsPage = new Maps();
         private Settings settingsPage = new Settings();
         private Demos demosPage = new Demos();
         private Server serverPage = new Server();

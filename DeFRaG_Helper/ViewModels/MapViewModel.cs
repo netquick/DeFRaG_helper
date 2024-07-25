@@ -1,4 +1,5 @@
 ﻿using DeFRaG_Helper.Helpers;
+using DeFRaG_Helper.Views;
 using Microsoft.Data.Sqlite;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -75,6 +76,11 @@ namespace DeFRaG_Helper.ViewModels
             }
         }
 
+        public Map GetMapByName(string mapName)
+        {
+            mapName = mapName + ".bsp";
+            return Maps.FirstOrDefault(m => m.Mapname.Equals(mapName, StringComparison.OrdinalIgnoreCase));
+        }
 
 
         private string _searchText;

@@ -40,9 +40,16 @@
                             <GradientStop Color="#00FFFFFF" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.OpacityMask>
-                    <Grid HorizontalAlignment="Left" Margin="3,0,0,5" Height="24" VerticalAlignment="Bottom">
+                    <Grid HorizontalAlignment="Left" Margin="5,0,0,5" Height="24" VerticalAlignment="Bottom">
                         <Border CornerRadius="5" Background="#C01c1c1c">
                             <TextBlock Text="{Binding Physics, Converter={StaticResource PhysicsModeConverter}}" Foreground="{StaticResource ThemeColor}" FontSize="14" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+                <Border CornerRadius="0,10,10,0" Height="180" VerticalAlignment="Top">
+                    <Grid HorizontalAlignment="Right" Margin="3,5,5,5" Height="24" VerticalAlignment="Top">
+                        <Border CornerRadius="5" Background="#C01c1c1c">
+                            <TextBlock Text="{Binding Hits}" Foreground="#DDDDDD" FontSize="14" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         </Border>
                     </Grid>
                 </Border>
@@ -135,7 +142,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Weapon Icons -->
-                <Border Grid.Row="0" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                <Border Grid.Row="0" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,3,0" HorizontalAlignment="Right">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -167,7 +174,7 @@
                     </ItemsControl>
                 </Border>
                 <!-- Item Icons -->
-                <Border Grid.Row="1" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                <Border Grid.Row="1" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,3,0" HorizontalAlignment="Right">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -200,7 +207,7 @@
                 </Border>
 
                 <!-- Function Icons -->
-                <Border Grid.Row="2" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,0,0" HorizontalAlignment="Right">
+                <Border Grid.Row="2" CornerRadius="5" Background="#C01c1c1c" Padding="1" Margin="0,2,3,0" HorizontalAlignment="Right">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>

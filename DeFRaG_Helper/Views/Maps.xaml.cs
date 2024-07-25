@@ -1,23 +1,34 @@
 ﻿using DeFRaG_Helper.ViewModels;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace DeFRaG_Helper
+namespace DeFRaG_Helper.Views
 {
     /// <summary>
-    /// Interaction logic for Maps.xaml
+    /// Interaction logic for Maps2.xaml
     /// </summary>
+    
     public partial class Maps : Page
     {
-        private static Maps instance;
-        private ICollectionView mapsView;
-        public ICollectionView MapsView
-        {
-            get { return mapsView; }
-        }
 
+
+        //Amount of maps to load initially and on scroll
+        private int initialAmount = 20;
+        private int refreshAmount = 20;
+        private static Maps instance;
         public static Maps Instance
         {
             get
@@ -30,122 +41,119 @@ namespace DeFRaG_Helper
         public Maps()
         {
             InitializeComponent();
-            var _ = InitializeDataContextAsync(); // Discard the task since we can't await in the constructor
-                                                  //RefreshView();
-            this.Loaded += async (sender, e) => await InitializeDataContextAsync();
+            //MapsView.DataContext = this;
+            // this.DataContext = this; // If DisplayedMaps is a property of Maps2
+            //this.DataContext = MapViewModel.GetInstanceAsync().Result;
 
+            var _ = InitializeDataContextAsync();
+            this.Loaded += async (sender, e) =>
+            {
+                await InitializeDataContextAsync();
+                AttachScrollViewerScrollChanged();
+            };
+        }
+
+        private void AttachScrollViewerScrollChanged()
+        {
+            var scrollViewer = FindChildOfType<ScrollViewer>(MapsView); // Corrected to use the instance name
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
+            }
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+            var viewModel = this.DataContext as MapViewModel;
+            if (viewModel == null) return;
+
+            if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 2000) // Increased threshold to 200
+            {
+                // Load more maps
+                ///MessageHelper.ShowMessage("Loading more maps...");
+                LoadMoreMaps(viewModel);
+            }
+        }
+
+
+        private void LoadMoreMaps(MapViewModel viewModel)
+        {
+            var filteredMaps = viewModel.Maps.Where(map =>
+                (string.IsNullOrEmpty(viewModel.SearchText) || map.Name.Contains(viewModel.SearchText, StringComparison.OrdinalIgnoreCase)) &&
+                (!viewModel.ShowFavorites || map.IsFavorite == 1) &&
+                (!viewModel.ShowInstalled || map.IsInstalled == 1) &&
+                (!viewModel.ShowDownloaded || map.IsDownloaded == 1))
+                .OrderByDescending(map => map.Releasedate)
+                .ToList();
+
+            viewModel.LoadDisplayedMapsSubset(filteredMaps, viewModel.DisplayedMaps.Count, refreshAmount); // Load the next 20 maps
         }
         private async Task InitializeDataContextAsync()
         {
-            this.DataContext = await MapViewModel.GetInstanceAsync();
-            SetupFiltering();
-            
-        }
-        private void SetupFiltering()
-        {
-            mapsView = CollectionViewSource.GetDefaultView(((MapViewModel)this.DataContext).Maps);
-            mapsView.Filter = FilterMaps;
+            var viewModel = await MapViewModel.GetInstanceAsync();
+            this.DataContext = viewModel;
 
-            // Change sorting to descending to have the newest maps at the top
-            mapsView.SortDescriptions.Clear(); // It's good practice to clear existing sort descriptions first
-            mapsView.SortDescriptions.Add(new SortDescription("Releasedate", ListSortDirection.Descending));
+            // Load initial subset of maps
+            var filteredMaps = viewModel.Maps.Where(map =>
+                (string.IsNullOrEmpty(viewModel.SearchText) || map.Name.Contains(viewModel.SearchText, StringComparison.OrdinalIgnoreCase)) &&
+                (!viewModel.ShowFavorites || map.IsFavorite == 1) &&
+                (!viewModel.ShowInstalled || map.IsInstalled == 1) &&
+                (!viewModel.ShowDownloaded || map.IsDownloaded == 1))
+                .OrderByDescending(map => map.Releasedate)
+                .ToList();
 
-            // Subscribe to filter changes
-            chkFavorite.Checked += (s, e) => RefreshView();
-            chkFavorite.Unchecked += (s, e) => RefreshView();
-            chkInstalled.Checked += (s, e) => RefreshView();
-            chkInstalled.Unchecked += (s, e) => RefreshView();
-            chkDownloaded.Checked += (s, e) => RefreshView();
-            chkDownloaded.Unchecked += (s, e) => RefreshView();
-            searchBar.TextChanged += (s, e) => RefreshView();
-
-            RefreshView();
+            viewModel.LoadDisplayedMapsSubset(filteredMaps, 0, initialAmount); // Load the first 100 maps
+            MapsView.ItemsSource = viewModel.DisplayedMaps;
         }
 
-
-        private void RefreshView()
+        private void LoadDisplayedMapsSubset(int startIndex, int count)
         {
-            if (mapsView != null)
+            var viewModel = this.DataContext as MapViewModel;
+            if (viewModel == null) return;
+
+            for (int i = startIndex; i < Math.Min(startIndex + count, viewModel.Maps.Count); i++)
             {
-                mapsView.Refresh();
-                UpdateLblCount();
+                viewModel.DisplayedMaps.Add(viewModel.Maps[i]);
             }
+
         }
-        private void UpdateLblCount()
+
+        private void ListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // Assuming lblCount is the Label in your XAML that shows the count
-            lblCount.Content = mapsView.Cast<object>().Count().ToString();
-        }
-        //when maps is fully loaded
-        private void Maps_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (mapsView != null)
+            var listView = sender as ListView;
+            if (listView != null)
             {
-                lblCount.Content = mapsView.Cast<object>().Count().ToString();
+                var wrapPanel = FindChildOfType<WrapPanel>(listView);
+                if (wrapPanel != null)
+                {
+                    // Assuming a margin of 5 units on the right as specified in the XAML for the ListView
+                    var newMaxWidth = listView.ActualWidth - 5; // Adjust this value based on actual margins/padding
+                    wrapPanel.MaxWidth = newMaxWidth;
+                }
             }
         }
 
-
-        private bool FilterMaps(object item)
+        private T? FindChildOfType<T>(DependencyObject depObj) where T : DependencyObject
         {
-            if (item is not Map map) return false;
+            if (depObj == null) return null;
 
-            bool isFavoriteChecked = chkFavorite.IsChecked ?? false;
-            bool isInstalledChecked = chkInstalled.IsChecked ?? false;
-            bool isDownloadedChecked = chkDownloaded.IsChecked ?? false;
-            // Ensure searchBar is not null and handle case where searchBar.Text is null
-            string searchText = searchBar?.Text?.ToLower() ?? string.Empty;
-
-            bool matchesFavorite = !isFavoriteChecked || (map.IsFavorite == 1);
-            bool matchesInstalled = !isInstalledChecked || (map.IsInstalled == 1);
-            bool matchesDownloaded = !isDownloadedChecked || (map.IsDownloaded == 1);
-
-            // Safely check if the map's properties contain the search text, accounting for potential null values
-            bool matchesSearchText = string.IsNullOrEmpty(searchText) || searchText == "filter..." || // Ignore if searchText is default or empty
-                                     (map.Name?.ToLower().Contains(searchText) ?? false) ||
-                                     (map.Mapname?.ToLower().Contains(searchText) ?? false) ||
-                                     (map.Filename?.ToLower().Contains(searchText) ?? false) ||
-                                     (map.Author?.ToLower().Contains(searchText) ?? false);
-
-            return matchesFavorite && matchesInstalled && matchesDownloaded && matchesSearchText;
-        }
-
-
-        private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            var checkBox = sender as CheckBox;
-            var map = checkBox.DataContext as Map;
-            if (map != null)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
             {
-                map.IsFavorite = 1;
-                var mapViewModel = await MapViewModel.GetInstanceAsync();
+                var child = VisualTreeHelper.GetChild(depObj, i);
+                if (child != null && child is T)
+                {
+                    return (T)child;
+                }
 
-                await mapViewModel.UpdateFavoriteStateAsync(map);
-
+                var childOfChild = FindChildOfType<T>(child);
+                if (childOfChild != null)
+                    return childOfChild;
             }
+            return null;
         }
 
-        private async void FavoriteCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            var checkBox = sender as CheckBox;
-            var map = checkBox.DataContext as Map;
-            if (map != null)
-            {
-                map.IsFavorite = 0;
-                var mapViewModel = await MapViewModel.GetInstanceAsync();
-
-                await mapViewModel.UpdateFavoriteStateAsync(map);
-            }
-        }
-
-        private void SearchBox_GotFocus (object sender, RoutedEventArgs e)
-        {
-            if (searchBar.Text == "Filter...")
-            {
-                searchBar.Text = "";
-            }
 
 
-        }
     }
 }

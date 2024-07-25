@@ -29,6 +29,8 @@
             <local:ServerViewModel x:Key="ServerViewModel" />
             <converters:ServerNameToTextBlockConverter x:Key="ServerNameToTextBlockConverter"/>
             <converters:PlayerCountConverter x:Key="PlayerCountConverter"/>
+            <converters:PlayerCountConverterSimple x:Key="PlayerCountConverterSimple"/>
+
             <converters:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
             <converters:CombinedDataContextConverter x:Key="CombinedDataContextConverter"/>
             <converters:GreaterThanOrEqualConverter x:Key="GreaterThanOrEqualConverter"/>

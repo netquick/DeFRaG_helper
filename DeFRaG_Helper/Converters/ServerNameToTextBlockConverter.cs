@@ -16,7 +16,7 @@ namespace DeFRaG_Helper.Converters
                 var segments = ParseQuakeColorCodes(serverName); // Call the static method
                 var textBlock = new TextBlock
                 {
-                    TextAlignment = TextAlignment.Center, // Center the text
+                    TextAlignment = TextAlignment.Left, // Center the text
                     TextWrapping = TextWrapping.Wrap // Ensure text wrapping is enabled
                 };
                 foreach (var segment in segments)
@@ -38,7 +38,7 @@ namespace DeFRaG_Helper.Converters
             var segments = new List<(string Text, SolidColorBrush Color)>();
             var colors = new Dictionary<char, SolidColorBrush>
     {
-        { '0', Brushes.Black },
+        { '0', Brushes.Gray },
         { '1', Brushes.Red },
         { '2', Brushes.Green },
         { '3', Brushes.Yellow },

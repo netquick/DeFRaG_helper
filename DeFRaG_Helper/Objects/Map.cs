@@ -597,7 +597,7 @@ namespace DeFRaG_Helper
                 {"Button", ("Icons/Functions/button.svg", "Red") },
                 {"Teleporter/Portal", ("Icons/Functions/tele.svg", "Blue") },
                 {"Jumppad/Launchramp", ("Icons/Functions/push.svg", "Yellow") },
-                {"Moving object/platform", ("Icons/Functions/moving.svg", "Gray") },
+                {"Moving object/platform", ("Icons/Functions/moving2.svg", "Gray") },
                 {"Shooter Grenade", ("Icons/Functions/shootergl.svg", "Green") },
                 {"Shooter Plasma", ("Icons/Functions/shooterpg.svg", "Purple") },
                 {"Shooter Rocket", ("Icons/Functions/shooterrl.svg", "Red") },
