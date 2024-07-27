@@ -56,7 +56,7 @@
                     
                     <Image Source="/Images/filmstrip.png" Stretch="UniformToFill">
                         <Image.Clip>
-                            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,160,160"/>
+                            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,150,150"/>
                         </Image.Clip>
                     </Image>
                 </Grid>
