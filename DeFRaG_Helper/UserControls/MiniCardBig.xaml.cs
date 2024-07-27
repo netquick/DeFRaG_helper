@@ -17,18 +17,17 @@ using System.Windows.Shapes;
 namespace DeFRaG_Helper.UserControls
 {
     /// <summary>
-    /// Interaction logic for HighlightCardBig.xaml
+    /// Interaction logic for MiniCardBig.xaml
     /// </summary>
-    public partial class HighlightCardBig : UserControl
+    public partial class MiniCardBig : UserControl
     {
-        public HighlightCardBig()
+        public MiniCardBig()
         {
             InitializeComponent();
         }
 
-
         public static readonly DependencyProperty MapProperty = DependencyProperty.Register(
-       "Map", typeof(Map), typeof(HighlightCardBig), new PropertyMetadata(null, OnMapPropertyChanged));
+"Map", typeof(Map), typeof(MiniCardBig), new PropertyMetadata(null, OnMapPropertyChanged));
 
         public Map Map
         {
@@ -38,12 +37,13 @@ namespace DeFRaG_Helper.UserControls
 
         private static void OnMapPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var control = d as HighlightCardBig;
+            var control = d as MiniCardBig;
             if (control != null)
             {
                 control.DataContext = e.NewValue;
             }
         }
+
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -51,19 +51,33 @@ namespace DeFRaG_Helper.UserControls
                 // Prevent event from bubbling up to parent elements
                 e.Handled = true;
 
+                // Access the Map property from the DataContext
+                var map = this.DataContext as Map;
+                if (map == null)
+                {
+                    MessageBox.Show("Map is not set.");
+                    return;
+                }
+
                 // Call your connection logic here
-                MapViewModel.GetInstanceAsync().Result.SelectedMap = Map;
-                PlayMap();
-
+                MapViewModel.GetInstanceAsync().Result.SelectedMap = map;
+                PlayMap(map);
             }
-
         }
-        private void PlayMap()
+
+        private void PlayMap(Map map)
         {
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            int physicsSetting = mainWindow.GetPhysicsSetting(); // method in MainWindow
-            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(Map.Mapname)}");
 
+            int physicsSetting = mainWindow.GetPhysicsSetting(); // method in MainWindow
+
+            if (string.IsNullOrEmpty(AppConfig.GameDirectoryPath) || string.IsNullOrEmpty(map.Mapname))
+            {
+                MessageBox.Show("Invalid configuration or map name.");
+                return;
+            }
+
+            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(map.Mapname)}");
         }
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -91,7 +105,20 @@ namespace DeFRaG_Helper.UserControls
                 await mapViewModel.UpdateFavoriteStateAsync(map);
             }
         }
+        private async void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // Cast the DataContext to a Map object
+            var map = this.DataContext as Map;
+            if (map != null)
+            {
+                // Assuming you have a way to access the MapViewModel instance
+                var viewModel = MapViewModel.GetInstanceAsync().Result; // Note: Using .Result for simplicity; consider using async/await.
+                viewModel.SelectedMap = map;
+                await viewModel.UpdateConfigurationAsync(map);
 
+
+            }
+        }
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {
             // Change to a slightly lighter or darker background color on hover

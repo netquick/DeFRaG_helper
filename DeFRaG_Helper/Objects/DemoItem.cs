@@ -1,5 +1,6 @@
-﻿using System.Text.RegularExpressions;
-
+﻿using DeFRaG_Helper.Views;
+using System.Text.RegularExpressions;
+using System.IO;
 namespace DeFRaG_Helper
 {
     public class DemoItem
@@ -85,7 +86,44 @@ namespace DeFRaG_Helper
             return $"{minutes:00}:{seconds:00}.{milliseconds:000}";
         }
 
+        public string ImagePath
+        {
+            get
+            {
+                return GetImagePath(Mapname);
+            }
+        }
+        public string GetImagePath(string mapName)
+        {
+            if (!string.IsNullOrEmpty(mapName))
+            {
+                // Replace .bsp extension with .jpg
+                string imageName = mapName.EndsWith(".bsp", StringComparison.OrdinalIgnoreCase)
+                    ? mapName.Substring(0, mapName.Length - 4) + ".jpg"
+                    : mapName + ".jpg";
 
+                // Get the AppData directory and append your application's folder
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string basePath = Path.Combine(appDataPath, "DeFRaG_Helper");
+
+                // List of folders to check for the image
+                string[] folders = { "Screenshots", "Levelshots", "Topviews" };
+
+                foreach (var folder in folders)
+                {
+                    string imagePath = Path.Combine(basePath, $"PreviewImages/{folder}/{imageName}");
+                    if (File.Exists(imagePath))
+                    {
+                        return $"file:///{imagePath}";
+                    }
+                }
+
+                // If the image is not found in any folder, return the placeholder image path
+                string placeholderPath = Path.Combine(basePath, "PreviewImages/placeholder.png");
+                return $"file:///{placeholderPath}";
+            }
+            return null;
+        }
 
 
 

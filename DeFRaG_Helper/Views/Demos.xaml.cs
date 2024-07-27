@@ -34,6 +34,8 @@ namespace DeFRaG_Helper
                 return instance;
             }
         }
+        private MapViewModel _viewModel;
+        private Map _selectedDemoItem;
         public Demos()
         {
             InitializeComponent();
@@ -52,7 +54,65 @@ namespace DeFRaG_Helper
             var mapHistoryManager = MapHistoryManager.Instance;;
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
             mapViewModel.PropertyChanged += MapViewModel_PropertyChanged;
+            _viewModel = (MapViewModel)DataContext;
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+        public Map SelectedDemoItem
+        {
+            get => _selectedDemoItem;
+            set
+            {
+                if (_selectedDemoItem != value)
+                {
+                    _selectedDemoItem = value;
+                    OnPropertyChanged(nameof(SelectedDemoItem));
+                    // Update the global SelectedMap when the local selection changes
+                    _viewModel.SelectedMap = _selectedDemoItem;
 
+                    // Ensure the selected map is in the list
+                    EnsureSelectedMapInList(_selectedDemoItem);
+                }
+            }
+        }
+        private void EnsureSelectedMapInList(Map selectedMap)
+        {
+            if (selectedMap != null && !localMaps.Contains(selectedMap))
+            {
+                localMaps.Add(selectedMap);
+                RefreshLocalView();
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MapViewModel.SelectedMap))
+            {
+                // Update the local selection when the global SelectedMap changes
+                SelectedDemoItem = _viewModel.SelectedMap;
+
+                // Ensure the selected map is in the list
+                EnsureSelectedMapInList(_viewModel.SelectedMap);
+            }
+        }
+        private void MapViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MapViewModel.SelectedMap))
+            {
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null && mainWindow.LastNavigatedPage == this)
+                {
+                    LoadDataAsync(); // Call your method to load the demos based on the new selected map.
+                }
+            }
+        }
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
         {
@@ -62,13 +122,7 @@ namespace DeFRaG_Helper
                 RefreshLocalView();
             });
         }
-        private void MapViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MapViewModel.SelectedMap))
-            {
-                LoadDataAsync(); // Call your method to load the demos based on the new selected map.
-            }
-        }
+
         private async Task SynchronizeLocalMapsAsync()
         {
             localMaps.Clear();
@@ -91,6 +145,8 @@ namespace DeFRaG_Helper
             localView.Filter = FilterMaps; // Apply your local filtering logic here
                                            // Apply any sorting or additional transformations here
             localView.Refresh();
+            lvDemos.SelectedItem = SelectedDemoItem;
+
         }
         private bool FilterMaps(object item)
         {
@@ -141,23 +197,18 @@ namespace DeFRaG_Helper
                 mapViewModel.MapsBatchLoaded += MapViewModel_MapsBatchLoaded;
                 // Create a new CollectionView for this page
                 lastPlayedMapsView = new ListCollectionView(mapViewModel.Maps.ToList());
-                //lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
-                mapHistoryManager = MapHistoryManager.Instance;;
+                mapHistoryManager = MapHistoryManager.Instance;
 
                 // Load last played map IDs and reverse for sorting
                 try
                 {
-                    //lastPlayedMapIds = mapHistoryManagerLazy.Value.GetLastPlayedMaps();
                     lastPlayedMapIds = await mapHistoryManager.GetLastPlayedMapsFromDbAsync();
-                    //lastPlayedMapIds.Reverse();
                 }
                 catch (Exception ex)
                 {
                     MessageHelper.Log(ex.Message);
                     throw;
                 }
-
-
 
                 if (lastPlayedMapsView != null) // Check for null
                 {
@@ -169,12 +220,16 @@ namespace DeFRaG_Helper
                 this.DataContext = this; // Now 'this' includes both map and server data contexts
 
                 lvDemos.ItemsSource = lastPlayedMapsView;
+
+                // Ensure the selected map is in the list
+                EnsureSelectedMapInList(mapViewModel.SelectedMap);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
+
 
 
         //Method to load the data for the selected map
@@ -184,8 +239,10 @@ namespace DeFRaG_Helper
             var selectedMap = viewModel.SelectedMap;
             if (selectedMap != null)
             {
-                //Mapname without extension
+                // Ensure the selected map is in the list
+                EnsureSelectedMapInList(selectedMap);
 
+                // Mapname without extension
                 var demoLink = DemoParser.GetDemoLink(System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname));
                 var demoItems = await DemoParser.GetDemoLinksAsync(demoLink);
                 foreach (var item in demoItems)
@@ -196,9 +253,9 @@ namespace DeFRaG_Helper
                 icDemos.ItemsSource = sortedDemoItems; // Use the sorted list
 
                 txtMapSearch.Text = System.IO.Path.GetFileNameWithoutExtension(selectedMap.Mapname);
-
             }
         }
+
 
         //method to load the demo data
         private async void LoadDemoDataAsync()

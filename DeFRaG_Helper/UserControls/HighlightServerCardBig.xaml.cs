@@ -81,7 +81,7 @@ namespace DeFRaG_Helper.UserControls
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
         {
             // Revert to the original background color
-            MainBorder.Background = new SolidColorBrush(Color.FromRgb(45, 45, 45)); // Example color
+            MainBorder.Background = new SolidColorBrush(Color.FromRgb(17, 17, 17)); // Example color
         }
     }
 }

@@ -22,6 +22,10 @@ namespace DeFRaG_Helper
         private System.Timers.Timer hideProgressBarTimer;
         private bool isFirstNavigationToMaps = true;
         private Page lastNavigatedPage = null;
+        public Page LastNavigatedPage
+        {
+            get => lastNavigatedPage;
+        }
 
 
         [DllImport("dwmapi.dll")]
@@ -341,7 +345,7 @@ namespace DeFRaG_Helper
         private Server serverPage = new Server();
 
         //Method to handle navigation list view selection changed
-        private void NavigationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void NavigationListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (NavigationListView.SelectedItem is NavigationItem selectedItem)
             {
@@ -368,7 +372,9 @@ namespace DeFRaG_Helper
                         navigateToPage = serverPage;
                         break;
                     case "Demos":
-                            navigateToPage = demosPage; 
+                        // Initialize the Demos page with the appropriate DataContext
+                        demosPage.DataContext = await GetSelectedMapAsync(); // Await the async method
+                        navigateToPage = demosPage;
                         break;
                     case "Settings":
                         navigateToPage = settingsPage;
@@ -382,6 +388,11 @@ namespace DeFRaG_Helper
                     lastNavigatedPage = navigateToPage; // Update the last navigated page
                 }
             }
+        }
+        private async Task<Map> GetSelectedMapAsync()
+        {
+            var mapViewModel = await MapViewModel.GetInstanceAsync();
+            return mapViewModel.SelectedMap;
         }
 
 

@@ -28,7 +28,7 @@
                 </Grid>
             </Border>
             <Border Grid.Row="1" Height="150" Background="#222" Margin="10" CornerRadius="10" >
-                <ListView x:Name="lvDemos" ItemsSource="{Binding DemoItems}" Background="Transparent" BorderBrush="Transparent">
+                <ListView x:Name="lvDemos" ItemsSource="{Binding DemoItems}" Background="Transparent" BorderBrush="Transparent" SelectedItem="{Binding SelectedDemoItem, Mode=TwoWay}">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -37,7 +37,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <!-- Your item template here -->
-                            <uc:MiniView Width="120" Height="120" DataContext="{Binding}" />
+                            <uc:MiniCardBig Width="120" Height="120" DataContext="{Binding}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -47,14 +47,20 @@
             <Border Grid.Row="2" Margin="0" Background="#222222" CornerRadius="10">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,5,0">
                     <ItemsControl Name="icDemos" ItemsSource="{Binding DemoItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <uc:DemoCard DataContext="{Binding}" />
+                                <uc:DemoCardBig DataContext="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
             </Border>
+
         </Grid>
     </Border>
 </Page>

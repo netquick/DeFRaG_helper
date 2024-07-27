@@ -1,21 +1,30 @@
 ﻿using DeFRaG_Helper.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace DeFRaG_Helper.UserControls
 {
     /// <summary>
-    /// Interaction logic for DemoCard.xaml
+    /// Interaction logic for DemoCardBig.xaml
     /// </summary>
-    public partial class DemoCard : UserControl
+    public partial class DemoCardBig : UserControl
     {
-        public DemoCard()
+        public DemoCardBig()
         {
             InitializeComponent();
         }
-
 
 
         private async void DemoCard_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -87,7 +96,8 @@ namespace DeFRaG_Helper.UserControls
         private void UserControl_MouseLeave(object sender, MouseEventArgs e)
         {
             // Revert to the original background color
-            MainBorder.Background = new SolidColorBrush(Color.FromRgb(45, 45, 45)); // Example color
+            MainBorder.Background = new SolidColorBrush(Color.FromRgb(17, 17, 17)); // Example color
+
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Input;
 
@@ -171,19 +172,39 @@ namespace DeFRaG_Helper.ViewModels
             get => _selectedMap;
             set
             {
-                _selectedMap = value;
-                OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
-
-                if (value != null)
+                if (_selectedMap != value)
                 {
-                    SimpleLogger.Log($"Selected map: {value.Name}");
-                }
-                else
-                {
-                    SimpleLogger.Log("Selected map is null.");
+                    _selectedMap = value;
+                    OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
+                    try
+                    {
+                        if (value != null)
+                        {
+                            Debug.WriteLine($"Selected map: {value.Name}");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Selected map is null.");
+                        }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        // Log the exception details
+                        Debug.WriteLine($"Request error: {ex.Message}");
+                        Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        // Optionally, handle the exception as needed
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log any other exceptions
+                        Debug.WriteLine($"Unexpected error: {ex.Message}");
+                        Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                    }
                 }
             }
         }
+
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

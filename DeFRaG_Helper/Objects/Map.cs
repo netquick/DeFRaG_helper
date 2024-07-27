@@ -523,7 +523,7 @@ namespace DeFRaG_Helper
                 {"Shotgun", ("Icons/Weapons/iconw_shotgun.svg", "Yellow") },
                 {"Lightning Gun", ("Icons/Weapons/iconw_lightning.svg", "Orange") },
                 {"Big fucking gun", ("Icons/Weapons/iconw_bfg.svg", "Black") },
-                {"Gauntlet", ("Icons/Wepons/iconw_gauntlet.svg", "Cyan") },
+                {"Gauntlet", ("Icons/Weapons/iconw_gauntlet.svg", "Cyan") },
                 {"Grappling hook", ("Icons/Weapons/iconw_grapple.svg", "Green") },
                 {"Grenade Launcher", ("Icons/Weapons/iconw_grenade.svg", "Green") },
                 {"Machinegun", ("Icons/Weapons/iconw_machinegun", "yellow") },
