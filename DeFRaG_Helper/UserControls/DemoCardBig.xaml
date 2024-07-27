@@ -53,6 +53,7 @@
                     </Border>
 
                     <!-- New Overlay Image with Clipping -->
+                    
                     <Image Source="/Images/filmstrip.png" Stretch="UniformToFill">
                         <Image.Clip>
                             <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,160,160"/>
@@ -63,7 +64,7 @@
                 <Border CornerRadius="0,10,10,0" VerticalAlignment="Top">
                     <Grid HorizontalAlignment="Right" Margin="0,20,4,5" VerticalAlignment="Top">
                         <Border CornerRadius="5" Background="#C01c1c1c">
-                            <TextBlock Text="{Binding Physics}" Foreground="#DDDDDD" FontSize="10" Margin="5,0,5,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Physics}" Foreground="#DDDDDD" FontSize="12" Margin="5,0,5,0" VerticalAlignment="Center"/>
                         </Border>
                     </Grid>
                 </Border>
