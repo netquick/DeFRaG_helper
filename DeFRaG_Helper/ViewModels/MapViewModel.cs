@@ -139,7 +139,10 @@ namespace DeFRaG_Helper.ViewModels
             await Task.Run(() =>
             {
                 var filteredMaps = Maps.Where(map =>
-                    (string.IsNullOrEmpty(SearchText) || map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+                    (string.IsNullOrEmpty(SearchText) ||
+                     map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                     map.Mapname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                     map.Filename.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
                     (!ShowFavorites || map.IsFavorite == 1) &&
                     (!ShowInstalled || map.IsInstalled == 1) &&
                     (!ShowDownloaded || map.IsDownloaded == 1))
@@ -154,6 +157,7 @@ namespace DeFRaG_Helper.ViewModels
                 });
             });
         }
+
 
 
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
