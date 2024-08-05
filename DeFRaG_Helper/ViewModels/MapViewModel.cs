@@ -151,7 +151,7 @@ namespace DeFRaG_Helper.ViewModels
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    DisplayedMaps.Clear();
+                    DisplayedMaps.Clear(); // Clear the collection before adding new items
                     LoadDisplayedMapsSubset(filteredMaps, 0, 100);
                     FilteredMapsCount = filteredMaps.Count; // Update the count with the total filtered maps count
                 });
@@ -160,13 +160,18 @@ namespace DeFRaG_Helper.ViewModels
 
 
 
+
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
         {
             for (int i = startIndex; i < Math.Min(startIndex + count, sourceMaps.Count); i++)
             {
-                DisplayedMaps.Add(sourceMaps[i]);
+                if (!DisplayedMaps.Any(m => m.Id == sourceMaps[i].Id))
+                {
+                    DisplayedMaps.Add(sourceMaps[i]);
+                }
             }
         }
+
 
 
 

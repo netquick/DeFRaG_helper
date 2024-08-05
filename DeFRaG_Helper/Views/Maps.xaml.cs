@@ -29,6 +29,7 @@ namespace DeFRaG_Helper.Views
         private int initialAmount = 20;
         private int refreshAmount = 20;
         private static Maps instance;
+        private bool dataLoaded = false;
         public static Maps Instance
         {
             get
@@ -91,6 +92,8 @@ namespace DeFRaG_Helper.Views
         }
         private async Task InitializeDataContextAsync()
         {
+            if (dataLoaded) return; // Ensure data is loaded only once
+
             var viewModel = await MapViewModel.GetInstanceAsync();
             this.DataContext = viewModel;
 
@@ -103,8 +106,10 @@ namespace DeFRaG_Helper.Views
                 .OrderByDescending(map => map.Releasedate)
                 .ToList();
 
-            viewModel.LoadDisplayedMapsSubset(filteredMaps, 0, initialAmount); // Load the first 100 maps
+            viewModel.LoadDisplayedMapsSubset(filteredMaps, 0, initialAmount); // Load the first 20 maps
             MapsView.ItemsSource = viewModel.DisplayedMaps;
+
+            dataLoaded = true; // Set the flag to true after loading data
         }
 
         private void LoadDisplayedMapsSubset(int startIndex, int count)

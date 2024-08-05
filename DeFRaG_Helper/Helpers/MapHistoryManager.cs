@@ -58,12 +58,15 @@ namespace DeFRaG_Helper
         {
             List<int> lastPlayedMaps = new List<int>();
 
+            // Read the limit from AppConfig
+            int limit = AppConfig.CountHistory ?? 10; // Default to 10 if not set
+
             // SQL command to select the MapId column from the LastPlayedMaps table.
-            string selectCommandText = @"
+            string selectCommandText = $@"
                 SELECT MapId
                 FROM LastPlayedMaps
                 ORDER BY PlayedDateTime DESC
-                LIMIT 10;
+                LIMIT {limit};
             ";
 
             // Enqueue the command to be executed on the database connection.
@@ -87,17 +90,19 @@ namespace DeFRaG_Helper
 
             return lastPlayedMaps;
         }
+
         public async Task<List<int>> GetLastPlayedRandomFromDbAsync()
         {
             List<int> lastPlayedMaps = new List<int>();
-
+            // Read the limit from AppConfig
+            int limit = AppConfig.CountHistory ?? 10; // Default to 10 if not set
             // SQL command to select the MapId column from the LastPlayedMaps table.
-            string selectCommandText = @"
+            string selectCommandText = $@"
                 SELECT MapId
                 FROM LastPlayedMaps
                 WHERE Mode = 'Random'
                 ORDER BY PlayedDateTime DESC
-                LIMIT 10;
+                LIMIT {limit};
             ";
 
             // Enqueue the command to be executed on the database connection.

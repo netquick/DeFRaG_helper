@@ -5,12 +5,10 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Threading.Tasks;
 
 namespace DeFRaG_Helper
 {
-    /// <summary>
-    /// Interaction logic for Start.xaml
-    /// </summary>
     public partial class Start : Page
     {
         private ICollectionView? lastPlayedMapsView;
@@ -21,6 +19,10 @@ namespace DeFRaG_Helper
 
         private static Start? instance;
         private List<int> lastPlayedMapIds = new List<int>();
+
+        private bool isBatchLoadingComplete = false;
+
+
         public static Start Instance
         {
             get
@@ -50,58 +52,10 @@ namespace DeFRaG_Helper
                     mainWindow.customDropDownButton.MapPlayed += (s, e) => RefreshMapListAsync();
                 }
             };
-            var mapHistoryManager = MapHistoryManager.Instance;;
+            mapHistoryManager = MapHistoryManager.Instance;
             MapHistoryManager.MapHistoryUpdated += async () => await RefreshMapListAsync();
-            // Set DataContext to MapViewModel instance
-            //this.DataContext = MapViewModel.GetInstanceAsync().Result;
         }
 
-        // Place this method in Start.xaml.cs
-        private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(async () =>
-            {
-                await SynchronizeLocalMapsAsync();
-                RefreshLocalView();
-            });
-        }
-
-
-        private async Task SynchronizeLocalMapsAsync()
-        {
-            var mapViewModel = await MapViewModel.GetInstanceAsync();
-            localMaps.Clear();
-            foreach (var map in mapViewModel.Maps)
-            {
-                localMaps.Add(map);
-            }
-            // Reinitialize lastPlayedMapsView with the updated localMaps
-            lastPlayedMapsView = new ListCollectionView(localMaps.ToList());
-            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sorting
-            lastPlayedMapsView.Filter = FilterMaps; // Reapply filtering
-            lastPlayedMapsView.Refresh(); // Refresh the view
-
-            // Ensure the UI is bound to the updated lastPlayedMapsView
-            ItemsControlMaps.ItemsSource = lastPlayedMapsView;
-        }
-
-        // Place this method in Start.xaml.cs
-        private void RefreshLocalView()
-        {
-            var localView = CollectionViewSource.GetDefaultView(localMaps);
-            localView.Filter = FilterMaps; // Apply your local filtering logic here
-                                           // Apply any sorting or additional transformations here
-            localView.Refresh();
-        }
-        private void OnServerListUpdated(object sender, EventArgs e)
-        {
-            // Code to refresh the server view
-            RefreshServerView();
-        }
-        private void RefreshServerView()
-        {
-            ActiveServersView?.Refresh();
-        }
         private async Task InitializeAsync()
         {
             try
@@ -112,34 +66,28 @@ namespace DeFRaG_Helper
 
                 var mapViewModel = await MapViewModel.GetInstanceAsync();
                 mapViewModel.MapsBatchLoaded += MapViewModel_MapsBatchLoaded;
-                // Create a new CollectionView for this page
+                mapViewModel.DataLoaded += MapViewModel_DataLoaded; // Subscribe to the DataLoaded event
                 lastPlayedMapsView = new ListCollectionView(mapViewModel.Maps.ToList());
-                //lastPlayedMapsView = CollectionViewSource.GetDefaultView(mapViewModel.Maps);
-                mapHistoryManager = MapHistoryManager.Instance;;
+                mapHistoryManager = MapHistoryManager.Instance;
 
-                // Load last played map IDs and reverse for sorting
                 try
                 {
-                    //lastPlayedMapIds = mapHistoryManagerLazy.Value.GetLastPlayedMaps();
                     lastPlayedMapIds = await mapHistoryManager.GetLastPlayedRandomFromDbAsync();
-                    //lastPlayedMapIds.Reverse();
                 }
                 catch (Exception ex)
                 {
                     MessageHelper.Log(ex.Message);
                     throw;
                 }
-       
 
-
-                if (lastPlayedMapsView != null) // Check for null
+                if (lastPlayedMapsView != null)
                 {
-                    lastPlayedMapsView.Filter = FilterMaps; // Ensure this is uncommented
+                    lastPlayedMapsView.Filter = FilterMaps;
                     ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds);
-                    lastPlayedMapsView.Refresh(); // Refresh the view to apply filter and sort
+                    lastPlayedMapsView.Refresh();
                 }
 
-                this.DataContext = this; // Now 'this' includes both map and server data contexts
+                this.DataContext = this;
 
                 ItemsControlMaps.ItemsSource = lastPlayedMapsView;
                 ItemsControlServer.ItemsSource = ActiveServersView;
@@ -149,62 +97,92 @@ namespace DeFRaG_Helper
                 Console.WriteLine(ex.Message);
             }
         }
+        private void MapViewModel_DataLoaded(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                await SynchronizeLocalMapsAsync();
+                RefreshLocalView();
+            });
+        }
 
+        private void MapViewModel_MapsBatchLoaded(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                //Freezes UI when SynchronizeLocalMapsAsync is called
 
+                //await SynchronizeLocalMapsAsync();
+                RefreshLocalView();
+            });
+        }
 
+        private async Task SynchronizeLocalMapsAsync()
+        {
+            var mapViewModel = await MapViewModel.GetInstanceAsync();
+            localMaps.Clear();
+            foreach (var map in mapViewModel.Maps)
+            {
+                localMaps.Add(map);
+            }
+            lastPlayedMapsView = new ListCollectionView(localMaps.ToList());
+            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds);
+            lastPlayedMapsView.Filter = FilterMaps;
+            lastPlayedMapsView.Refresh();
 
+            ItemsControlMaps.ItemsSource = lastPlayedMapsView;
+        }
+
+        private void RefreshLocalView()
+        {
+            var localView = CollectionViewSource.GetDefaultView(localMaps);
+            localView.Filter = FilterMaps;
+            localView.Refresh();
+        }
+
+        private void OnServerListUpdated(object sender, EventArgs e)
+        {
+            RefreshServerView();
+        }
+
+        private void RefreshServerView()
+        {
+            ActiveServersView?.Refresh();
+        }
 
         private void ApplyCustomSort(ICollectionView collectionView, List<int> sortOrder)
         {
-            // Assuming your Map model has an Id property
             var customSort = new CustomSorter(sortOrder);
             if (collectionView is ListCollectionView listCollectionView)
             {
                 listCollectionView.CustomSort = customSort;
             }
         }
-        // Filter predicate method
-        private bool ServerHasPlayers(object item)
-        {
-            if (item is ServerNode server) // Change from ServerViewModel to ServerNode
-            {
-                return server.CurrentPlayers > 0;
-            }
-            return false;
-        }
 
         private bool FilterMaps(object item)
         {
             if (item is Map mapItem)
             {
-                // Return true if the map's ID is in the list of last played map IDs
                 return lastPlayedMapIds.Contains(mapItem.Id);
             }
             return false;
         }
 
-
-
-
-        // Call this method to refresh the view when your filter criteria change
         private void RefreshFilter()
         {
             lastPlayedMapsView?.Refresh();
         }
+
         public async Task RefreshMapListAsync()
         {
-            mapHistoryManager = MapHistoryManager.Instance;;
+            mapHistoryManager = MapHistoryManager.Instance;
 
             lastPlayedMapIds = await mapHistoryManager.GetLastPlayedRandomFromDbAsync();
-            //lastPlayedMapIds.Reverse(); // Ensure the list is reversed
-
-            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds); // Reapply custom sort
-            RefreshFilter(); // Refresh the view
+            ApplyCustomSort(lastPlayedMapsView, lastPlayedMapIds);
+            RefreshFilter();
         }
-
-
-
     }
+
     class CustomSorter : IComparer
     {
         private readonly List<int> sortOrder;
@@ -219,16 +197,15 @@ namespace DeFRaG_Helper
             var mapX = x as Map;
             var mapY = y as Map;
 
-            if (mapX == null || mapY == null) return 0; // Or handle null comparison logic as needed
+            if (mapX == null || mapY == null) return 0;
 
             int indexX = sortOrder.IndexOf(mapX.Id);
             int indexY = sortOrder.IndexOf(mapY.Id);
 
-            if (indexX == -1) indexX = int.MaxValue; // Not found items go to the end
-            if (indexY == -1) indexY = int.MaxValue; // Not found items go to the end
+            if (indexX == -1) indexX = int.MaxValue;
+            if (indexY == -1) indexY = int.MaxValue;
 
             return indexX.CompareTo(indexY);
         }
     }
-
 }
