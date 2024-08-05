@@ -29,11 +29,14 @@ namespace DeFRaG_Helper.ViewModels
         private static bool isInitialized = false;
         public event PropertyChangedEventHandler PropertyChanged;
 
-     
+        private HashSet<int> addedMapIds; // Field to track added map IDs
+
 
         private MapViewModel()
         {
             Maps = new ObservableCollection<Map>();
+            DisplayedMaps = new ObservableCollection<Map>();
+            addedMapIds = new HashSet<int>(); // Initialize the set
             FilteredMapsCount = Maps.Count; // Initialize with the total count
 
 
@@ -149,28 +152,31 @@ namespace DeFRaG_Helper.ViewModels
                     .OrderByDescending(map => map.Releasedate)
                     .ToList();
 
+                // Use a HashSet to ensure unique maps
+                var uniqueFilteredMaps = new HashSet<Map>(filteredMaps, new MapComparer());
+
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     DisplayedMaps.Clear(); // Clear the collection before adding new items
-                    LoadDisplayedMapsSubset(filteredMaps, 0, 100);
-                    FilteredMapsCount = filteredMaps.Count; // Update the count with the total filtered maps count
+                    addedMapIds.Clear(); // Clear the set to start fresh
+                    LoadDisplayedMapsSubset(uniqueFilteredMaps.ToList(), 0, 100);
+                    FilteredMapsCount = uniqueFilteredMaps.Count; // Update the count with the total unique filtered maps count
                 });
             });
         }
-
-
-
 
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
         {
             for (int i = startIndex; i < Math.Min(startIndex + count, sourceMaps.Count); i++)
             {
-                if (!DisplayedMaps.Any(m => m.Id == sourceMaps[i].Id))
+                if (!addedMapIds.Contains(sourceMaps[i].Id))
                 {
                     DisplayedMaps.Add(sourceMaps[i]);
+                    addedMapIds.Add(sourceMaps[i].Id);
                 }
             }
         }
+
 
 
 
@@ -696,5 +702,22 @@ namespace DeFRaG_Helper.ViewModels
             // Notify UI of property changes
             OnPropertyChanged(nameof(Maps));
         }   
+    }
+
+    // MapComparer class to ensure uniqueness based on map ID
+    public class MapComparer : IEqualityComparer<Map>
+    {
+        public bool Equals(Map x, Map y)
+        {
+            if (x == null || y == null)
+                return false;
+
+            return x.Id == y.Id; // Assuming Id is the unique identifier for Map
+        }
+
+        public int GetHashCode(Map obj)
+        {
+            return obj.Id.GetHashCode();
+        }
     }
 }
