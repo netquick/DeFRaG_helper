@@ -12,7 +12,6 @@ namespace DeFRaG_Helper
     /// </summary>
     public partial class Settings : Page
     {
-
         private static Settings instance;
 
         public static Settings Instance
@@ -24,10 +23,10 @@ namespace DeFRaG_Helper
                 return instance;
             }
         }
+
         public Settings()
         {
             InitializeComponent();
-            
         }
 
         private async void ColorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -68,9 +67,6 @@ namespace DeFRaG_Helper
                 await AppConfig.SaveConfigurationAsync();
             }
         }
-
-        
-
 
         private async void btnSync_Click(object sender, RoutedEventArgs e)
         {
@@ -128,7 +124,6 @@ namespace DeFRaG_Helper
 
             txtCountHistory.Text = AppConfig.CountHistory.ToString();
             chkImgQuali.IsChecked = AppConfig.UseHighQualityImages;
-
         }
 
         private async void DownloadImg_Changed(object sender, RoutedEventArgs e)
@@ -158,29 +153,26 @@ namespace DeFRaG_Helper
             await AppConfig.SaveConfigurationAsync();
         }
 
-        private void btnUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            Task.Run(async () =>
-            {
-                try
-                {
-                    await CreateAndUpdateDB.UpdateDB();
-                    // Optionally, use Dispatcher to update the UI thread with success message
-                }
-                catch (Exception ex)
-                {
-                    // Handle the exception, e.g., log it or show an error message on the UI thread using Dispatcher
-                }
-            });
-        }
-
         private void btnSelect_Click(object sender, RoutedEventArgs e)
         {
-            CustomFolderBrowser customFolderBrowser = new CustomFolderBrowser();
-            var result = customFolderBrowser.ShowDialog();
+            // Create an instance of CustomBrowser
+            var customBrowser = new CustomBrowser(AppConfig.GameDirectoryPath); // Pass the current game directory path as the initial path
+
+            // Access the main window
+            var mainWindow = Application.Current.MainWindow;
+
+            // Center the CustomBrowser window relative to the main window
+            if (mainWindow != null)
+            {
+                customBrowser.WindowStartupLocation = WindowStartupLocation.Manual;
+                customBrowser.Left = mainWindow.Left + (mainWindow.Width - customBrowser.Width) / 2;
+                customBrowser.Top = mainWindow.Top + (mainWindow.Height - customBrowser.Height) / 2;
+            }
+
+            var result = customBrowser.ShowDialog();
             if (result == true)
             {
-                string selectedPath = customFolderBrowser.SelectedFolderPath;
+                string selectedPath = customBrowser.SelectedFolderPath;
                 // Use the selectedPath as needed, for example, setting it to a TextBox
                 txtGamePath.Text = selectedPath;
                 // Update the GameDirectoryPath in AppConfig
@@ -188,7 +180,6 @@ namespace DeFRaG_Helper
 
                 // Save the configuration to persist the change
                 Task.Run(async () => await AppConfig.SaveConfigurationAsync());
-
             }
         }
 
@@ -197,6 +188,6 @@ namespace DeFRaG_Helper
             await CheckEditorInstallation.Instance.CheckEditor();
         }
 
-    }
 
+    }
 }

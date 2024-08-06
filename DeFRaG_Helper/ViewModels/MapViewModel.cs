@@ -305,8 +305,9 @@ namespace DeFRaG_Helper.ViewModels
         private async void PlayMap(object mapParameter)
         {
             var mainWindow = Application.Current.MainWindow as MainWindow;
-
             var map = mapParameter as Map;
+            MessageHelper.ShowMessage($"Playing map {map.Name}");
+
             if (map != null)
             {
                 await MapInstaller.InstallMap(map);
@@ -331,6 +332,8 @@ namespace DeFRaG_Helper.ViewModels
         private async void EditMapCommandAction(object mapParameter)
         {
             var map = mapParameter as Map;
+            MessageHelper.ShowMessage($"Editing map {map.Name}");
+
             if (map != null)
             {
                 await EditMap.Instance.ConvertMap(map);

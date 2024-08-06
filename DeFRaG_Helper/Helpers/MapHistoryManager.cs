@@ -171,24 +171,35 @@ namespace DeFRaG_Helper
         //method to add the last played map to the database and check if there are more maps than the count in appConfig
         public async Task AddLastPlayedMapAsync(int mapId, string mode)
         {
-            // SQL command to insert a new row into the LastPlayedMaps table.
-            string insertCommandText = @"
-        INSERT INTO LastPlayedMaps (MapId, PlayedDateTime, Mode)
-        VALUES (@MapId, @PlayedDateTime, @Mode);
+            // SQL command to delete the existing row if it exists.
+            string deleteExistingCommandText = @"
+    DELETE FROM LastPlayedMaps
+    WHERE MapId = @MapId;
     ";
 
-            // Enqueue the insert command to be executed on the database connection.
+            // SQL command to insert a new row into the LastPlayedMaps table.
+            string insertCommandText = @"
+    INSERT INTO LastPlayedMaps (MapId, PlayedDateTime, Mode)
+    VALUES (@MapId, @PlayedDateTime, @Mode);
+    ";
+
+            // Enqueue the delete and insert commands to be executed on the database connection.
             DbQueue.Instance.Enqueue(async connection =>
             {
-                using (var command = new SqliteCommand(insertCommandText, connection))
+                // Delete the existing entry if it exists.
+                using (var deleteCommand = new SqliteCommand(deleteExistingCommandText, connection))
                 {
-                    // Add parameters to the command to replace the placeholders in the SQL command text.
-                    command.Parameters.AddWithValue("@MapId", mapId);
-                    command.Parameters.AddWithValue("@PlayedDateTime", DateTime.UtcNow.ToString("s")); // Using a sortable date/time pattern.
-                    command.Parameters.AddWithValue("@Mode", mode);
+                    deleteCommand.Parameters.AddWithValue("@MapId", mapId);
+                    await deleteCommand.ExecuteNonQueryAsync();
+                }
 
-                    // Execute the command.
-                    await command.ExecuteNonQueryAsync();
+                // Insert the new entry.
+                using (var insertCommand = new SqliteCommand(insertCommandText, connection))
+                {
+                    insertCommand.Parameters.AddWithValue("@MapId", mapId);
+                    insertCommand.Parameters.AddWithValue("@PlayedDateTime", DateTime.UtcNow.ToString("s")); // Using a sortable date/time pattern.
+                    insertCommand.Parameters.AddWithValue("@Mode", mode);
+                    await insertCommand.ExecuteNonQueryAsync();
                 }
             });
 
@@ -198,6 +209,7 @@ namespace DeFRaG_Helper
             // Check if the number of entries exceeds CountHistory and remove the oldest if necessary.
             await CheckAndRemoveOldestIfNecessary();
         }
+
 
         private async Task CheckAndRemoveOldestIfNecessary()
         {

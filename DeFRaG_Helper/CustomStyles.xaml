@@ -1407,7 +1407,46 @@
         </Setter>
     </Style>
 
+    <!-- Custom Style for Specific ListView -->
+    <Style x:Key="CustomListViewStyle" TargetType="ListView">
+        <Setter Property="Background" Value="#2d2d2d"/>
+        <Setter Property="Foreground" Value="#D3D3D3"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="{TemplateBinding Background}">
+                        <ScrollViewer Focusable="False">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
+    <!-- Custom Style for ListViewItem to make items bigger -->
+    <Style x:Key="CustomListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="20"/>
+        <!-- Adjust padding to make items bigger -->
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ThemeColor}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1F1F1F"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 
 </ResourceDictionary>
