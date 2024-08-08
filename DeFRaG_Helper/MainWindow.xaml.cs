@@ -95,6 +95,8 @@ namespace DeFRaG_Helper
                 return $"DeFRaG_Helper v{version.Major}.{version.Minor}.{version.Build}";
             }
         }
+
+
         //Method to request game directory
         private async Task<string> RequestGameDirectoryAsync()
         {

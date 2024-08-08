@@ -5,8 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeFRaG_Helper.Windows"
         mc:Ignorable="d"
-        Title="CustomInstaller" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="CustomInstaller" Height="250" Width="600"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Border CornerRadius="10" Background="#111">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Background="#222" Height="40" CornerRadius="10, 10, 0, 0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Install DeFRaG game client" FontSize="18" Foreground="White" Margin="10, 0, 0, 0"/>
+                    <Button Grid.Column="1" Content="&#xE8BB;" Width="40" Click="Close_Click" BorderBrush="Transparent" Background="Transparent" Foreground="#D3D3D3" Style="{StaticResource TitleBarIconStyleCorner}" FontFamily="Segoe MDL2 Assets"/>
+                </Grid>
+            </Border>
+            <TextBox Height="32" Margin="10,47,105,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
+            <Button Content="Browse" Height="32" Margin="500,47,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+            <Label Content="Select existing DeFRaG engine or empty folder to install" Height="32" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top" FontSize="16" Foreground="White" />
+            <CheckBox Content="Download default data" HorizontalAlignment="Left" Margin="10,103,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200"/>
+            <CheckBox Content="Install Netradiant editor" HorizontalAlignment="Left" Margin="10,128,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200"/>
+            <Button Content="Install" Margin="500,138,10,40" Grid.Row="1"/>
+            <ProgressBar Height="14" VerticalAlignment="Bottom" Margin="10,0,10,10" Grid.Row="1"/>
+
+        </Grid>
+    </Border>
 </Window>

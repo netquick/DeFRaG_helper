@@ -23,5 +23,10 @@ namespace DeFRaG_Helper.Windows
         {
             InitializeComponent();
         }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
