@@ -41,7 +41,7 @@ Features:
 - Installs and plays maps with one click
 - Updating maps from internet
 - Server Browser refreshing state every 30 seconds
-- Demo browser to fetch demos for maps and one-click play
+- Demo browser to fetch demos for maps and direct playback
 - Radom Map feature
 - Map History for random and all played maps
 - Favorites
