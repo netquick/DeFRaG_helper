@@ -24,12 +24,14 @@ Map Browser with over 18k maps, launch by individual playbuttons or download
 
 Server Browser included
 
-![image](https://github.com/user-attachments/assets/7dde283b-eb0f-42d0-8f9f-b6c6826ea4c0)
+![image](https://github.com/user-attachments/assets/4211d957-4b02-4df5-9de5-e71621a40d26)
+
 
 
 Demo Browser to play demos by doubleclick. Required map will be installed as well. 
 
-![image](https://github.com/user-attachments/assets/61ab3470-bdb6-4717-ab5e-fe20d031889d)
+![image](https://github.com/user-attachments/assets/fef09ef4-d840-4fc1-b2ae-5c7d5d1f4413)
+
 
 ****************************
 Features:
