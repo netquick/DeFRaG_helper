@@ -11,7 +11,7 @@ Custom styles are selfmade as packages like mahApp.metro blew my app to 110MB (t
 
 No commercial interest - Aimed to get more people into DeFRaG and let the ones that already play it have it easier to try out maps. Enjoy.
 
-Startscreen offers access to active servers and the l0 last played Random maps
+Startscreen offers access to active servers and the last played Random maps
 
 ![image](https://github.com/user-attachments/assets/ab9b443b-eff4-4b5d-8753-242681b5b9ee)
 
@@ -28,7 +28,7 @@ Server Browser included
 
 
 
-Demo Browser to play demos by doubleclick. Required map will be installed as well. 
+Demo Browser to play demos by doubleclick. Required map will be installed as well. Last played maps are available for quick access.
 
 ![image](https://github.com/user-attachments/assets/fef09ef4-d840-4fc1-b2ae-5c7d5d1f4413)
 
