@@ -13,12 +13,13 @@ No commercial interest - Aimed to get more people into DeFRaG and let the ones t
 
 Startscreen offers access to active servers and the l0 last played Random maps
 
-![image](https://github.com/user-attachments/assets/2524872c-300c-4c04-a4bc-cea503201a15)
+![image](https://github.com/user-attachments/assets/ab9b443b-eff4-4b5d-8753-242681b5b9ee)
+
 
 
 Map Browser with over 18k maps, launch by individual playbuttons or download
 
-![image](https://github.com/user-attachments/assets/6551e348-9741-49a3-9558-56f10c82bc4c)
+![image](https://github.com/user-attachments/assets/713fc7b8-6dcc-474c-814d-f2aa3bf3afc0)
 
 
 Server Browser included
