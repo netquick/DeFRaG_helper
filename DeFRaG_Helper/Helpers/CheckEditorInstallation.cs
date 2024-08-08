@@ -35,7 +35,7 @@ namespace DeFRaG_Helper.Helpers
             if (!System.IO.File.Exists(_editorPath + "\\radiant.exe"))
             {
                 //Install Radiant Editor
-                InstallEditor();
+                await InstallEditor();
 
             } else
             {
@@ -52,7 +52,7 @@ namespace DeFRaG_Helper.Helpers
             {
                 // Open a Custom Folder Dialog to select the radiant.exe
                 // Assuming this code is inside a method in CheckEditorInstallation.cs
-                var folderBrowserDialog = new CustomFolderBrowser();
+                var folderBrowserDialog = new CustomBrowser();
                 var dialogResult = folderBrowserDialog.ShowDialog();
 
                 if (dialogResult == true)

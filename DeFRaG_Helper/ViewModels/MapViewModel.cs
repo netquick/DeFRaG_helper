@@ -23,6 +23,7 @@ namespace DeFRaG_Helper.ViewModels
         public ObservableCollection<Map> Maps { get; set; }
         private static readonly object _lock = new object();
 
+
         private bool dataLoaded = false;
         private MapHistoryManager mapHistoryManager;
         private static MapViewModel instance;
@@ -141,16 +142,20 @@ namespace DeFRaG_Helper.ViewModels
         {
             await Task.Run(() =>
             {
-                var filteredMaps = Maps.Where(map =>
-                    (string.IsNullOrEmpty(SearchText) ||
-                     map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                     map.Mapname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                     map.Filename.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
-                    (!ShowFavorites || map.IsFavorite == 1) &&
-                    (!ShowInstalled || map.IsInstalled == 1) &&
-                    (!ShowDownloaded || map.IsDownloaded == 1))
-                    .OrderByDescending(map => map.Releasedate)
-                    .ToList();
+                List<Map> filteredMaps;
+                lock (_lock)
+                {
+                    filteredMaps = Maps.Where(map =>
+                        (string.IsNullOrEmpty(SearchText) ||
+                         map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                         map.Mapname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                         map.Filename.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+                        (!ShowFavorites || map.IsFavorite == 1) &&
+                        (!ShowInstalled || map.IsInstalled == 1) &&
+                        (!ShowDownloaded || map.IsDownloaded == 1))
+                        .OrderByDescending(map => map.Releasedate)
+                        .ToList();
+                }
 
                 // Use a HashSet to ensure unique maps
                 var uniqueFilteredMaps = new HashSet<Map>(filteredMaps, new MapComparer());
@@ -356,7 +361,10 @@ namespace DeFRaG_Helper.ViewModels
                 var map = await GetMapByIdAsync(mapId);
                 if (map != null)
                 {
-                    App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+                    lock (_lock)
+                    {
+                        App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+                    }
                     loadedMaps++;
                 }
             }
@@ -374,7 +382,10 @@ namespace DeFRaG_Helper.ViewModels
                 var map = await GetMapByIdAsync(mapId);
                 if (map != null)
                 {
-                    App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+                    lock (_lock)
+                    {
+                        App.Current.Dispatcher.Invoke(() => Maps.Add(map));
+                    }
                     loadedMaps++;
                     // Check if the loadedMaps count has reached the refreshThreshold or if it's the last map
                     if (loadedMaps % refreshThreshold == 0 || loadedMaps == totalMaps)
@@ -405,8 +416,8 @@ namespace DeFRaG_Helper.ViewModels
             dataLoaded = true;
             DataLoaded?.Invoke(this, EventArgs.Empty);
             ApplyFilters(); // Call ApplyFilters to update the displayed maps
-
         }
+
 
 
         private async Task<List<int>> GetAllMapIdsAsync()

@@ -109,7 +109,7 @@ namespace DeFRaG_Helper
             string folderPath = string.Empty;
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                var dialog = new DeFRaG_Helper.Windows.CustomFolderBrowser(); // Use your CustomFolderBrowser
+                var dialog = new DeFRaG_Helper.Windows.CustomBrowser(); // Use your CustomFolderBrowser
                 var result = dialog.ShowDialog(); // Show dialog modally
                 if (result == true) // Check if the dialog was accepted
                 {

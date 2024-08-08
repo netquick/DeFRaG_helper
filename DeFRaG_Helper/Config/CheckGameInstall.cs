@@ -173,9 +173,9 @@ namespace DeFRaG_Helper
 
         public static string BrowseFolder()
         {
-            // Create an instance of the CustomFolderBrowser window
-            var folderBrowser = new DeFRaG_Helper.Windows.CustomFolderBrowser();
-            // Show the CustomFolderBrowser dialog
+            // Create an instance of the CustomBrowser window
+            var folderBrowser = new DeFRaG_Helper.Windows.CustomBrowser();
+            // Show the CustomBrowser dialog
             var result = folderBrowser.ShowDialog();
             if (result == true)
             {
@@ -188,6 +188,7 @@ namespace DeFRaG_Helper
                 return null;
             }
         }
+
 
 
 
