@@ -95,8 +95,12 @@ namespace DeFRaG_Helper
                 lblAction.Content = clickedItem.Header.ToString();
                 AppConfig.ButtonState = clickedItem.Header.ToString(); // Update AppConfig with the new state
                 await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+
+                // Trigger the action associated with the new state
+                ActionButton_Click(this, new RoutedEventArgs());
             }
         }
+
 
         private async void PlayRandomMap()
         {
