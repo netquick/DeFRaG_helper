@@ -251,8 +251,44 @@ namespace DeFRaG_Helper
             await DbQueue.Instance.WhenAllCompleted();
         }
 
+        //GetLastPlayedMap method to get the last played map from the database
+        public async Task<int?> GetLastPlayedMapIdAsync()
+        {
+            int? lastPlayedMapId = null;
 
-   
+            // SQL command to select the MapId of the most recently played map.
+            string selectCommandText = @"
+        SELECT MapId
+        FROM LastPlayedMaps
+        ORDER BY PlayedDateTime DESC
+        LIMIT 1;
+    ";
+
+            // Enqueue the command to be executed on the database connection.
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                using (var command = new SqliteCommand(selectCommandText, connection))
+                {
+                    // Execute the command and read the result.
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            lastPlayedMapId = reader.GetInt32(0);
+                        }
+                    }
+                }
+            });
+
+            // Wait for all enqueued database operations to complete.
+            await DbQueue.Instance.WhenAllCompleted();
+
+            return lastPlayedMapId;
+        }
+
+
+
+
 
     }
 }

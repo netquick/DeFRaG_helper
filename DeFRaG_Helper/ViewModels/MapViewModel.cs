@@ -489,7 +489,7 @@ namespace DeFRaG_Helper.ViewModels
             return lastPlayedMaps;
         }
 
-        private async Task<Map> GetMapByIdAsync(int mapId)
+        public async Task<Map> GetMapByIdAsync(int mapId)
         {
             Map map = null;
             DbQueue.Instance.Enqueue(async connection =>

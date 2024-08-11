@@ -5,34 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:DeFRaG_Helper"
-                xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
+             xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
              SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <!-- Existing resources -->
         <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
+        <!-- Define the icon source as a resource -->
+        <sys:String x:Key="IconSource">Icons/esports.svg</sys:String>
     </UserControl.Resources>
     <Border CornerRadius="10" Background="#2D2D2D">
         <Grid>
-
-
             <Button x:Name="ActionButton" Content="" Click="ActionButton_Click"/>
             <Button x:Name="DropdownButton" Content="▼" HorizontalAlignment="Right" Width="30" Click="DropdownButton_Click"/>
-            <Image x:Name="Icon" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False">
-                <Image.Source>
-                    <Binding>
-                        <Binding.Converter>
-                            <converters:DynamicSvgConverter/>
-                        </Binding.Converter>
-                        <Binding.Source>
-                            <sys:String>Icons/esports.svg</sys:String>
-                        </Binding.Source>
-                    </Binding>
-                </Image.Source>
-            </Image>
+            <Image Source="{Binding Source={StaticResource IconSource}, Converter={StaticResource DynamicSvgConverter}}" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False"/>
             <Label Name="lblAction" Content="Play Game" FontFamily="Segoe UI" FontSize="20" Foreground="White" VerticalAlignment="Center" Margin="45,0,0,0" HorizontalAlignment="Left" Width="155" IsHitTestVisible="False"/>
-
         </Grid>
     </Border>
 </UserControl>

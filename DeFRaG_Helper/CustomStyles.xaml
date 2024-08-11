@@ -165,22 +165,72 @@
 
 
     <!-- Context Menu-->
+    <!-- Context Menu Style -->
     <Style TargetType="ContextMenu">
         <Setter Property="Background" Value="#333333"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#444444"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="5"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <StackPanel IsItemsHost="True" Margin="0"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
+    <!-- MenuItem Style -->
     <Style TargetType="MenuItem">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="#333333"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Padding" Value="10,5"/>
-        <!-- Add more setters for other properties as needed -->
+        <Setter Property="Padding" Value="0,20,10,20"/>
+        <Setter Property="FontSize" Value="18"/>
+        <!-- Increased font size -->
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="5,0,10,0" VerticalAlignment="Center"/>
+                            <ContentPresenter Grid.Column="1" ContentSource="Header" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#444444"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#888888"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- Button Hover Style -->
     <Style x:Key="TitleBarIconStyle" TargetType="Button">
         <Setter Property="Foreground" Value="#D3D3D3"/>
@@ -261,7 +311,7 @@
         </Setter>
     </Style>
 
-
+    <!-- ComboBox Styles-->
 
     <!--  Dark Combobox -->
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
@@ -293,20 +343,6 @@
           Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
         />
         </Grid>
-        <!--<ControlTemplate.Triggers>
-    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-        <Setter TargetName="Border" Property="Background" Value="#808080" />
-    </Trigger>
-    <Trigger Property="ToggleButton.IsChecked" Value="true">
-        <Setter TargetName="Border" Property="Background" Value="#E0E0E0" />
-    </Trigger>
-    <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
-        <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
-        <Setter Property="Foreground" Value="#888888"/>
-        <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
-    </Trigger>
-</ControlTemplate.Triggers>-->
     </ControlTemplate>
 
     <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
@@ -462,20 +498,6 @@
           Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
         />
         </Grid>
-        <!--<ControlTemplate.Triggers>
-    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-        <Setter TargetName="Border" Property="Background" Value="#808080" />
-    </Trigger>
-    <Trigger Property="ToggleButton.IsChecked" Value="true">
-        <Setter TargetName="Border" Property="Background" Value="#E0E0E0" />
-    </Trigger>
-    <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
-        <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
-        <Setter Property="Foreground" Value="#888888"/>
-        <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
-    </Trigger>
-</ControlTemplate.Triggers>-->
     </ControlTemplate>
 
     <ControlTemplate x:Key="ComboBoxButtonTextBox" TargetType="{x:Type TextBox}">

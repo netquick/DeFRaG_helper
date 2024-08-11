@@ -1,7 +1,9 @@
-﻿using DeFRaG_Helper.ViewModels;
+﻿using DeFRaG_Helper.Converters;
+using DeFRaG_Helper.ViewModels;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DeFRaG_Helper
 {
@@ -22,57 +24,88 @@ namespace DeFRaG_Helper
         {
             InitializeComponent();
             lblAction.Content = AppConfig.ButtonState;
-            var mapHistoryManager = MapHistoryManager.Instance;;
-
+            mapHistoryManager = MapHistoryManager.Instance; // Correctly initialize the class-level field
         }
 
-        private void ActionButton_Click(object sender, RoutedEventArgs e)
+        private async void ActionButton_Click(object sender, RoutedEventArgs e)
         {
             var mainWindow = Application.Current.MainWindow as MainWindow;
 
-            //switch on the content of lblPlay
+            // Switch on the content of lblAction
             switch (lblAction.Content)
             {
                 case "Play Game":
-                    //start the oDFe.x64.exe in GameDirectoryPath from App.config
-        
+                    // Start the oDFe.x64.exe in GameDirectoryPath from App.config
                     System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", "+set fs_game defrag +df_promode " + mainWindow.GetPhysicsSetting());
                     break;
                 case "Random Map":
-                    //check maps viewmodel for random map, containing physics according to chkPhysics in Start.xaml where 1 = vq3, 2 = cpma, 3 = vq3 and cpma
-                    //start the oDFe.x64.exe in GameDirectoryPath from App.config with the random map
-
-
+                    // Check maps viewmodel for random map, containing physics according to chkPhysics in Start.xaml where 1 = vq3, 2 = cpma, 3 = vq3 and cpma
+                    // Start the oDFe.x64.exe in GameDirectoryPath from App.config with the random map
                     PlayRandomMap();
+                    break;
+                case "Last Played":
+                    // Get the last played map ID from the mapHistoryManager    
+                    var lastPlayedMapId = await mapHistoryManager.GetLastPlayedMapIdAsync();
+                    if (lastPlayedMapId.HasValue)
+                    {
+                        // Get the map name from the MapViewModel using the map ID
+                        var mapViewModel = await MapViewModel.GetInstanceAsync();
+                        var lastPlayedMap = await mapViewModel.GetMapByIdAsync(lastPlayedMapId.Value);
+                        if (lastPlayedMap != null)
+                        {
+                            // Get the map name without extension
+                            var mapNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(lastPlayedMap.Mapname);
 
+                            // Start the oDFe.x64.exe in GameDirectoryPath from App.config with the last played map
+                            System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {mainWindow.GetPhysicsSetting()} +map {mapNameWithoutExtension}");
+                        }
+                    }
                     break;
                 default:
                     break;
             }
-           
-
-
-
-           //App.Current.Dispatcher.Invoke(() => MainWindow.Instance.ShowMessage("Play"));
-
-
         }
-
-
 
         private void DropdownButton_Click(object sender, RoutedEventArgs e)
         {
             ContextMenu menu = new ContextMenu();
 
-            // Create and add menu items
+            // Create and add menu items with icons
             MenuItem option1 = new MenuItem() { Header = "Play Game" };
             MenuItem option2 = new MenuItem() { Header = "Random Map" };
+            MenuItem option3 = new MenuItem() { Header = "Last Played" };
+
+            // Set icons for the menu items using the same source
+            string iconSource = (string)FindResource("IconSource");
+            var iconConverter = (DynamicSvgConverter)FindResource("DynamicSvgConverter");
+
+            option1.Icon = new Image
+            {
+                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Width = 18, // Adjusted icon size
+                Height = 18 // Adjusted icon size
+            };
+            option2.Icon = new Image
+            {
+                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Width = 18, // Adjusted icon size
+                Height = 18 // Adjusted icon size
+            };
+            option3.Icon = new Image
+            {
+                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Width = 18, // Adjusted icon size
+                Height = 18 // Adjusted icon size
+            };
+
             menu.Items.Add(option1);
             menu.Items.Add(option2);
+            menu.Items.Add(option3);
 
             // Add click event handlers for the menu items
             option1.Click += MenuItem_Click;
             option2.Click += MenuItem_Click;
+            option3.Click += MenuItem_Click;
 
             // Set the placement of the ContextMenu
             menu.PlacementTarget = this; // The UserControl as the target
@@ -101,7 +134,6 @@ namespace DeFRaG_Helper
             }
         }
 
-
         private async void PlayRandomMap()
         {
             // Ensure this method is called from an event that can handle async operations
@@ -127,17 +159,17 @@ namespace DeFRaG_Helper
 
                     //we need check if the map is downloaded and installed, if not, we will install it
                     await MapInstaller.InstallMap(randomMap);
-                    mapHistoryManager = MapHistoryManager.Instance;;
+                    mapHistoryManager = MapHistoryManager.Instance; ;
 
                     await mapHistoryManager.AddLastPlayedMapAsync(randomMap.Id, "Random");
 
-
-                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.Mapname)}"); 
+                    System.Diagnostics.Process.Start(AppConfig.GameDirectoryPath + "\\oDFe.x64.exe", $"+set fs_game defrag +df_promode {physicsSetting} +map {System.IO.Path.GetFileNameWithoutExtension(randomMap.Mapname)}");
                     Debug.WriteLine($"Random map: {randomMap.Mapname} out of {matchingMaps.Count}");
                 }
             }
             OnMapPlayed();
         }
+
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Check if the new width is greater than 100px
@@ -152,8 +184,5 @@ namespace DeFRaG_Helper
                 DropdownButton.Visibility = Visibility.Collapsed;
             }
         }
-
-
     }
-
 }
