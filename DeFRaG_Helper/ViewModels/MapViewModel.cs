@@ -32,7 +32,17 @@ namespace DeFRaG_Helper.ViewModels
 
         private HashSet<int> addedMapIds; // Field to track added map IDs
 
-
+        private ObservableCollection<string> _selectedTags = new ObservableCollection<string>();
+        public ObservableCollection<string> SelectedTags
+        {
+            get { return _selectedTags; }
+            set
+            {
+                _selectedTags = value;
+                OnPropertyChanged(nameof(SelectedTags));
+                ApplyFilters();
+            }
+        }
         private MapViewModel()
         {
             Maps = new ObservableCollection<Map>();
@@ -138,7 +148,7 @@ namespace DeFRaG_Helper.ViewModels
 
         public ObservableCollection<Map> DisplayedMaps { get; set; } = new ObservableCollection<Map>();
 
-        private async void ApplyFilters()
+        public async void ApplyFilters()
         {
             await Task.Run(() =>
             {
@@ -152,9 +162,9 @@ namespace DeFRaG_Helper.ViewModels
                          map.Filename.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
                         (!ShowFavorites || map.IsFavorite == 1) &&
                         (!ShowInstalled || map.IsInstalled == 1) &&
-                        (!ShowDownloaded || map.IsDownloaded == 1))
-                        .OrderByDescending(map => map.Releasedate)
-                        .ToList();
+                        (!ShowDownloaded || map.IsDownloaded == 1) &&
+                        (!SelectedTags.Any() || SelectedTags.All(tag => map.Weapons.Contains(tag) || map.Items.Contains(tag) || map.Functions.Contains(tag)))
+                    ).OrderByDescending(map => map.Releasedate).ToList();
                 }
 
                 // Use a HashSet to ensure unique maps
@@ -169,6 +179,7 @@ namespace DeFRaG_Helper.ViewModels
                 });
             });
         }
+
 
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
         {

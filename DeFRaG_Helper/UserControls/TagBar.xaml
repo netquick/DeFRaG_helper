@@ -19,7 +19,7 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0">
+                    <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                             <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" ToolTip="{Binding Name}">
                                 <Image.Source>
@@ -31,6 +31,7 @@
                             </Image>
                         </StackPanel>
                     </CheckBox>
+
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ItemContainerStyle>

@@ -25,7 +25,38 @@ namespace DeFRaG_Helper.UserControls
         {
             InitializeComponent();
             DataContext = new TagBarViewModel();
+        }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var tagItem = checkBox.DataContext as TagItem;
+            if (tagItem != null)
+            {
+                var mapViewModel = MapViewModel.GetInstanceAsync().Result;
+                if (mapViewModel != null)
+                {
+                    mapViewModel.SelectedTags.Add(tagItem.Name);
+                    mapViewModel.ApplyFilters();
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            var tagItem = checkBox.DataContext as TagItem;
+            if (tagItem != null)
+            {
+                var mapViewModel = MapViewModel.GetInstanceAsync().Result;
+                if (mapViewModel != null)
+                {
+                    mapViewModel.SelectedTags.Remove(tagItem.Name);
+                    mapViewModel.ApplyFilters();
+                }
+            }
         }
     }
+
+
 }
