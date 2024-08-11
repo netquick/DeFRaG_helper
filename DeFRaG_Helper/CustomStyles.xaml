@@ -59,6 +59,55 @@
     
     
     
+    
+    
+    
+    <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border x:Name="border" 
+                    Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="5" 
+                    Padding="0" 
+                    SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" 
+                                      Content="{TemplateBinding Content}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ThemeColor}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ThemeColor}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#2D2D2D"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#2D2D2D"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- GridViewColumnHeader Style -->
     <!-- GridViewColumnHeader Style -->
     <Style TargetType="GridViewColumnHeader">

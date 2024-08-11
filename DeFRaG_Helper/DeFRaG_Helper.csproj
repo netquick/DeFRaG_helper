@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Quake3.ico</ApplicationIcon>
-    <AssemblyVersion>0.9.6</AssemblyVersion>
-    <FileVersion>0.9.6</FileVersion>
+    <AssemblyVersion>0.9.7</AssemblyVersion>
+    <FileVersion>0.9.7</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -75,6 +75,8 @@
     <None Remove="Icons\Weapons\iconw_railgun.svg" />
     <None Remove="Icons\Weapons\iconw_rocket.svg" />
     <None Remove="Icons\Weapons\iconw_shotgun.svg" />
+    <None Remove="Icons\Weapons\icon_bfg.svg" />
+    <None Remove="Icons\Weapons\icon_mg.svg" />
     <None Remove="Icons\Weapons\nailgun.svg" />
     <None Remove="Icons\Weapons\proxmine.svg" />
     <None Remove="Images\filmstrip.png" />
@@ -272,6 +274,8 @@
     <Resource Include="Icons\Weapons\iconw_shotgun.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icons\Weapons\icon_bfg.svg" />
+    <Resource Include="Icons\Weapons\icon_mg.svg" />
     <Resource Include="Icons\Weapons\nailgun.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

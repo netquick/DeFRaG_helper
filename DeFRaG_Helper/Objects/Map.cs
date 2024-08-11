@@ -522,11 +522,11 @@ namespace DeFRaG_Helper
                 {"Railgun", ("Icons/Weapons/iconw_railgun.svg", "Green") },
                 {"Shotgun", ("Icons/Weapons/iconw_shotgun.svg", "Yellow") },
                 {"Lightning Gun", ("Icons/Weapons/iconw_lightning.svg", "Orange") },
-                {"Big fucking gun", ("Icons/Weapons/iconw_bfg.svg", "Black") },
+                {"Big fucking gun", ("Icons/Weapons/icon_bfg.svg", "Black") },
                 {"Gauntlet", ("Icons/Weapons/iconw_gauntlet.svg", "Cyan") },
                 {"Grappling hook", ("Icons/Weapons/iconw_grapple.svg", "Green") },
                 {"Grenade Launcher", ("Icons/Weapons/iconw_grenade.svg", "Green") },
-                {"Machinegun", ("Icons/Weapons/iconw_machinegun", "yellow") },
+                {"Machinegun", ("Icons/Weapons/icon_mg.svg", "yellow") },
                 {"Proximity Mine Launcher (Team Arena)", ("Icons/Weapons/proxmine.svg", "Red") },
                 {"Chaingun (Team Arena)", ("Icons/Weapons/chaingun.svg", "Black") },
                 {"Nailgun (Team Arena)", ("Icons/Weapons/nailgun.svg", "Green") }
