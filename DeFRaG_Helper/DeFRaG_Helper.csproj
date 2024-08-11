@@ -63,6 +63,7 @@
     <None Remove="Icons\replay.svg" />
     <None Remove="Icons\settings.svg" />
     <None Remove="Icons\slideshow.svg" />
+    <None Remove="Icons\tag.svg" />
     <None Remove="Icons\Weapons\chaingun.svg" />
     <None Remove="Icons\Weapons\iconw_bfg.svg" />
     <None Remove="Icons\Weapons\iconw_gauntlet.svg" />
@@ -237,6 +238,7 @@
     <Resource Include="Icons\slideshow.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icons\tag.svg" />
     <Resource Include="Icons\Weapons\chaingun.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
