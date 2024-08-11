@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <None Remove="Icons\config.svg" />
+    <None Remove="Icons\dice.svg" />
     <None Remove="Icons\download.svg" />
     <None Remove="Icons\edit.svg" />
     <None Remove="Icons\esports.svg" />
@@ -59,6 +60,7 @@
     <None Remove="Icons\Items\scout.svg" />
     <None Remove="Icons\Items\teleporter.svg" />
     <None Remove="Icons\map.svg" />
+    <None Remove="Icons\replay.svg" />
     <None Remove="Icons\settings.svg" />
     <None Remove="Icons\slideshow.svg" />
     <None Remove="Icons\Weapons\chaingun.svg" />
@@ -83,6 +85,9 @@
 
   <ItemGroup>
     <Resource Include="Icons\config.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\dice.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\download.svg">
@@ -221,6 +226,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\map.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\replay.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\settings.svg">

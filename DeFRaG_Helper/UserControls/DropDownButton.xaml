@@ -8,18 +8,21 @@
              xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200"
-             SizeChanged="UserControl_SizeChanged">
+             SizeChanged="UserControl_SizeChanged"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <!-- Existing resources -->
         <converters:DynamicSvgConverter x:Key="DynamicSvgConverter"/>
-        <!-- Define the icon source as a resource -->
-        <sys:String x:Key="IconSource">Icons/esports.svg</sys:String>
+        <!-- Define the icon sources as resources -->
+        <sys:String x:Key="PlayGameIconSource">Icons/esports.svg</sys:String>
+        <sys:String x:Key="RandomMapIconSource">Icons/dice.svg</sys:String>
+        <sys:String x:Key="LastPlayedIconSource">Icons/replay.svg</sys:String>
     </UserControl.Resources>
     <Border CornerRadius="10" Background="#2D2D2D">
         <Grid>
             <Button x:Name="ActionButton" Content="" Click="ActionButton_Click"/>
             <Button x:Name="DropdownButton" Content="▼" HorizontalAlignment="Right" Width="30" Click="DropdownButton_Click"/>
-            <Image Source="{Binding Source={StaticResource IconSource}, Converter={StaticResource DynamicSvgConverter}}" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False"/>
+            <Image x:Name="ActionButtonIcon" Source="{Binding Source={StaticResource PlayGameIconSource}, Converter={StaticResource DynamicSvgConverter}}" Height="30" Width="30" Margin="10,30,0,30" HorizontalAlignment="Left" IsHitTestVisible="False"/>
             <Label Name="lblAction" Content="Play Game" FontFamily="Segoe UI" FontSize="20" Foreground="White" VerticalAlignment="Center" Margin="45,0,0,0" HorizontalAlignment="Left" Width="155" IsHitTestVisible="False"/>
         </Grid>
     </Border>

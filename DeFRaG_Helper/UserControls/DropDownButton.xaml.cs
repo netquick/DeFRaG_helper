@@ -20,11 +20,43 @@ namespace DeFRaG_Helper
         {
             MapPlayed?.Invoke(this, EventArgs.Empty);
         }
+
         public DropDownButton()
         {
             InitializeComponent();
             lblAction.Content = AppConfig.ButtonState;
             mapHistoryManager = MapHistoryManager.Instance; // Correctly initialize the class-level field
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateActionButtonIcon();
+        }
+
+        private void UpdateActionButtonIcon()
+        {
+            var iconConverter = (DynamicSvgConverter)FindResource("DynamicSvgConverter");
+            string iconSourceKey = string.Empty;
+
+            switch (lblAction.Content.ToString())
+            {
+                case "Play Game":
+                    iconSourceKey = "PlayGameIconSource";
+                    break;
+                case "Random Map":
+                    iconSourceKey = "RandomMapIconSource";
+                    break;
+                case "Last Played":
+                    iconSourceKey = "LastPlayedIconSource";
+                    break;
+                default:
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(iconSourceKey))
+            {
+                ActionButtonIcon.Source = iconConverter.Convert((string)FindResource(iconSourceKey), typeof(ImageSource), null, null) as ImageSource;
+            }
         }
 
         private async void ActionButton_Click(object sender, RoutedEventArgs e)
@@ -64,6 +96,28 @@ namespace DeFRaG_Helper
                 default:
                     break;
             }
+
+            // Update the icon after the action
+            UpdateActionButtonIcon();
+        }
+
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Cast the sender back to a MenuItem
+            MenuItem clickedItem = sender as MenuItem;
+
+            if (clickedItem != null)
+            {
+                lblAction.Content = clickedItem.Header.ToString();
+                AppConfig.ButtonState = clickedItem.Header.ToString(); // Update AppConfig with the new state
+                await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
+
+                // Trigger the action associated with the new state
+                ActionButton_Click(this, new RoutedEventArgs());
+
+                // Update the icon after the action
+                UpdateActionButtonIcon();
+            }
         }
 
         private void DropdownButton_Click(object sender, RoutedEventArgs e)
@@ -75,25 +129,24 @@ namespace DeFRaG_Helper
             MenuItem option2 = new MenuItem() { Header = "Random Map" };
             MenuItem option3 = new MenuItem() { Header = "Last Played" };
 
-            // Set icons for the menu items using the same source
-            string iconSource = (string)FindResource("IconSource");
+            // Set icons for the menu items using different sources
             var iconConverter = (DynamicSvgConverter)FindResource("DynamicSvgConverter");
 
             option1.Icon = new Image
             {
-                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Source = iconConverter.Convert((string)FindResource("PlayGameIconSource"), typeof(ImageSource), null, null) as ImageSource,
                 Width = 18, // Adjusted icon size
                 Height = 18 // Adjusted icon size
             };
             option2.Icon = new Image
             {
-                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Source = iconConverter.Convert((string)FindResource("RandomMapIconSource"), typeof(ImageSource), null, null) as ImageSource,
                 Width = 18, // Adjusted icon size
                 Height = 18 // Adjusted icon size
             };
             option3.Icon = new Image
             {
-                Source = iconConverter.Convert(iconSource, typeof(ImageSource), null, null) as ImageSource,
+                Source = iconConverter.Convert((string)FindResource("LastPlayedIconSource"), typeof(ImageSource), null, null) as ImageSource,
                 Width = 18, // Adjusted icon size
                 Height = 18 // Adjusted icon size
             };
@@ -116,22 +169,6 @@ namespace DeFRaG_Helper
             // Match the width of the ContextMenu with the DropDownButton
             menu.MinWidth = this.ActualWidth;
             menu.IsOpen = true;
-        }
-
-        private async void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            // Cast the sender back to a MenuItem
-            MenuItem clickedItem = sender as MenuItem;
-
-            if (clickedItem != null)
-            {
-                lblAction.Content = clickedItem.Header.ToString();
-                AppConfig.ButtonState = clickedItem.Header.ToString(); // Update AppConfig with the new state
-                await AppConfig.SaveConfigurationAsync(); // Save the updated configuration
-
-                // Trigger the action associated with the new state
-                ActionButton_Click(this, new RoutedEventArgs());
-            }
         }
 
         private async void PlayRandomMap()
