@@ -248,8 +248,8 @@
                       Width="60" Height="60" Style="{StaticResource FavoriteCheckBoxStyle}" VerticalAlignment="Top" Margin="0,0,240,0" 
                       Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Unchecked"/>
             <Button Width="30" Height="30" Margin="0,35,0,0" HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Command="{Binding DataContext.TagsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    CommandParameter="{Binding}" Background="Transparent">
+        Command="{Binding OpenTagManagerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        CommandParameter="{Binding RelativeSource={RelativeSource Self}}" Background="Transparent">
                 <Image Width="20" Height="20">
                     <Image.Source>
                         <Binding>
@@ -263,6 +263,8 @@
                     </Image.Source>
                 </Image>
             </Button>
+
+
         </Grid>
     </Border>
 </UserControl>

@@ -1,0 +1,125 @@
+using Microsoft.Data.Sqlite;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
+
+namespace DeFRaG_Helper.ViewModels
+{
+    public class TagManagerViewModel : BaseViewModel
+    {
+        public ObservableCollection<TagTextItem> Tags { get; set; } = new ObservableCollection<TagTextItem>();
+        public string NewTagName { get; set; } = string.Empty;
+        public ICommand AddTagCommand { get; }
+        public ICommand RemoveTagCommand { get; }
+        public ICommand CancelCommand { get; }
+        public ICommand TagCheckedCommand { get; }
+        public ICommand TagUncheckedCommand { get; }
+
+        private readonly Map _map;
+        public event EventHandler? RequestClose;
+
+        public TagManagerViewModel(Map map)
+        {
+            _map = map ?? throw new ArgumentNullException(nameof(map));
+            AddTagCommand = new RelayCommand(AddTag);
+            RemoveTagCommand = new RelayCommand(RemoveTag);
+            CancelCommand = new RelayCommand(Cancel);
+            TagCheckedCommand = new RelayCommand(OnTagChecked);
+            TagUncheckedCommand = new RelayCommand(OnTagUnchecked);
+
+            LoadTags();
+        }
+
+        private async void LoadTags()
+        {
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                using (var command = new SqliteCommand("SELECT Tag FROM Tag", connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            string tag = reader.GetString(0);
+                            bool isChecked = _map.Tags.Contains(tag);
+                            App.Current.Dispatcher.Invoke(() => Tags.Add(new TagTextItem { Name = tag, IsChecked = isChecked }));
+                        }
+                    }
+                }
+            });
+            await DbQueue.Instance.WhenAllCompleted();
+        }
+
+        private void AddTag(object parameter)
+        {
+            if (!string.IsNullOrEmpty(NewTagName) && !Tags.Any(t => t.Name == NewTagName))
+            {
+                Tags.Add(new TagTextItem { Name = NewTagName, IsChecked = true });
+                _map.Tags.Add(NewTagName);
+                UpdateTagsInDatabase();
+            }
+        }
+
+        private void RemoveTag(object parameter)
+        {
+            if (parameter is TagTextItem tagItem && Tags.Contains(tagItem))
+            {
+                Tags.Remove(tagItem);
+                _map.Tags.Remove(tagItem.Name);
+                UpdateTagsInDatabase();
+            }
+        }
+
+        private void Cancel(object parameter)
+        {
+            RequestClose?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateTagsInDatabase()
+        {
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                using (var command = new SqliteCommand("DELETE FROM MapTag WHERE MapID = @mapId", connection))
+                {
+                    command.Parameters.AddWithValue("@mapId", _map.Id);
+                    await command.ExecuteNonQueryAsync();
+                }
+
+                foreach (var tag in _map.Tags)
+                {
+                    using (var command = new SqliteCommand("INSERT INTO MapTag (MapID, TagID) VALUES (@mapId, (SELECT TagID FROM Tag WHERE Tag = @tag))", connection))
+                    {
+                        command.Parameters.AddWithValue("@mapId", _map.Id);
+                        command.Parameters.AddWithValue("@tag", tag);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            });
+        }
+
+        private void OnTagChecked(object parameter)
+        {
+            if (parameter is TagTextItem tag && !_map.Tags.Contains(tag.Name))
+            {
+                _map.Tags.Add(tag.Name);
+                UpdateTagsInDatabase();
+            }
+        }
+
+        private void OnTagUnchecked(object parameter)
+        {
+            if (parameter is TagTextItem tag && _map.Tags.Contains(tag.Name))
+            {
+                _map.Tags.Remove(tag.Name);
+                UpdateTagsInDatabase();
+            }
+        }
+    }
+
+    public class TagTextItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public bool IsChecked { get; set; }
+    }
+}

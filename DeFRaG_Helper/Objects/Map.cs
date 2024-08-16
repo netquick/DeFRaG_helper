@@ -623,6 +623,22 @@ namespace DeFRaG_Helper
             return newFunctionIcons;
         }
 
+
+        private List<string> tags = new List<string>();
+        public List<string> Tags
+        {
+            get => tags;
+            set
+            {
+                if (tags != value)
+                {
+                    tags = value;
+                    OnPropertyChanged(nameof(Tags));
+                }
+            }
+        }
+
+
     }
 
 

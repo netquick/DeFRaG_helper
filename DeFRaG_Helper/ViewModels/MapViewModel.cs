@@ -500,12 +500,13 @@ namespace DeFRaG_Helper.ViewModels
             return lastPlayedMaps;
         }
 
-        public async Task<Map> GetMapByIdAsync(int mapId)
-        {
-            Map map = null;
-            DbQueue.Instance.Enqueue(async connection =>
-            {
-                using (var command = new SqliteCommand(@"SELECT 
+public async Task<Map> GetMapByIdAsync(int mapId)
+{
+    Map map = null;
+    DbQueue.Instance.Enqueue(async connection =>
+    {
+        using (var command = new SqliteCommand(@"
+            SELECT 
                 Maps.ID, 
                 Maps.Name, 
                 Maps.Mapname, 
@@ -523,7 +524,8 @@ namespace DeFRaG_Helper.ViewModels
                 Maps.isFavorite, 
                 GROUP_CONCAT(DISTINCT Weapon.Weapon) AS Weapons, 
                 GROUP_CONCAT(DISTINCT Item.Item) AS Items, 
-                GROUP_CONCAT(DISTINCT Function.Function) AS Functions
+                GROUP_CONCAT(DISTINCT Function.Function) AS Functions,
+                GROUP_CONCAT(DISTINCT Tag.Tag) AS Tags
             FROM 
                 Maps 
             LEFT JOIN 
@@ -538,6 +540,10 @@ namespace DeFRaG_Helper.ViewModels
                 MapFunction ON Maps.ID = MapFunction.MapID 
             LEFT JOIN 
                 Function ON MapFunction.FunctionID = Function.FunctionID
+            LEFT JOIN 
+                MapTag ON Maps.ID = MapTag.MapID
+            LEFT JOIN 
+                Tag ON MapTag.TagID = Tag.TagID
             WHERE 
                 Maps.ID = @mapId
             GROUP BY 
@@ -556,43 +562,46 @@ namespace DeFRaG_Helper.ViewModels
                 Maps.isDownloaded, 
                 Maps.isInstalled, 
                 Maps.isFavorite", connection))
+        {
+            command.Parameters.AddWithValue("@mapId", mapId);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
                 {
-                    command.Parameters.AddWithValue("@mapId", mapId);
-                    using (var reader = await command.ExecuteReaderAsync())
+                    map = new Map
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            map = new Map
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("ID")),
-                                Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString(reader.GetOrdinal("Name")),
-                                Mapname = reader.IsDBNull(reader.GetOrdinal("Mapname")) ? null : reader.GetString(reader.GetOrdinal("Mapname")),
-                                Filename = reader.IsDBNull(reader.GetOrdinal("Filename")) ? null : reader.GetString(reader.GetOrdinal("Filename")),
-                                Releasedate = reader.IsDBNull(reader.GetOrdinal("Releasedate")) ? null : reader.GetString(reader.GetOrdinal("Releasedate")),
-                                Author = reader.IsDBNull(reader.GetOrdinal("Author")) ? null : reader.GetString(reader.GetOrdinal("Author")),
-                                GameType = reader.IsDBNull(reader.GetOrdinal("Mod")) ? null : reader.GetString(reader.GetOrdinal("Mod")),
-                                Size = reader.IsDBNull(reader.GetOrdinal("Size")) ? 0 : reader.GetInt64(reader.GetOrdinal("Size")),
-                                Physics = reader.IsDBNull(reader.GetOrdinal("Physics")) ? 0 : reader.GetInt32(reader.GetOrdinal("Physics")),
-                                Hits = reader.IsDBNull(reader.GetOrdinal("Hits")) ? 0 : reader.GetInt32(reader.GetOrdinal("Hits")),
-                                LinkDetailpage = reader.IsDBNull(reader.GetOrdinal("LinkDetailpage")) ? null : reader.GetString(reader.GetOrdinal("LinkDetailpage")),
-                                Style = reader.IsDBNull(reader.GetOrdinal("Style")) ? null : reader.GetString(reader.GetOrdinal("Style")),
-                                IsDownloaded = reader.IsDBNull(reader.GetOrdinal("isDownloaded")) ? 0 : reader.GetInt32(reader.GetOrdinal("isDownloaded")),
-                                IsInstalled = reader.IsDBNull(reader.GetOrdinal("isInstalled")) ? 0 : reader.GetInt32(reader.GetOrdinal("isInstalled")),
-                                IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite")),
-                                Weapons = reader.IsDBNull(reader.GetOrdinal("Weapons")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Weapons")).Split(',').ToList(),
-                                Items = reader.IsDBNull(reader.GetOrdinal("Items")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Items")).Split(',').ToList(),
-                                Functions = reader.IsDBNull(reader.GetOrdinal("Functions")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Functions")).Split(',').ToList(),
-                            };
-                        }
-                    }
+                        Id = reader.GetInt32(reader.GetOrdinal("ID")),
+                        Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null : reader.GetString(reader.GetOrdinal("Name")),
+                        Mapname = reader.IsDBNull(reader.GetOrdinal("Mapname")) ? null : reader.GetString(reader.GetOrdinal("Mapname")),
+                        Filename = reader.IsDBNull(reader.GetOrdinal("Filename")) ? null : reader.GetString(reader.GetOrdinal("Filename")),
+                        Releasedate = reader.IsDBNull(reader.GetOrdinal("Releasedate")) ? null : reader.GetString(reader.GetOrdinal("Releasedate")),
+                        Author = reader.IsDBNull(reader.GetOrdinal("Author")) ? null : reader.GetString(reader.GetOrdinal("Author")),
+                        GameType = reader.IsDBNull(reader.GetOrdinal("Mod")) ? null : reader.GetString(reader.GetOrdinal("Mod")),
+                        Size = reader.IsDBNull(reader.GetOrdinal("Size")) ? 0 : reader.GetInt64(reader.GetOrdinal("Size")),
+                        Physics = reader.IsDBNull(reader.GetOrdinal("Physics")) ? 0 : reader.GetInt32(reader.GetOrdinal("Physics")),
+                        Hits = reader.IsDBNull(reader.GetOrdinal("Hits")) ? 0 : reader.GetInt32(reader.GetOrdinal("Hits")),
+                        LinkDetailpage = reader.IsDBNull(reader.GetOrdinal("LinkDetailpage")) ? null : reader.GetString(reader.GetOrdinal("LinkDetailpage")),
+                        Style = reader.IsDBNull(reader.GetOrdinal("Style")) ? null : reader.GetString(reader.GetOrdinal("Style")),
+                        IsDownloaded = reader.IsDBNull(reader.GetOrdinal("isDownloaded")) ? 0 : reader.GetInt32(reader.GetOrdinal("isDownloaded")),
+                        IsInstalled = reader.IsDBNull(reader.GetOrdinal("isInstalled")) ? 0 : reader.GetInt32(reader.GetOrdinal("isInstalled")),
+                        IsFavorite = reader.IsDBNull(reader.GetOrdinal("isFavorite")) ? 0 : reader.GetInt32(reader.GetOrdinal("isFavorite")),
+                        Weapons = reader.IsDBNull(reader.GetOrdinal("Weapons")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Weapons")).Split(',').ToList(),
+                        Items = reader.IsDBNull(reader.GetOrdinal("Items")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Items")).Split(',').ToList(),
+                        Functions = reader.IsDBNull(reader.GetOrdinal("Functions")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Functions")).Split(',').ToList(),
+                        Tags = reader.IsDBNull(reader.GetOrdinal("Tags")) ? new List<string>() : reader.GetString(reader.GetOrdinal("Tags")).Split(',').ToList(),
+                    };
                 }
-            });
-
-            // Await the completion of all enqueued operations, including the one just added
-            await DbQueue.Instance.WhenAllCompleted();
-
-            return map;
+            }
         }
+    });
+
+    // Await the completion of all enqueued operations, including the one just added
+    await DbQueue.Instance.WhenAllCompleted();
+
+    return map;
+}
+
+
 
         private async Task PerformPostDataLoadActions()
         {

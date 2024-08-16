@@ -2,8 +2,12 @@
 
 namespace DeFRaG_Helper
 {
+    /// <summary>
+    /// This file is meant to do the complex database action when loading maps from the web
+    /// </summary>
     internal class DbActions
     {
+     
         //initialize dbqueue
         private static DbActions _instance;
         private static readonly object _lock = new object();
