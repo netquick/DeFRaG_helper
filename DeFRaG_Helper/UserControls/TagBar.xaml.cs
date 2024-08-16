@@ -24,7 +24,7 @@ namespace DeFRaG_Helper.UserControls
         public TagBar()
         {
             InitializeComponent();
-            DataContext = new TagBarViewModel();
+            DataContext = TagBarViewModel.Instance; // Use the singleton instance
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)

@@ -69,8 +69,17 @@ namespace DeFRaG_Helper.UserControls
                     window.Left = buttonPosition.X;
                     window.Top = buttonPosition.Y;
 
-                    // Handle Deactivated event to close the window
-                    window.Deactivated += (s, e) => window.Close();
+                    // Handle the Deactivated event to close the popup
+                    window.Deactivated += (s, e) =>
+                    {
+                        window.Close();
+
+                        // Bring the main window to the foreground
+                        Application.Current.MainWindow.Activate();
+                        var mainWindow = Application.Current.MainWindow;
+                        mainWindow.Topmost = true;  // Set MainWindow as topmost
+                        mainWindow.Topmost = false; // Revert MainWindow back to normal
+                    };
 
                     // Add fade-in animation
                     var fadeInAnimation = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.3));
@@ -80,6 +89,7 @@ namespace DeFRaG_Helper.UserControls
                 }
             }
         }
+
 
 
 

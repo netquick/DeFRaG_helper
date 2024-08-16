@@ -23,6 +23,7 @@ namespace DeFRaG_Helper.ViewModels
         public ObservableCollection<Map> Maps { get; set; }
         private static readonly object _lock = new object();
 
+        public List<Map> FilteredMaps { get; private set; }
 
         private bool dataLoaded = false;
         private MapHistoryManager mapHistoryManager;
@@ -163,7 +164,11 @@ namespace DeFRaG_Helper.ViewModels
                         (!ShowFavorites || map.IsFavorite == 1) &&
                         (!ShowInstalled || map.IsInstalled == 1) &&
                         (!ShowDownloaded || map.IsDownloaded == 1) &&
-                        (!SelectedTags.Any() || SelectedTags.All(tag => map.Weapons.Contains(tag) || map.Items.Contains(tag) || map.Functions.Contains(tag)))
+                        (!SelectedTags.Any() || SelectedTags.All(tag =>
+                            map.Weapons.Contains(tag) ||
+                            map.Items.Contains(tag) ||
+                            map.Functions.Contains(tag) ||
+                            map.Tags.Contains(tag))) // Include check for Tags list
                     ).OrderByDescending(map => map.Releasedate).ToList();
                 }
 
@@ -174,11 +179,26 @@ namespace DeFRaG_Helper.ViewModels
                 {
                     DisplayedMaps.Clear(); // Clear the collection before adding new items
                     addedMapIds.Clear(); // Clear the set to start fresh
-                    LoadDisplayedMapsSubset(uniqueFilteredMaps.ToList(), 0, 100);
+
+
+
+                    // Set the FilteredMaps property
+                    FilteredMaps = uniqueFilteredMaps.ToList();
+
+                    LoadDisplayedMapsSubset(FilteredMaps, 0, 20); // Load the first subset of maps
                     FilteredMapsCount = uniqueFilteredMaps.Count; // Update the count with the total unique filtered maps count
                 });
             });
         }
+
+
+
+
+
+
+
+
+
 
 
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
@@ -190,8 +210,14 @@ namespace DeFRaG_Helper.ViewModels
                     DisplayedMaps.Add(sourceMaps[i]);
                     addedMapIds.Add(sourceMaps[i].Id);
                 }
+                else
+                {
+                    //Debug.WriteLine($"Skipping duplicate map: {sourceMaps[i].Name} with ID: {sourceMaps[i].Id}");
+                }
             }
         }
+
+
 
 
 

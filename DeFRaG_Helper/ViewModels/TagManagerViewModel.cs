@@ -57,7 +57,7 @@ namespace DeFRaG_Helper.ViewModels
             {
                 Tags.Add(new TagTextItem { Name = NewTagName, IsChecked = true });
                 _map.Tags.Add(NewTagName);
-                UpdateTagsInDatabase();
+                AddTagToDatabase(NewTagName);
             }
         }
 
@@ -74,6 +74,36 @@ namespace DeFRaG_Helper.ViewModels
         private void Cancel(object parameter)
         {
             RequestClose?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void AddTagToDatabase(string tagName)
+        {
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                // Check if the tag already exists in the Tag table
+                using (var checkCommand = new SqliteCommand("SELECT COUNT(*) FROM Tag WHERE Tag = @tag", connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@tag", tagName);
+                    var count = (long)await checkCommand.ExecuteScalarAsync();
+                    if (count == 0)
+                    {
+                        // Insert the new tag into the Tag table
+                        using (var insertCommand = new SqliteCommand("INSERT INTO Tag (Tag) VALUES (@tag)", connection))
+                        {
+                            insertCommand.Parameters.AddWithValue("@tag", tagName);
+                            await insertCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+
+                // Insert the tag into the MapTag table
+                using (var command = new SqliteCommand("INSERT INTO MapTag (MapID, TagID) VALUES (@mapId, (SELECT TagID FROM Tag WHERE Tag = @tag))", connection))
+                {
+                    command.Parameters.AddWithValue("@mapId", _map.Id);
+                    command.Parameters.AddWithValue("@tag", tagName);
+                    await command.ExecuteNonQueryAsync();
+                }
+            });
         }
 
         private void UpdateTagsInDatabase()

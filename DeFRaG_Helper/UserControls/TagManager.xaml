@@ -12,8 +12,9 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                                  Command="{Binding DataContext.TagCheckedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                  CommandParameter="{Binding}"
+                                  Checked="CheckBox_Checked"
+                                  Unchecked="CheckBox_Unchecked"
+                                  PreviewMouseDown="CheckBox_PreviewMouseDown"
                                   />
                     </DataTemplate>
                 </ListBox.ItemTemplate>

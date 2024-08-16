@@ -5,35 +5,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DeFRaG_Helper.UserControls"
              xmlns:converters="clr-namespace:DeFRaG_Helper.Converters"
+             xmlns:helpers="clr-namespace:DeFRaG_Helper.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
+
+        <DataTemplate x:Key="IconTemplate">
+            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" ToolTip="{Binding Name}">
+                        <Image.Source>
+                            <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
+                                <Binding Path="IconPath"/>
+                                <Binding Path="Color"/>
+                            </MultiBinding>
+                        </Image.Source>
+                    </Image>
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TextTemplate">
+            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" ToolTip="{Binding Name}" />
+                </StackPanel>
+            </CheckBox>
+        </DataTemplate>
+
+        <helpers:TagTemplateSelector x:Key="TagTemplateSelector"
+                                     IconTemplate="{StaticResource IconTemplate}"
+                                     TextTemplate="{StaticResource TextTemplate}"/>
     </UserControl.Resources>
     <Grid>
-        <ListBox x:Name="TagListBox" ItemsSource="{Binding Tags}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#282828" BorderBrush="Transparent">
+        <ListBox x:Name="TagListBox" ItemsSource="{Binding Tags}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#282828" BorderBrush="Transparent"
+                 ItemTemplateSelector="{StaticResource TagTemplateSelector}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" Margin="0" ItemWidth="50" ItemHeight="50"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                            <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" ToolTip="{Binding Name}">
-                                <Image.Source>
-                                    <MultiBinding Converter="{StaticResource SvgPathAndColorConverter}">
-                                        <Binding Path="IconPath"/>
-                                        <Binding Path="Color"/>
-                                    </MultiBinding>
-                                </Image.Source>
-                            </Image>
-                        </StackPanel>
-                    </CheckBox>
-
-                </DataTemplate>
-            </ListBox.ItemTemplate>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>

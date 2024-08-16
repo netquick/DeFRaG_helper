@@ -80,15 +80,13 @@ namespace DeFRaG_Helper.Views
 
         private void LoadMoreMaps(MapViewModel viewModel)
         {
-            var filteredMaps = viewModel.Maps.Where(map =>
-                (string.IsNullOrEmpty(viewModel.SearchText) || map.Name.Contains(viewModel.SearchText, StringComparison.OrdinalIgnoreCase)) &&
-                (!viewModel.ShowFavorites || map.IsFavorite == 1) &&
-                (!viewModel.ShowInstalled || map.IsInstalled == 1) &&
-                (!viewModel.ShowDownloaded || map.IsDownloaded == 1))
-                .OrderByDescending(map => map.Releasedate)
-                .ToList();
+            if (viewModel.FilteredMaps == null || !viewModel.FilteredMaps.Any())
+            {
+                // No filtered maps available, return early
+                return;
+            }
 
-            viewModel.LoadDisplayedMapsSubset(filteredMaps, viewModel.DisplayedMaps.Count, refreshAmount); // Load the next 20 maps
+            viewModel.LoadDisplayedMapsSubset(viewModel.FilteredMaps, viewModel.DisplayedMaps.Count, refreshAmount); // Load the next 20 maps
         }
         private async Task InitializeDataContextAsync()
         {
@@ -106,11 +104,12 @@ namespace DeFRaG_Helper.Views
                 .OrderByDescending(map => map.Releasedate)
                 .ToList();
 
-            viewModel.LoadDisplayedMapsSubset(filteredMaps, 0, initialAmount); // Load the first 20 maps
+            viewModel.LoadDisplayedMapsSubset(filteredMaps, 0, initialAmount); // Load the first subset of maps
             MapsView.ItemsSource = viewModel.DisplayedMaps;
 
             dataLoaded = true; // Set the flag to true after loading data
         }
+
 
         private void LoadDisplayedMapsSubset(int startIndex, int count)
         {
