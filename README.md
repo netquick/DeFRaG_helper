@@ -54,8 +54,11 @@ Features:
 Release Notes:
 
 v0.9.3  Implemented Edit function. Converts a bsp from the pk3 file to map and opens it in Netradiant_Custom. Editor will be installed if not available. 
+
 v0.9.4 - v0.9.6  oops - busy coding many features
+
 v0.9.7  Implemented new Tag Bar in MapBrowser allowing to filter for Tags like weapons, items, functions but also custom Text Tags like e.g. "DFWC" - can be freely defined.
+
 ![image](https://github.com/user-attachments/assets/df163ca4-3c6f-4723-be65-777f2891c0b8)
 
 ****************************
