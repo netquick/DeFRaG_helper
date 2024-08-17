@@ -1,20 +1,10 @@
 ﻿using DeFRaG_Helper.ViewModels;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DeFRaG_Helper.UserControls
 {
@@ -72,13 +62,21 @@ namespace DeFRaG_Helper.UserControls
                     // Handle the Deactivated event to close the popup
                     window.Deactivated += (s, e) =>
                     {
-                        window.Close();
+                        if (!tagManager.IsInternalClick)
+                        {
+                            window.Close();
 
-                        // Bring the main window to the foreground
-                        Application.Current.MainWindow.Activate();
-                        var mainWindow = Application.Current.MainWindow;
-                        mainWindow.Topmost = true;  // Set MainWindow as topmost
-                        mainWindow.Topmost = false; // Revert MainWindow back to normal
+                            // Bring the main window to the foreground
+                            Application.Current.MainWindow.Activate();
+                            var mainWindow = Application.Current.MainWindow;
+                            mainWindow.Topmost = true;  // Set MainWindow as topmost
+                            mainWindow.Topmost = false; // Revert MainWindow back to normal
+                        }
+                        else
+                        {
+                            // Reset the internal click flag
+                            tagManager.IsInternalClick = false;
+                        }
                     };
 
                     // Add fade-in animation
@@ -89,6 +87,8 @@ namespace DeFRaG_Helper.UserControls
                 }
             }
         }
+
+
 
 
 

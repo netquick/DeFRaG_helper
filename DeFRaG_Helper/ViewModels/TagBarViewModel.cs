@@ -93,6 +93,23 @@ namespace DeFRaG_Helper.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void AddTag(TagItem tagItem)
+        {
+            if (!Tags.Any(t => t.Name == tagItem.Name))
+            {
+                Tags.Insert(0, tagItem); // Insert at the beginning
+            }
+        }
+
+        public void RemoveTag(string tagName)
+        {
+            var tagItem = Tags.FirstOrDefault(t => t.Name == tagName);
+            if (tagItem != null)
+            {
+                Tags.Remove(tagItem);
+            }
+        }
     }
 
     public class TagItem

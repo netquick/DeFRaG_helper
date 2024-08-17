@@ -233,30 +233,6 @@ namespace DeFRaG_Helper.ViewModels
                 {
                     _selectedMap = value;
                     OnPropertyChanged(nameof(SelectedMap)); // Notify if you're implementing INotifyPropertyChanged
-                    try
-                    {
-                        if (value != null)
-                        {
-                            Debug.WriteLine($"Selected map: {value.Name}");
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Selected map is null.");
-                        }
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        // Log the exception details
-                        Debug.WriteLine($"Request error: {ex.Message}");
-                        Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        // Optionally, handle the exception as needed
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log any other exceptions
-                        Debug.WriteLine($"Unexpected error: {ex.Message}");
-                        Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-                    }
                 }
             }
         }

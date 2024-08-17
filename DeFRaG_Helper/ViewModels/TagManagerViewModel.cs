@@ -55,9 +55,13 @@ namespace DeFRaG_Helper.ViewModels
         {
             if (!string.IsNullOrEmpty(NewTagName) && !Tags.Any(t => t.Name == NewTagName))
             {
-                Tags.Add(new TagTextItem { Name = NewTagName, IsChecked = true });
+                var newTagItem = new TagTextItem { Name = NewTagName, IsChecked = true };
+                Tags.Add(newTagItem);
                 _map.Tags.Add(NewTagName);
                 AddTagToDatabase(NewTagName);
+
+                // Update TagBarViewModel
+                TagBarViewModel.Instance.AddTag(new TagItem { Name = NewTagName });
             }
         }
 
@@ -67,9 +71,34 @@ namespace DeFRaG_Helper.ViewModels
             {
                 Tags.Remove(tagItem);
                 _map.Tags.Remove(tagItem.Name);
-                UpdateTagsInDatabase();
+                DeleteTagFromDatabase(tagItem.Name);
+
+                // Update TagBarViewModel
+                TagBarViewModel.Instance.RemoveTag(tagItem.Name);
             }
         }
+
+        private void DeleteTagFromDatabase(string tagName)
+        {
+            DbQueue.Instance.Enqueue(async connection =>
+            {
+                // Delete the tag from the MapTag table
+                using (var deleteMapTagCommand = new SqliteCommand("DELETE FROM MapTag WHERE TagID = (SELECT TagID FROM Tag WHERE Tag = @tag)", connection))
+                {
+                    deleteMapTagCommand.Parameters.AddWithValue("@tag", tagName);
+                    await deleteMapTagCommand.ExecuteNonQueryAsync();
+                }
+
+                // Delete the tag from the Tag table
+                using (var deleteTagCommand = new SqliteCommand("DELETE FROM Tag WHERE Tag = @tag", connection))
+                {
+                    deleteTagCommand.Parameters.AddWithValue("@tag", tagName);
+                    await deleteTagCommand.ExecuteNonQueryAsync();
+                }
+            });
+        }
+
+
 
         private void Cancel(object parameter)
         {
