@@ -19,6 +19,8 @@ namespace DeFRaG_Helper.ViewModels
         public ICommand PlayMapCommand { get; private set; }
         public ICommand DownloadMapCommand { get; private set; }
         public ICommand EditMapCommand { get; private set; }
+        public ICommand ClearFiltersCommand { get; private set; }
+
         public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
         private static readonly object _lock = new object();
@@ -44,6 +46,17 @@ namespace DeFRaG_Helper.ViewModels
                 ApplyFilters();
             }
         }
+        private void ClearFilters(object parameter)
+        {
+            SearchText = string.Empty;
+            ShowFavorites = false;
+            ShowInstalled = false;
+            ShowDownloaded = false;
+            SelectedTags.Clear();
+            TagBarViewModel.Instance.ClearSelectedTags();
+
+            ApplyFilters();
+        }
         private MapViewModel()
         {
             Maps = new ObservableCollection<Map>();
@@ -57,6 +70,7 @@ namespace DeFRaG_Helper.ViewModels
             PlayMapCommand = new RelayCommand(PlayMap);
             DownloadMapCommand = new RelayCommand(DownloadMap);
             EditMapCommand = new RelayCommand(EditMapCommandAction);
+            ClearFiltersCommand = new RelayCommand(ClearFilters); // Initialize the ClearFiltersCommand
 
             var mapHistoryManager = MapHistoryManager.Instance;;
 
@@ -156,7 +170,10 @@ namespace DeFRaG_Helper.ViewModels
                 List<Map> filteredMaps;
                 lock (_lock)
                 {
-                    filteredMaps = Maps.Where(map =>
+                    // Create a copy of the Maps collection to avoid modification during enumeration
+                    var mapsCopy = Maps.ToList();
+
+                    filteredMaps = mapsCopy.Where(map =>
                         (string.IsNullOrEmpty(SearchText) ||
                          map.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                          map.Mapname.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
@@ -168,7 +185,7 @@ namespace DeFRaG_Helper.ViewModels
                             map.Weapons.Contains(tag) ||
                             map.Items.Contains(tag) ||
                             map.Functions.Contains(tag) ||
-                            map.Tags.Contains(tag))) // Include check for Tags list
+                            map.Tags.Contains(tag)))
                     ).OrderByDescending(map => map.Releasedate).ToList();
                 }
 
@@ -180,8 +197,6 @@ namespace DeFRaG_Helper.ViewModels
                     DisplayedMaps.Clear(); // Clear the collection before adding new items
                     addedMapIds.Clear(); // Clear the set to start fresh
 
-
-
                     // Set the FilteredMaps property
                     FilteredMaps = uniqueFilteredMaps.ToList();
 
@@ -190,6 +205,8 @@ namespace DeFRaG_Helper.ViewModels
                 });
             });
         }
+
+
 
 
 

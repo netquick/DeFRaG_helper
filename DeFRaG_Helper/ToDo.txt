@@ -4,7 +4,9 @@
 - Config editor -> v1.>0
 - Records -> v1.>0
 
-
+- clear filters
+- auto record
+- personal best (playername)
 
 
 

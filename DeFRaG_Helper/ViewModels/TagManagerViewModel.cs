@@ -174,6 +174,8 @@ namespace DeFRaG_Helper.ViewModels
                 UpdateTagsInDatabase();
             }
         }
+
+
     }
 
     public class TagTextItem
@@ -181,4 +183,6 @@ namespace DeFRaG_Helper.ViewModels
         public string Name { get; set; } = string.Empty;
         public bool IsChecked { get; set; }
     }
+
+
 }

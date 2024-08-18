@@ -12,7 +12,7 @@
         <converters:SvgPathAndColorConverter x:Key="SvgPathAndColorConverter"/>
 
         <DataTemplate x:Key="IconTemplate">
-            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding IsSelected}">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <Image Width="20" Height="20" Margin="0,0,0,0" VerticalAlignment="Center" ToolTip="{Binding Name}">
                         <Image.Source>
@@ -27,7 +27,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="TextTemplate">
-            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
+            <CheckBox Style="{StaticResource CustomCheckBoxStyle}" Margin="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding IsSelected}">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center" ToolTip="{Binding Name}" />
                 </StackPanel>

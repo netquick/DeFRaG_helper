@@ -57,6 +57,20 @@
             <CheckBox Name="chkImgQuali" Content="CheckBox" Style="{StaticResource DarkModeToggleSwitchStyle}" HorizontalAlignment="Left" Margin="10,296,0,0" VerticalAlignment="Top" Checked="chkImgQuali_Changed" Unchecked="chkImgQuali_Changed"/>
             <Label Content="Use high quality Images" FontFamily="Segoe UI" FontSize="12" Foreground="White" HorizontalAlignment="Left" Height="25" Margin="65,296,0,0" VerticalAlignment="Top" Width="208"/>
             <Button Name="btnSelect" Content="Select" HorizontalAlignment="Left" Height="32" Margin="448,118,0,0" VerticalAlignment="Top" Width="73" Click="btnSelect_Click"/>
+            <Border Background="#222" CornerRadius="10" Height="150" Width="250" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="Playername" Margin="10, 0" Foreground="White" Height="32" FontSize="18"/>
+                    <TextBox Grid.Row="1" Name="txtPlayername" Margin="10, 0" Height="32" FontSize="18"/>
+                    <Label Grid.Row="2" Content="Country" Margin="10, 0" Foreground="White" Height="32" FontSize="18"/>
+                    <TextBox Grid.Row="3" Name="txtCountry" Margin="10, 0" Height="32" FontSize="18"/>
+                </Grid>
+            </Border>
 
 
 

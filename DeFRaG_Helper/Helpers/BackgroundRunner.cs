@@ -1,10 +1,13 @@
 ﻿using DeFRaG_Helper.Helpers;
 using DeFRaG_Helper.ViewModels;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace DeFRaG_Helper
 {
     public class BackgroundTaskRunner
     {
+        private static readonly HttpClient httpClient = CreateHttpClient();
 
         private TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
         public Task BackgroundTask => _tcs.Task;
@@ -36,6 +39,17 @@ namespace DeFRaG_Helper
             _tcs.SetResult(true);
         }
 
+        private static HttpClient CreateHttpClient()
+        {
+            var handler = new HttpClientHandler();
+
+            if (AppConfig.UseUnsecureConnection.HasValue && AppConfig.UseUnsecureConnection.Value)
+            {
+                handler.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true; // Bypass SSL certificate validation for unsecure connections
+            }
+
+            return new HttpClient(handler);
+        }
         public async Task RunTaskAsync()
         {
             //ShowMessage("Starting background task");
@@ -45,10 +59,33 @@ namespace DeFRaG_Helper
 
             await CheckInstallState();
 
-            
+            //here can call the count update
+            int pageCount = await GetLastPageNumberAsync() + 1;
+            MessageHelper.ShowMessage($"Updating hit counts for maps");
+            await UpdateDlCounts.UpdateDownloadCounts(pageCount);
+
 
         }
+        private static async Task<int> GetLastPageNumberAsync()
+        {
+            var url = "https://ws.q3df.org/maps/?map=&show=50&page=0";
+            var html = await httpClient.GetStringAsync(url);
 
+            // Regular expression to find the 'Last page' link. This pattern might need adjustments.
+            var regex = new Regex(@"<a\s+href=""/maps/\?map=&amp;show=50&amp;page=(\d+)""\s+title=""Last page"".*?>", RegexOptions.IgnoreCase);
+            var match = regex.Match(html);
+
+            if (match.Success)
+            {
+                var pageParam = match.Groups[1].Value; // This captures the page number directly
+                if (int.TryParse(pageParam, out int lastPageNumber))
+                {
+                    return lastPageNumber;
+                }
+            }
+
+            throw new Exception("Unable to find the last page number.");
+        }
         private async Task CheckInstallState()
         {
             MessageHelper.ShowMessage($"Checking install state for maps in Game directory");

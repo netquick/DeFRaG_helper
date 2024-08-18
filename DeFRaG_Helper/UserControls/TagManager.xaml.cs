@@ -25,6 +25,7 @@ namespace DeFRaG_Helper.UserControls
             if (DataContext is TagManagerViewModel viewModel && sender is CheckBox checkBox && checkBox.DataContext is TagTextItem tag)
             {
                 viewModel.TagCheckedCommand.Execute(tag);
+                IsInternalClick = false; // Reset the flag
             }
         }
 
@@ -33,6 +34,7 @@ namespace DeFRaG_Helper.UserControls
             if (DataContext is TagManagerViewModel viewModel && sender is CheckBox checkBox && checkBox.DataContext is TagTextItem tag)
             {
                 viewModel.TagUncheckedCommand.Execute(tag);
+                IsInternalClick = false; // Reset the flag
             }
         }
     }

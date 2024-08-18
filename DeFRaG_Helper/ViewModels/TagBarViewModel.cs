@@ -110,12 +110,38 @@ namespace DeFRaG_Helper.ViewModels
                 Tags.Remove(tagItem);
             }
         }
+        public void ClearSelectedTags()
+        {
+            foreach (var tag in Tags)
+            {
+                tag.IsSelected = false;
+            }
+        }
     }
 
-    public class TagItem
+    public class TagItem : INotifyPropertyChanged
     {
+        private bool isSelected;
+
         public string Name { get; set; }
         public string IconPath { get; set; }
         public string Color { get; set; }
+
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
