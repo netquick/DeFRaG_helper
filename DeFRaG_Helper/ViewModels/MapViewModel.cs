@@ -24,7 +24,8 @@ namespace DeFRaG_Helper.ViewModels
         public event EventHandler MapsBatchLoaded;
         public ObservableCollection<Map> Maps { get; set; }
         private static readonly object _lock = new object();
-
+        private bool _showVQ3;
+        private bool _showCPM;
         public List<Map> FilteredMaps { get; private set; }
 
         private bool dataLoaded = false;
@@ -52,6 +53,8 @@ namespace DeFRaG_Helper.ViewModels
             ShowFavorites = false;
             ShowInstalled = false;
             ShowDownloaded = false;
+            ShowVQ3 = false;
+            ShowCPM = false;
             SelectedTags.Clear();
             TagBarViewModel.Instance.ClearSelectedTags();
 
@@ -185,7 +188,11 @@ namespace DeFRaG_Helper.ViewModels
                             map.Weapons.Contains(tag) ||
                             map.Items.Contains(tag) ||
                             map.Functions.Contains(tag) ||
-                            map.Tags.Contains(tag)))
+                            map.Tags.Contains(tag))) &&
+                        (!ShowVQ3 && !ShowCPM || // If neither VQ3 nor CPM is selected, include all maps
+                         (ShowVQ3 && (map.Physics == 1 || map.Physics == 3)) || // Include VQ3 maps
+                         (ShowCPM && (map.Physics == 2 || map.Physics == 3)) // Include CPM maps
+                        )
                     ).OrderByDescending(map => map.Releasedate).ToList();
                 }
 
@@ -218,6 +225,9 @@ namespace DeFRaG_Helper.ViewModels
 
 
 
+
+
+
         public void LoadDisplayedMapsSubset(List<Map> sourceMaps, int startIndex, int count)
         {
             for (int i = startIndex; i < Math.Min(startIndex + count, sourceMaps.Count); i++)
@@ -236,7 +246,26 @@ namespace DeFRaG_Helper.ViewModels
 
 
 
-
+        public bool ShowVQ3
+        {
+            get => _showVQ3;
+            set
+            {
+                _showVQ3 = value;
+                OnPropertyChanged(nameof(ShowVQ3));
+                ApplyFilters();
+            }
+        }
+        public bool ShowCPM
+        {
+            get => _showCPM;
+            set
+            {
+                _showCPM = value;
+                OnPropertyChanged(nameof(ShowCPM));
+                ApplyFilters();
+            }
+        }
 
 
 
